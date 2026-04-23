@@ -1,0 +1,95 @@
+# prefect.yaml — RE_CL Prefect 3 deployment definitions
+#
+# Apply:
+#   cd re_cl
+#   prefect server start        # terminal 1 (if not already running)
+#   prefect deploy --all        # terminal 2
+#   prefect deployment ls       # verify
+#
+# Or apply a single deployment:
+#   prefect deploy --name daily-di
+#
+# Trigger a one-shot run:
+#   prefect deployment run "RE_CL DataInmobiliaria Daily/daily-di"
+
+name: re_cl
+
+# ── Build ──────────────────────────────────────────────────────────────────────
+build: null
+push: null
+pull: null
+
+# ── Deployments ───────────────────────────────────────────────────────────────
+deployments:
+
+  # DataInmobiliaria daily — scrapes next unscraped RM commune at 07:00 Chile time
+  # cron "0 11 * * *" = 11:00 UTC = 07:00 CLT (UTC-4 standard) / 08:00 CLST (UTC-3 DST)
+  - name: daily-di
+    version: "1.0"
+    tags:
+      - scraping
+      - datainmobiliaria
+      - daily
+    description: >
+      Scrape next unscraped RM commune from datainmobiliaria.cl (CBR ventas 2019+).
+      Guest quota: ~15k records/commune/day. 40 nightly runs for full RM coverage.
+    entrypoint: src/pipelines/flows.py:datainmobiliaria_daily_flow
+    parameters:
+      min_year: 2019
+      max_pages: 100
+      dry_run: false
+    schedules:
+      - cron: "0 11 * * *"
+        timezone: "America/Santiago"
+        active: true
+    work_pool:
+      name: default-agent-pool
+      work_queue_name: default
+
+  # Full pipeline — weekly Sunday 03:00 UTC (re-train + score + maps)
+  - name: weekly-full
+    version: "1.0"
+    tags:
+      - pipeline
+      - weekly
+    description: >
+      End-to-end pipeline: ingest → clean → features → retrain hedonic model →
+      score → backtesting → heatmap. Runs weekly Sunday 03:00 UTC.
+    entrypoint: src/pipelines/flows.py:full_pipeline
+    parameters:
+      dry_run: false
+      retrain: true
+      skip_osm: false
+      skip_gtfs: false
+    schedules:
+      - cron: "0 3 * * 0"
+        timezone: "UTC"
+        active: true
+    work_pool:
+      name: default-agent-pool
+      work_queue_name: default
+
+  # Parallel scrape — daily at 05:00 UTC (PI + Toctoc + DI)
+  - name: daily-parallel-scrape
+    version: "1.0"
+    tags:
+      - scraping
+      - parallel
+      - daily
+    description: >
+      Phase 9 parallel scrape: PI (40 communes × 4 types) + Toctoc (4 types) +
+      DI (next commune). Post-processing: normalize_county + scraped_to_scored.
+    entrypoint: src/pipelines/flows.py:parallel_scrape_flow
+    parameters:
+      pi_batch_size: 6
+      pi_max_pages: 1
+      toctoc_max_pages: 50
+      skip_di: false
+      dry_run: false
+    schedules:
+      - cron: "0 5 * * *"
+        timezone: "UTC"
+        active: false   # enable after validating live run
+    work_pool:
+      name: default-agent-pool
+      work_queue_name: default
