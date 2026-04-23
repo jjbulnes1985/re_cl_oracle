@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+
+# Environment
+.env
+*.env
+
+# Data files (large)
+*.csv
+*.pkl
+*.parquet
+
+# PDF files
+*.pdf
+
+# Exports / generated
+re_cl/data/exports/
+re_cl/data/processed/
+re_cl/models/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.tmp.*
+
+# Node
+node_modules/

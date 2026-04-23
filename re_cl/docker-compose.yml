@@ -1,0 +1,127 @@
+version: "3.9"
+
+services:
+
+  # ── PostgreSQL + PostGIS ────────────────────────────────────────────────────
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: re_cl_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-re_cl}
+      POSTGRES_USER:     ${POSTGRES_USER:-re_cl_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - re_cl_pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./db/migrations/001_transaction_features.sql:/docker-entrypoint-initdb.d/02_features.sql:ro
+      - ./db/migrations/002_scraped_listings.sql:/docker-entrypoint-initdb.d/03_scraped.sql:ro
+      - ./db/migrations/003_thesis_features.sql:/docker-entrypoint-initdb.d/04_thesis.sql:ro
+      - ./db/migrations/004_osm_features.sql:/docker-entrypoint-initdb.d/05_osm.sql:ro
+      - ./db/migrations/005_commune_enrichment.sql:/docker-entrypoint-initdb.d/06_commune_enrichment.sql:ro
+      - ./db/migrations/006_commune_stats_enrichment.sql:/docker-entrypoint-initdb.d/07_commune_stats.sql:ro
+      - ./db/migrations/007_spatial_indexes.sql:/docker-entrypoint-initdb.d/08_spatial_indexes.sql:ro
+      - ./db/migrations/008_gtfs_features.sql:/docker-entrypoint-initdb.d/09_gtfs.sql:ro
+      - ./db/migrations/009_users_saved_searches.sql:/docker-entrypoint-initdb.d/10_users.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-re_cl_user} -d ${POSTGRES_DB:-re_cl}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI ─────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: re_cl_api
+    restart: unless-stopped
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 2
+    environment:
+      DATABASE_URL:      postgresql://${POSTGRES_USER:-re_cl_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-re_cl}
+      MODEL_VERSION:     ${MODEL_VERSION:-v1.0}
+      SCORING_PROFILE:   ${SCORING_PROFILE:-default}
+      ALERT_MIN_SCORE:   ${ALERT_MIN_SCORE:-0.75}
+      ALERT_MIN_GAP_PCT: ${ALERT_MIN_GAP_PCT:--0.15}
+      ALERT_MIN_CONFIDENCE: ${ALERT_MIN_CONFIDENCE:-0.65}
+      WEIGHT_CRIME:      ${WEIGHT_CRIME:-0.00}
+      WEIGHT_CENSUS:     ${WEIGHT_CENSUS:-0.00}
+      LOG_LEVEL:         ${LOG_LEVEL:-INFO}
+      JWT_SECRET_KEY:    ${JWT_SECRET_KEY:-dev-secret-change-in-production}
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── Streamlit Dashboard ──────────────────────────────────────────────────────
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: re_cl_dashboard
+    restart: unless-stopped
+    command: >
+      streamlit run src/dashboard/app.py
+      --server.port 8501
+      --server.address 0.0.0.0
+      --server.baseUrlPath /dashboard
+      --server.headless true
+    environment:
+      DATABASE_URL:  postgresql://${POSTGRES_USER:-re_cl_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-re_cl}
+      MODEL_VERSION: ${MODEL_VERSION:-v1.0}
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - .:/app
+    ports:
+      - "8501:8501"
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+
+  # ── React Frontend ───────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: re_cl_frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+
+  # ── Nginx Reverse Proxy ──────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: re_cl_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api:
+        condition: service_healthy
+      dashboard:
+        condition: service_started
+      frontend:
+        condition: service_started
+
+volumes:
+  re_cl_pgdata:
+    driver: local
