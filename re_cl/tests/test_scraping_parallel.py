@@ -39,21 +39,26 @@ def test_rm_communes_no_bustos():
 
 def test_scraper_engine_pool_size(monkeypatch):
     from src.pipelines import tasks as t
-    monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
+    captured = {}
+
+    class _FakeEngine:
+        pass
+
+    def fake_create(url, **kw):
+        captured.update(kw)
+        return _FakeEngine()
+
+    monkeypatch.setattr(t, "create_engine", fake_create)
+    monkeypatch.setenv("DATABASE_URL", "postgresql://fake:fake@localhost/re_cl")
     engine = t._build_scraper_engine()
-    # QueuePool exposes .size() and ._max_overflow; SingletonThreadPool (SQLite)
-    # may not — so also accept if pool class name includes "QueuePool"
-    pool = engine.pool
-    cls_name = pool.__class__.__name__
-    if cls_name == "QueuePool":
-        assert pool.size() == 10
-        assert pool._max_overflow == 5
-    else:
-        # SQLite uses SingletonThreadPool; just verify call didn't crash and engine is usable
-        assert engine is not None
+    assert engine is not None
+    assert captured.get("pool_size") == 10, f"pool_size expected 10, got {captured.get('pool_size')}"
+    assert captured.get("max_overflow") == 5, f"max_overflow expected 5, got {captured.get('max_overflow')}"
+    assert captured.get("pool_pre_ping") is True
 
 
 def test_task_scrape_portal_uses_large_pool(monkeypatch):
+    import logging
     from src.pipelines import tasks as t
     captured = {}
 
@@ -66,6 +71,8 @@ def test_task_scrape_portal_uses_large_pool(monkeypatch):
         return _FakeEngine()
 
     monkeypatch.setattr(t, "create_engine", fake_create)
+    # Prefect's get_run_logger() requires an active flow/task context; stub it out
+    monkeypatch.setattr("src.pipelines.tasks.get_run_logger", lambda: logging.getLogger("test"))
     # Stub the actual scrape_run to avoid Playwright launch
     monkeypatch.setattr("src.scraping.portal_inmobiliario.run", lambda **kw: 0)
     t.task_scrape_portal.fn(max_pages=1)
@@ -74,6 +81,7 @@ def test_task_scrape_portal_uses_large_pool(monkeypatch):
 
 
 def test_task_scrape_toctoc_uses_large_pool(monkeypatch):
+    import logging
     from src.pipelines import tasks as t
     captured = {}
 
@@ -86,6 +94,8 @@ def test_task_scrape_toctoc_uses_large_pool(monkeypatch):
         return _FakeEngine()
 
     monkeypatch.setattr(t, "create_engine", fake_create)
+    # Prefect's get_run_logger() requires an active flow/task context; stub it out
+    monkeypatch.setattr("src.pipelines.tasks.get_run_logger", lambda: logging.getLogger("test"))
     # Stub the actual scrape_run to avoid Playwright launch
     monkeypatch.setattr("src.scraping.toctoc.run", lambda **kw: 0)
     t.task_scrape_toctoc.fn(max_pages=1)

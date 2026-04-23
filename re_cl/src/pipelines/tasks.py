@@ -30,6 +30,21 @@ def _build_db_url() -> str:
     return f"postgresql://{user}:{pwd}@{host}:{port}/{db}"
 
 
+def _build_scraper_engine():
+    """Build a SQLAlchemy engine sized for parallel scraper writes.
+
+    Default SQLAlchemy pool is 5 — too small for >=6 concurrent coroutines
+    hitting _write_batch() via engine.begin(). Use pool_size=10 + overflow=5.
+    """
+    return create_engine(
+        _build_db_url(),
+        pool_size=10,
+        max_overflow=5,
+        pool_timeout=30,
+        pool_pre_ping=True,
+    )
+
+
 # ── Ingestion ──────────────────────────────────────────────────────────────────
 
 @task(name="load-transactions", retries=2, retry_delay_seconds=30)
@@ -159,7 +174,7 @@ def task_scrape_portal(max_pages: int = 50) -> int:
     from dotenv import load_dotenv
     load_dotenv()
 
-    engine = create_engine(_build_db_url(), pool_pre_ping=True)
+    engine = _build_scraper_engine()
     logger.info(f"Scraping Portal Inmobiliario (max_pages={max_pages})...")
     n = scrape_run(engine=engine, max_pages=max_pages)
     logger.info(f"Scraped {n:,} listings")
@@ -174,7 +189,7 @@ def task_scrape_toctoc(max_pages: int = 50) -> int:
     from dotenv import load_dotenv
     load_dotenv()
 
-    engine = create_engine(_build_db_url(), pool_pre_ping=True)
+    engine = _build_scraper_engine()
     logger.info(f"Scraping Toctoc (max_pages={max_pages})...")
     n = scrape_run(engine=engine, max_pages=max_pages)
     logger.info(f"Scraped {n:,} listings")
