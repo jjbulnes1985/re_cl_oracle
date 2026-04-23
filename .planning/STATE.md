@@ -3,21 +3,21 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: MVP
 status: executing
-last_updated: "2026-04-23T00:54:27.724Z"
+last_updated: "2026-04-23T03:00:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
-  percent: 0
+  completed_plans: 5
+  percent: 100
 ---
 
 # Project State: RE_CL
 
-**Last updated:** 2026-04-14
+**Last updated:** 2026-04-23
 **Current milestone:** v1.0 MVP
-**Active phase:** 4 (Modelo Hedónico y Scoring)
-**Status:** Executing Phase 9
+**Active phase:** Phase 9 — Scraping Paralelo Multi-fuente
+**Status:** Phase 9 complete — all 4 plans done (09-01 through 09-04)
 
 ## Completed Phases
 
@@ -33,6 +33,9 @@ progress:
 - **MVP scope:** Solo RM de Santiago. Otras regiones → V2.
 - **Model version:** v1.0 para el MVP
 - **Scoring:** undervaluation_score + data_confidence → opportunity_score (0-1)
+- **Phase 9 — Prefect 3 YAML:** Used `prefect.yaml` (Prefect 3 style) instead of V2 `deployment build/apply` — installed version is 3.6.27
+- **Phase 9 — DI cron:** `daily-di` cron `0 11 * * *` (07:00 CLT, UTC-4); acceptable DST drift to 08:00 CLST
+- **Phase 9 — Parallel scrape gate:** 5,003 listings (4,922 PI + 81 Toctoc) — status PASS; DI produced 0 (cookies absent, --skip-di used)
 
 ## Accumulated Context
 
