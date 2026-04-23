@@ -101,3 +101,52 @@ def test_task_scrape_toctoc_uses_large_pool(monkeypatch):
     t.task_scrape_toctoc.fn(max_pages=1)
     assert captured.get("pool_size") == 10, f"pool_size expected 10, got {captured.get('pool_size')}"
     assert captured.get("max_overflow") == 5, f"max_overflow expected 5, got {captured.get('max_overflow')}"
+
+
+# ── Task 1 (Wave 2): toctoc.run_parallel() ────────────────────────────────────
+
+def test_toctoc_run_parallel_returns_int(monkeypatch):
+    from src.scraping import toctoc
+
+    async def fake_scrape_async(self, max_pages=50, property_type="apartments", **kw):
+        return 12
+
+    monkeypatch.setattr(toctoc.ToctocScraper, "scrape_async", fake_scrape_async)
+    n = toctoc.run_parallel(engine=None, max_pages=1)
+    assert isinstance(n, int)
+    assert n == 48  # 12 × 4 types
+
+
+def test_toctoc_run_parallel_isolates_failures(monkeypatch):
+    from src.scraping import toctoc
+
+    async def fake_scrape_async(self, max_pages=50, property_type="apartments", **kw):
+        if property_type == "land":
+            raise RuntimeError("simulated land failure")
+        return 10
+
+    monkeypatch.setattr(toctoc.ToctocScraper, "scrape_async", fake_scrape_async)
+    n = toctoc.run_parallel(engine=None, max_pages=1)
+    assert n == 30  # 3 successful × 10
+
+
+def test_toctoc_run_parallel_invokes_all_4_types(monkeypatch):
+    from src.scraping import toctoc
+
+    seen = []
+
+    async def fake_scrape_async(self, max_pages=50, property_type="apartments", **kw):
+        seen.append(property_type)
+        return 1
+
+    monkeypatch.setattr(toctoc.ToctocScraper, "scrape_async", fake_scrape_async)
+    toctoc.run_parallel(engine=None, max_pages=1)
+    assert set(seen) == {"apartments", "residential", "land", "retail"}
+
+
+def test_toctoc_uses_gather_not_loop():
+    from pathlib import Path
+    src = Path(__file__).resolve().parents[1] / "src" / "scraping" / "toctoc.py"
+    text = src.read_text(encoding="utf-8")
+    assert "asyncio.gather" in text
+    assert "return_exceptions=True" in text

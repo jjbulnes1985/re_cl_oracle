@@ -22,6 +22,7 @@ NOTE: Toctoc uses a Next.js frontend with server-side rendered JSON in __NEXT_DA
 """
 
 import argparse
+import asyncio
 import json
 import os
 import sys
@@ -229,6 +230,49 @@ class ToctocScraper(BaseScraper):
         if "local" in combined or "oficina" in combined or "retail" in combined:
             return "retail"
         return "unknown"
+
+
+# ── Parallel runner (Phase 9) ─────────────────────────────────────────────────
+
+async def _scrape_toctoc_all_types_async(engine, max_pages: int = 50) -> int:
+    """Run all 4 Toctoc property types concurrently.
+
+    Each ToctocScraper instance creates its own async_playwright() +
+    browser + context inside scrape_async(), so 4 concurrent coroutines
+    do NOT share Playwright state. Writes go through _write_batch()
+    which uses engine.begin() (connection-pool safe).
+    """
+    import random
+
+    async def one_type(ptype: str) -> int:
+        scraper = ToctocScraper(engine=engine)
+        # Stagger browser launches by up to 2s to avoid simultaneous TCP handshakes
+        await asyncio.sleep(random.uniform(0, 2))
+        n = await scraper.scrape_async(max_pages=max_pages, property_type=ptype)
+        logger.info(f"[toctoc-parallel] {ptype}: {n} listings")
+        return n
+
+    results = await asyncio.gather(
+        *[one_type(pt) for pt in TYPE_MAP.keys()],
+        return_exceptions=True,
+    )
+    total = 0
+    errors = []
+    for ptype, r in zip(TYPE_MAP.keys(), results):
+        if isinstance(r, Exception):
+            errors.append((ptype, r))
+            logger.warning(f"[toctoc-parallel] {ptype} FAILED: {r}")
+        else:
+            total += int(r)
+    if errors:
+        logger.warning(f"[toctoc-parallel] {len(errors)}/{len(TYPE_MAP)} types failed")
+    logger.info(f"[toctoc-parallel] total: {total} listings across {len(TYPE_MAP)} types")
+    return total
+
+
+def run_parallel(engine=None, max_pages: int = 50) -> int:
+    """Sync entry point for Prefect task. Runs 4 property types concurrently."""
+    return asyncio.run(_scrape_toctoc_all_types_async(engine, max_pages))
 
 
 # ── Module run() ──────────────────────────────────────────────────────────────
