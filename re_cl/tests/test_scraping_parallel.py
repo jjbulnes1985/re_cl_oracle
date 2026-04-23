@@ -150,3 +150,85 @@ def test_toctoc_uses_gather_not_loop():
     text = src.read_text(encoding="utf-8")
     assert "asyncio.gather" in text
     assert "return_exceptions=True" in text
+
+
+# ── Task 2 (Wave 2): portal_inmobiliario.run_parallel() ───────────────────────
+
+def test_pi_run_parallel_returns_int(monkeypatch):
+    from src.scraping import portal_inmobiliario as pi
+
+    async def fake_scrape_async(self, max_pages=1, property_type="apartments", commune_slug="", **kw):
+        return 5
+
+    monkeypatch.setattr(pi.PortalInmobiliarioScraper, "scrape_async", fake_scrape_async)
+    n = pi.run_parallel(engine=None, batch_size=8, max_pages=1)
+    assert isinstance(n, int)
+    assert n == 800  # 5 × 40 communes × 4 types
+
+
+def test_pi_run_parallel_batch_size_respected(monkeypatch):
+    import asyncio as _aio
+    from src.scraping import portal_inmobiliario as pi
+
+    state = {"active": 0, "peak": 0}
+
+    async def fake_scrape_async(self, max_pages=1, property_type="apartments", commune_slug="", **kw):
+        state["active"] += 1
+        state["peak"] = max(state["peak"], state["active"])
+        await _aio.sleep(0.01)
+        state["active"] -= 1
+        return 1
+
+    monkeypatch.setattr(pi.PortalInmobiliarioScraper, "scrape_async", fake_scrape_async)
+    state["peak"] = 0
+    pi.run_parallel(engine=None, batch_size=3, max_pages=1)
+    assert state["peak"] <= 3
+
+
+def test_pi_run_parallel_covers_all_160_combinations(monkeypatch):
+    from src.scraping import portal_inmobiliario as pi
+
+    seen = set()
+
+    async def fake_scrape_async(self, max_pages=1, property_type="apartments", commune_slug="", **kw):
+        seen.add((property_type, commune_slug))
+        return 0
+
+    monkeypatch.setattr(pi.PortalInmobiliarioScraper, "scrape_async", fake_scrape_async)
+    pi.run_parallel(engine=None, batch_size=6, max_pages=1)
+    expected = {(pt, cs) for pt in pi.TYPE_MAP.keys() for cs in pi.RM_COMMUNES.values()}
+    assert seen == expected
+    assert len(seen) == 160
+
+
+def test_pi_run_parallel_uses_max_pages_1_default(monkeypatch):
+    from src.scraping import portal_inmobiliario as pi
+
+    captured = []
+
+    async def fake_scrape_async(self, max_pages=1, property_type="apartments", commune_slug="", **kw):
+        captured.append(max_pages)
+        return 0
+
+    monkeypatch.setattr(pi.PortalInmobiliarioScraper, "scrape_async", fake_scrape_async)
+    pi.run_parallel(engine=None)  # default max_pages=1
+    assert all(mp == 1 for mp in captured)
+    assert len(captured) == 160
+
+
+def test_pi_run_parallel_isolates_failures(monkeypatch):
+    from src.scraping import portal_inmobiliario as pi
+
+    call_count = [0]
+
+    async def fake_scrape_async(self, max_pages=1, property_type="apartments", commune_slug="", **kw):
+        call_count[0] += 1
+        if call_count[0] % 2 == 0:
+            raise RuntimeError("simulated failure")
+        return 3
+
+    monkeypatch.setattr(pi.PortalInmobiliarioScraper, "scrape_async", fake_scrape_async)
+    # Should not raise; returns count only from successful calls
+    n = pi.run_parallel(engine=None, batch_size=6, max_pages=1)
+    assert isinstance(n, int)
+    assert n >= 0  # some successes, no exception propagated

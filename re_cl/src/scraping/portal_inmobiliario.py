@@ -23,6 +23,7 @@ Selectors last verified: 2025-04 (MeLi Polaris UI).
 """
 
 import argparse
+import asyncio
 import json
 import os
 import random
@@ -669,6 +670,81 @@ class PortalInmobiliarioScraper(BaseScraper):
             return "retail"
         # Fall back to whatever type we're currently scraping
         return self._current_property_type if self._current_property_type != "unknown" else "unknown"
+
+
+# ── Parallel runner (Phase 9) ─────────────────────────────────────────────────
+
+async def _scrape_pi_communes_async(
+    engine,
+    batch_size: int = 6,
+    max_pages: int = 1,
+) -> int:
+    """Scrape PI page-1 per commune × property_type in parallel batches.
+
+    MeLi gates paginated URLs (_Desde_N) behind session cookies. Page 1
+    per commune does NOT require session state, so per-commune parallel
+    cold-starts work. See Pitfall 2 in 09-RESEARCH.md.
+
+    Total requests: len(TYPE_MAP) × len(RM_COMMUNES) = 4 × 40 = 160.
+    Runs `batch_size` of these concurrently, with asyncio.sleep(2) between
+    batches for single-IP politeness.
+    """
+    tasks = [
+        (ptype, cname, cslug)
+        for ptype in TYPE_MAP.keys()
+        for cname, cslug in RM_COMMUNES.items()
+    ]
+    logger.info(
+        f"[pi-parallel] {len(tasks)} commune×type requests, batch_size={batch_size}"
+    )
+
+    async def one_request(ptype: str, cname: str, cslug: str) -> int:
+        scraper = PortalInmobiliarioScraper(engine=engine)
+        try:
+            return await scraper.scrape_async(
+                max_pages=max_pages,
+                property_type=ptype,
+                commune_slug=cslug,
+            )
+        except Exception as e:
+            logger.warning(f"[pi-parallel] {cname}/{ptype}: {e}")
+            return 0
+
+    total = 0
+    n_batches = (len(tasks) + batch_size - 1) // batch_size
+    for i in range(0, len(tasks), batch_size):
+        batch = tasks[i:i + batch_size]
+        batch_num = i // batch_size + 1
+        batch_results = await asyncio.gather(
+            *[one_request(pt, cn, cs) for pt, cn, cs in batch],
+            return_exceptions=True,
+        )
+        n_batch = 0
+        for (pt, cn, _), r in zip(batch, batch_results):
+            if isinstance(r, Exception):
+                logger.warning(f"[pi-parallel] {cn}/{pt} exception: {r}")
+            else:
+                n_batch += int(r)
+        total += n_batch
+        logger.info(
+            f"[pi-parallel] batch {batch_num}/{n_batches}: "
+            f"{n_batch} listings (cumulative: {total})"
+        )
+        # Inter-batch politeness delay (D-08)
+        if i + batch_size < len(tasks):
+            await asyncio.sleep(2)
+
+    logger.info(f"[pi-parallel] total: {total} listings across 160 requests")
+    return total
+
+
+def run_parallel(
+    engine=None,
+    batch_size: int = 6,
+    max_pages: int = 1,
+) -> int:
+    """Sync entry point for Prefect task. Runs 40 communes × 4 types in batches."""
+    return asyncio.run(_scrape_pi_communes_async(engine, batch_size, max_pages))
 
 
 # ── Module run() for Prefect task ─────────────────────────────────────────────
