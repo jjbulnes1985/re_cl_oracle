@@ -232,3 +232,80 @@ def test_pi_run_parallel_isolates_failures(monkeypatch):
     n = pi.run_parallel(engine=None, batch_size=6, max_pages=1)
     assert isinstance(n, int)
     assert n >= 0  # some successes, no exception propagated
+
+
+# ── Wave 3 Task 1: Prefect task wrappers ─────────────────────────────────────
+
+def test_task_scrape_pi_parallel_exists():
+    from src.pipelines.tasks import task_scrape_pi_parallel
+    assert callable(task_scrape_pi_parallel.fn)
+
+
+def test_task_scrape_toctoc_parallel_exists():
+    from src.pipelines.tasks import task_scrape_toctoc_parallel
+    assert callable(task_scrape_toctoc_parallel.fn)
+
+
+def test_task_scrape_di_next_commune_exists():
+    from src.pipelines.tasks import task_scrape_di_next_commune
+    assert callable(task_scrape_di_next_commune.fn)
+
+
+def test_task_normalize_county_exists():
+    from src.pipelines.tasks import task_normalize_county
+    assert callable(task_normalize_county.fn)
+
+
+def test_task_score_scraped_exists():
+    from src.pipelines.tasks import task_score_scraped
+    assert callable(task_score_scraped.fn)
+
+
+def test_task_pi_parallel_calls_run_parallel(monkeypatch):
+    import logging
+    from src.pipelines import tasks as t
+    import src.scraping.portal_inmobiliario as pi_mod
+    sentinel = object()
+    captured = {}
+    monkeypatch.setattr(t, "_build_scraper_engine", lambda: sentinel)
+    monkeypatch.setattr("src.pipelines.tasks.get_run_logger", lambda: logging.getLogger("test"))
+
+    def fake_rp(engine=None, batch_size=6, max_pages=1):
+        captured["engine"] = engine
+        captured["batch_size"] = batch_size
+        captured["max_pages"] = max_pages
+        return 99
+
+    # Rebind the attribute on the module object — the task re-imports the
+    # module via `import src.scraping.portal_inmobiliario as pi_mod` so it
+    # sees the patched attribute at call time.
+    monkeypatch.setattr(pi_mod, "run_parallel", fake_rp)
+    n = t.task_scrape_pi_parallel.fn(batch_size=3, max_pages=1)
+    assert n == 99
+    assert captured["engine"] is sentinel
+    assert captured["batch_size"] == 3
+    assert captured["max_pages"] == 1
+
+
+def test_task_di_uses_saved_cookies_no_manual_login(monkeypatch):
+    import logging
+    from src.pipelines import tasks as t
+    import src.scraping.datainmobiliaria as di_mod
+    captured = {}
+    monkeypatch.setattr(t, "_build_scraper_engine", lambda: object())
+    monkeypatch.setattr("src.pipelines.tasks.get_run_logger", lambda: logging.getLogger("test"))
+    monkeypatch.setattr(di_mod, "_next_unscraped_commune", lambda: "Las Condes")
+    monkeypatch.setattr(di_mod, "_load_checkpoint", lambda: {})
+
+    async def fake_scrape_all(engine, communes, **kw):
+        captured.update(kw)
+        captured["communes"] = communes
+        return 42
+
+    monkeypatch.setattr(di_mod, "scrape_all", fake_scrape_all)
+    result = t.task_scrape_di_next_commune.fn(min_year=2019, max_pages=10)
+    assert captured.get("manual_login") is False
+    assert captured.get("use_checkpoint") is True
+    assert captured.get("communes") == ["Las Condes"]
+    assert result["commune"] == "Las Condes"
+    assert result["rows_written"] == 42

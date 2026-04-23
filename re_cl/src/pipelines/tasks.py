@@ -289,6 +289,133 @@ def task_backtesting() -> dict:
     return result
 
 
+# ── Phase 9: Parallel scraping tasks ──────────────────────────────────────────
+
+@task(name="scrape-pi-parallel", retries=2, retry_delay_seconds=60)
+def task_scrape_pi_parallel(batch_size: int = 6, max_pages: int = 1) -> int:
+    """Run Portal Inmobiliario parallel scrape (40 communes × 4 types in batches)."""
+    logger = get_run_logger()
+    # Import the MODULE (not the symbol) so monkeypatch.setattr on
+    # src.scraping.portal_inmobiliario.run_parallel is observed by this task.
+    import src.scraping.portal_inmobiliario as pi_mod
+    from dotenv import load_dotenv
+    load_dotenv()
+    engine = _build_scraper_engine()
+    logger.info(f"[PI-parallel] batch_size={batch_size}, max_pages={max_pages}")
+    n = pi_mod.run_parallel(engine=engine, batch_size=batch_size, max_pages=max_pages)
+    logger.info(f"[PI-parallel] Wrote {n:,} listings")
+    return n
+
+
+@task(name="scrape-toctoc-parallel", retries=2, retry_delay_seconds=60)
+def task_scrape_toctoc_parallel(max_pages: int = 50) -> int:
+    """Run Toctoc parallel scrape (4 property types concurrently)."""
+    logger = get_run_logger()
+    # Module-level import — same reason as PI task (monkeypatch compatibility).
+    import src.scraping.toctoc as tt_mod
+    from dotenv import load_dotenv
+    load_dotenv()
+    engine = _build_scraper_engine()
+    logger.info(f"[Toctoc-parallel] max_pages={max_pages}")
+    n = tt_mod.run_parallel(engine=engine, max_pages=max_pages)
+    logger.info(f"[Toctoc-parallel] Wrote {n:,} listings")
+    return n
+
+
+@task(name="scrape-di-next-commune", retries=1, retry_delay_seconds=120)
+def task_scrape_di_next_commune(
+    min_year: int = 2019,
+    max_pages: int = 100,
+    dry_run: bool = False,
+) -> dict:
+    """Scrape next unscraped RM commune from datainmobiliaria.cl using saved cookies.
+
+    Uses data/processed/datainmobiliaria_cookies.json (must be created once
+    manually via: py src/scraping/datainmobiliaria.py --manual-login).
+    Guest quota: ~15k records/IP/day → schedule daily.
+    """
+    logger = get_run_logger()
+    import asyncio as _asyncio
+    import src.scraping.datainmobiliaria as di_mod
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    next_c = di_mod._next_unscraped_commune()
+    if next_c is None:
+        cp = di_mod._load_checkpoint()
+        total_rows = sum(v.get("rows", 0) for v in cp.values())
+        logger.info(f"[DI] All {len(di_mod.RM_COMMUNE_POLYGONS)} communes done ({total_rows} rows total).")
+        return {"status": "complete", "communes_done": len(cp), "total_rows": total_rows}
+
+    engine = _build_scraper_engine()
+    cp = di_mod._load_checkpoint()
+    logger.info(f"[DI] Scraping {next_c} ({len(cp)}/{len(di_mod.RM_COMMUNE_POLYGONS)} done)")
+
+    try:
+        rows_written = _asyncio.run(di_mod.scrape_all(
+            engine,
+            communes=[next_c],
+            fuente="ventas",
+            dry_run=dry_run,
+            max_pages=max_pages,
+            min_year=min_year,
+            headless=True,
+            use_checkpoint=True,
+            check_quota_only=False,
+            manual_login=False,   # rely on saved cookies; never block for interactive login
+        ))
+    except Exception as e:
+        logger.warning(f"[DI] {next_c} failed: {e}")
+        return {"commune": next_c, "rows_written": 0, "error": str(e)}
+
+    cp_after = di_mod._load_checkpoint()
+    return {
+        "commune": next_c,
+        "rows_written": rows_written,
+        "communes_done": len(cp_after),
+        "communes_total": len(di_mod.RM_COMMUNE_POLYGONS),
+    }
+
+
+@task(name="normalize-county", retries=1, retry_delay_seconds=30)
+def task_normalize_county(dry_run: bool = False, min_score: int = 85):
+    """Fuzzy-normalize county_name in scraped_listings to canonical RM communes."""
+    logger = get_run_logger()
+    import inspect
+    import src.ingestion.normalize_county as nc_mod
+    from dotenv import load_dotenv
+    load_dotenv()
+    engine = _build_scraper_engine()
+    logger.info(f"[normalize_county] dry_run={dry_run} min_score={min_score}")
+    sig = inspect.signature(nc_mod.normalize_county)
+    kwargs = {}
+    if "dry_run" in sig.parameters:
+        kwargs["dry_run"] = dry_run
+    if "min_score" in sig.parameters:
+        kwargs["min_score"] = min_score
+    result = nc_mod.normalize_county(engine, **kwargs)
+    logger.info(f"[normalize_county] result: {result}")
+    return result
+
+
+@task(name="score-scraped-listings", retries=1, retry_delay_seconds=30)
+def task_score_scraped(dry_run: bool = False):
+    """Score scraped_listings via the hedonic model → model_scores."""
+    logger = get_run_logger()
+    import inspect
+    import src.scoring.scraped_to_scored as sts_mod
+    from dotenv import load_dotenv
+    load_dotenv()
+    logger.info(f"[score_scraped] dry_run={dry_run}")
+    sig = inspect.signature(sts_mod.main)
+    kwargs = {}
+    if "dry_run" in sig.parameters:
+        kwargs["dry_run"] = dry_run
+    result = sts_mod.main(**kwargs)
+    logger.info(f"[score_scraped] result: {result}")
+    return result
+
+
 # ── Alerts ────────────────────────────────────────────────────────────────────
 
 @task(name="run-alerts", retries=1)
