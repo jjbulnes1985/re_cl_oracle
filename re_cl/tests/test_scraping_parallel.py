@@ -309,3 +309,123 @@ def test_task_di_uses_saved_cookies_no_manual_login(monkeypatch):
     assert captured.get("communes") == ["Las Condes"]
     assert result["commune"] == "Las Condes"
     assert result["rows_written"] == 42
+
+
+# ── Wave 3 Task 2: parallel_scrape_flow + CLI script ─────────────────────────
+
+def test_parallel_scrape_flow_exists():
+    from src.pipelines.flows import parallel_scrape_flow
+    assert callable(parallel_scrape_flow)
+
+
+def test_parallel_scrape_flow_uses_threadpoolexecutor():
+    """Guard against regression to sequential PI → Toctoc calls."""
+    import inspect
+    from src.pipelines.flows import parallel_scrape_flow
+    src = inspect.getsource(parallel_scrape_flow)
+    assert "ThreadPoolExecutor" in src, (
+        "parallel_scrape_flow must use concurrent.futures.ThreadPoolExecutor "
+        "to run PI and Toctoc concurrently (two threads, two event loops)."
+    )
+
+
+def test_parallel_scrape_flow_submits_pi_and_toctoc_concurrently(monkeypatch):
+    """PI + Toctoc should be submitted to a ThreadPoolExecutor (2 submit calls)."""
+    from src.pipelines import flows as f
+    submissions = []
+
+    class _FakeFuture:
+        def __init__(self, value):
+            self._v = value
+
+        def result(self):
+            return self._v
+
+    class _FakeExecutor:
+        def __init__(self, max_workers=None):
+            self.max_workers = max_workers
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def submit(self, fn, *args, **kwargs):
+            name = getattr(fn, "name", getattr(fn, "__name__", repr(fn)))
+            submissions.append(name)
+            # Return deterministic int results
+            if "pi" in name.lower():
+                return _FakeFuture(100)
+            if "toctoc" in name.lower():
+                return _FakeFuture(50)
+            return _FakeFuture(0)
+
+    monkeypatch.setattr(f.concurrent.futures, "ThreadPoolExecutor", _FakeExecutor)
+    monkeypatch.setattr(f, "task_scrape_di_next_commune", lambda **kw: {"rows_written": 10})
+    monkeypatch.setattr(f, "task_normalize_county", lambda **kw: {"ok": True})
+    monkeypatch.setattr(f, "task_score_scraped", lambda **kw: 5)
+
+    result = f.parallel_scrape_flow(dry_run=True)
+    # Exactly 2 submissions to the executor: PI + Toctoc
+    assert len(submissions) == 2, f"Expected 2 executor.submit() calls, got {len(submissions)}"
+    joined = " ".join(submissions).lower()
+    assert "pi" in joined and "toctoc" in joined
+    assert result["n_pi"] == 100
+    assert result["n_toctoc"] == 50
+
+
+def test_parallel_scrape_flow_skip_di_flag(monkeypatch):
+    from src.pipelines import flows as f
+    submissions = []
+
+    class _FakeFuture:
+        def __init__(self, value):
+            self._v = value
+
+        def result(self):
+            return self._v
+
+    class _FakeExecutor:
+        def __init__(self, max_workers=None):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def submit(self, fn, *args, **kwargs):
+            submissions.append(getattr(fn, "name", getattr(fn, "__name__", "?")))
+            return _FakeFuture(0)
+
+    di_called = {"n": 0}
+
+    def fake_di(**kw):
+        di_called["n"] += 1
+        return {}
+
+    monkeypatch.setattr(f.concurrent.futures, "ThreadPoolExecutor", _FakeExecutor)
+    monkeypatch.setattr(f, "task_scrape_di_next_commune", fake_di)
+    monkeypatch.setattr(f, "task_normalize_county", lambda **kw: {})
+    monkeypatch.setattr(f, "task_score_scraped", lambda **kw: 0)
+
+    f.parallel_scrape_flow(skip_di=True, dry_run=True)
+    assert di_called["n"] == 0, "DI must not be called when skip_di=True"
+    assert len(submissions) == 2  # PI + Toctoc still submitted
+
+
+def test_run_parallel_scrape_script_importable():
+    """Load scripts/run_parallel_scrape.py by file path (W6 fix)."""
+    import importlib.util
+    from pathlib import Path
+    script_path = (
+        Path(__file__).resolve().parents[1] / "scripts" / "run_parallel_scrape.py"
+    )
+    assert script_path.exists(), f"Script not found: {script_path}"
+    spec = importlib.util.spec_from_file_location("run_parallel_scrape", script_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    assert hasattr(mod, "main")
+    assert callable(mod.main)

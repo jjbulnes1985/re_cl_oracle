@@ -21,6 +21,7 @@ Usage (local):
 """
 
 import argparse
+import concurrent.futures
 import os
 import sys
 from datetime import timedelta
@@ -48,6 +49,11 @@ from src.pipelines.tasks import (
     task_scrape_toctoc,
     task_run_alerts,
     task_webhook_notify,
+    task_scrape_pi_parallel,
+    task_scrape_toctoc_parallel,
+    task_scrape_di_next_commune,
+    task_normalize_county,
+    task_score_scraped,
 )
 
 MODEL_VERSION = os.getenv("MODEL_VERSION", "v1.0")
@@ -363,22 +369,106 @@ def datainmobiliaria_daily_flow(
     return result
 
 
+# ── Phase 9: Parallel scrape flow ─────────────────────────────────────────────
+
+@flow(
+    name="RE_CL Parallel Scrape",
+    description=(
+        "Phase 9: Parallel scraping across 3 sources. "
+        "PI (40 communes × 4 types in batches) + Toctoc (4 types concurrent) run "
+        "CONCURRENTLY via ThreadPoolExecutor. Then DI (next unscraped commune, "
+        "saved cookies) → normalize_county → score. Each PI/Toctoc thread owns "
+        "its own asyncio event loop (required since asyncio.run can't be nested)."
+    ),
+)
+def parallel_scrape_flow(
+    pi_batch_size: int = 6,
+    pi_max_pages: int = 1,
+    toctoc_max_pages: int = 50,
+    di_min_year: int = 2019,
+    di_max_pages: int = 100,
+    skip_di: bool = False,
+    dry_run: bool = False,
+) -> dict:
+    """Full parallel scrape pipeline.
+
+    Execution order:
+      1. PI + Toctoc CONCURRENTLY (ThreadPoolExecutor, max_workers=2).
+         Each worker thread invokes the Prefect task which internally runs
+         asyncio.run(run_parallel(...)). Two separate threads = two separate
+         event loops = safe concurrent Playwright Chromium instances.
+      2. DI sequential (quota-sensitive: ~15k records/IP/day guest limit).
+      3. normalize_county + score_scraped (DB-only post-processing).
+    """
+    logger = get_run_logger()
+    logger.info(
+        f"=== Parallel Scrape START (pi_batch={pi_batch_size}, "
+        f"toctoc_pages={toctoc_max_pages}, skip_di={skip_di}, dry_run={dry_run}) ==="
+    )
+
+    results = {}
+
+    # Stage 1: PI + Toctoc concurrent via two-thread pool.
+    # Why: asyncio.gather() can't host two independent asyncio.run() calls in
+    # the same thread — each Playwright scraper already uses asyncio.run()
+    # internally (see portal_inmobiliario.run_parallel / toctoc.run_parallel).
+    # ThreadPoolExecutor gives each scraper its own thread + event loop.
+    logger.info("[Stage 1] Submitting PI + Toctoc to ThreadPoolExecutor(max_workers=2)")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        pi_future = executor.submit(
+            task_scrape_pi_parallel,
+            batch_size=pi_batch_size,
+            max_pages=pi_max_pages,
+        )
+        tt_future = executor.submit(
+            task_scrape_toctoc_parallel,
+            max_pages=toctoc_max_pages,
+        )
+        # Block until both complete. .result() propagates exceptions.
+        results["n_pi"] = pi_future.result()
+        results["n_toctoc"] = tt_future.result()
+    logger.info(
+        f"[Stage 1] Done — PI={results['n_pi']}, Toctoc={results['n_toctoc']}"
+    )
+
+    # Stage 2: DI sequential (guest quota — do not parallelize with PI/Toctoc,
+    # same IP would look bot-like to DI anti-fraud, and quota accounting is
+    # per-IP per-day).
+    if skip_di:
+        logger.info("[Stage 2] Skipping DataInmobiliaria (skip_di=True)")
+        results["di"] = {"skipped": True}
+    else:
+        results["di"] = task_scrape_di_next_commune(
+            min_year=di_min_year, max_pages=di_max_pages, dry_run=dry_run,
+        )
+
+    # Stage 3: Post-processing (DB-only, fast).
+    results["normalize"] = task_normalize_county(dry_run=dry_run)
+    results["score"] = task_score_scraped(dry_run=dry_run)
+
+    logger.info(f"=== Parallel Scrape DONE: {results} ===")
+    return results
+
+
 # ── CLI entrypoint ────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RE_CL Pipeline Runner")
     parser.add_argument(
         "--flow",
-        choices=["full", "scoring_only", "maps_only", "scraping", "daily", "backtest", "gtfs_refresh", "datainmobiliaria"],
+        choices=["full", "scoring_only", "maps_only", "scraping", "daily", "backtest", "gtfs_refresh", "datainmobiliaria", "parallel"],
         default="full",
     )
-    parser.add_argument("--csv-path",   type=str,  default=None)
-    parser.add_argument("--dry-run",    action="store_true")
-    parser.add_argument("--no-retrain", action="store_true")
-    parser.add_argument("--skip-osm",   action="store_true", help="Skip OSM enrichment (use when offline)")
-    parser.add_argument("--skip-gtfs",  action="store_true", help="Skip GTFS bus-stop enrichment (V6)")
-    parser.add_argument("--max-pages",  type=int,  default=50)
-    parser.add_argument("--sources",    nargs="+", default=["portal", "toctoc"])
+    parser.add_argument("--csv-path",        type=str,  default=None)
+    parser.add_argument("--dry-run",         action="store_true")
+    parser.add_argument("--no-retrain",      action="store_true")
+    parser.add_argument("--skip-osm",        action="store_true", help="Skip OSM enrichment (use when offline)")
+    parser.add_argument("--skip-gtfs",       action="store_true", help="Skip GTFS bus-stop enrichment (V6)")
+    parser.add_argument("--max-pages",       type=int,  default=50)
+    parser.add_argument("--sources",         nargs="+", default=["portal", "toctoc"])
+    parser.add_argument("--skip-di",         action="store_true", help="Skip DataInmobiliaria in parallel flow")
+    parser.add_argument("--batch-size",      type=int,  default=6,  help="PI parallel batch size (Phase 9)")
+    parser.add_argument("--max-pages-toctoc", type=int, default=50, help="Toctoc pages per type (Phase 9)")
     args = parser.parse_args()
 
     if args.flow == "full":
@@ -411,3 +501,10 @@ if __name__ == "__main__":
         gtfs_refresh_flow()
     elif args.flow == "datainmobiliaria":
         datainmobiliaria_daily_flow(dry_run=args.dry_run)
+    elif args.flow == "parallel":
+        parallel_scrape_flow(
+            pi_batch_size=args.batch_size,
+            toctoc_max_pages=args.max_pages_toctoc,
+            skip_di=args.skip_di,
+            dry_run=args.dry_run,
+        )
