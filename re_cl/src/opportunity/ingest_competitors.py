@@ -34,7 +34,11 @@ load_dotenv()
 # RM Santiago bounding box: south, west, north, east
 RM_BBOX = "-33.75,-71.05,-33.25,-70.35"
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+OVERPASS_URLS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+]
 
 USE_CASE_QUERIES = {
     "gas_station": f"""
@@ -136,20 +140,22 @@ def _extract_point(element: dict) -> tuple[float, float] | None:
 
 
 def fetch_overpass(use_case: str) -> list[dict]:
-    query = USE_CASE_QUERIES[use_case]
+    query = USE_CASE_QUERIES[use_case].strip()
     logger.info(f"  Querying Overpass for {use_case} in RM ...")
-    for attempt in range(3):
-        try:
-            resp = requests.post(OVERPASS_URL, data={"data": query}, timeout=90)
-            if resp.status_code == 200:
-                elements = resp.json().get("elements", [])
-                logger.info(f"  {use_case}: {len(elements)} OSM elements found")
-                return elements
-            logger.warning(f"  Overpass attempt {attempt+1} returned {resp.status_code}")
-        except Exception as e:
-            logger.warning(f"  Overpass attempt {attempt+1} failed: {e}")
-        time.sleep(5)
-    logger.error(f"  Failed to fetch {use_case} from Overpass after 3 attempts")
+    headers = {"Accept": "*/*", "Content-Type": "application/x-www-form-urlencoded"}
+    for url in OVERPASS_URLS:
+        for attempt in range(2):
+            try:
+                resp = requests.post(url, data={"data": query}, headers=headers, timeout=120)
+                if resp.status_code == 200:
+                    elements = resp.json().get("elements", [])
+                    logger.info(f"  {use_case}: {len(elements)} OSM elements found (via {url.split('/')[2]})")
+                    return elements
+                logger.warning(f"  {url.split('/')[2]} attempt {attempt+1} returned {resp.status_code}")
+            except Exception as e:
+                logger.warning(f"  {url.split('/')[2]} attempt {attempt+1} failed: {e}")
+            time.sleep(3)
+    logger.error(f"  Failed to fetch {use_case} from all Overpass endpoints")
     return []
 
 
