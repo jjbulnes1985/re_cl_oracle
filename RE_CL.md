@@ -530,9 +530,9 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 - `property_types` — 13 tipos (residencial/comercial/industrial/terreno + 6 usos como overlay)
 - `investor_profiles` — 6 perfiles (value/growth/income/redevelopment/flipper/operator)
 - `candidates` — 829k propiedades candidatas de 2 fuentes (CBR + scraped)
-- `valuations` — multi-método (comparables + cap_inverse + triangulated)
-- `scores` — scoring universal + overlays de uso específico
-- `competitors` — 2,242 competidores OSM (gas stations, farmacias, supermercados)
+- `valuations` — multi-método (comparables + hedonic_xgb + triangulated). 774,602 predicciones XGBoost, 779,208 trianguladas con 2 métodos.
+- `scores` — scoring universal + 7 overlays comerciales
+- `competitors` — 8,043 competidores OSM (6 use cases)
 
 **Overlays comerciales implementados (2026-04-30):**
 
@@ -541,6 +541,9 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 | gas_station | 37,598 | 6,060 | 485 |
 | pharmacy | 242,941 | 25,060 | 1,212 |
 | supermarket | 15,480 | 3,264 | 545 |
+| bank_branch | 220,705 | 5,195 | 687 |
+| clinic | 100,762 | 6,887 | 508 |
+| restaurant | 220,705 | 12,467 | 4,606 |
 | as_is (universal) | 829,336 | 11,827 | — |
 
 **Accessibility real:** 116,752 puntos trunk/primary/secondary RM via Overpass, BallTree, mediana 206m, 538,960 scores actualizados.
@@ -551,17 +554,19 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 **Frontend:** tab "Oportunidades" (9no tab) — sidebar filtros + lista + CSV export + ficha detalle con disclaimer
 
 **Reportes HTML exportados:**
+- `data/exports/executive_summary_2026-04-30.html` — resumen ejecutivo todos los use cases
 - `data/exports/opportunity_gas_station_2026-04-30.html` (top 20 RM)
 - `data/exports/opportunity_gas_station_maipu_2026-04-30.html` (top 10 Maipú)
 - `data/exports/opportunity_pharmacy_2026-04-30.html` (top 20)
 - `data/exports/opportunity_supermarket_2026-04-30.html` (top 15)
+- `data/exports/opportunity_bank_branch_2026-04-30.html` (top 20)
+- `data/exports/opportunity_as_is_2026-04-30.html` (top 30)
 
 **DUDA:: pendientes (Fase 2):**
-- `DUDA::zonificacion_PRC_comunas` — GeoMinvu WMS disponible, integrar para reemplazar zoning=1.0
-- `DUDA::bank_branch_overpass` — Overpass 406/504; reintentar en otro momento
-- `DUDA::cap_rate_gas_station_Chile` — validar con Tinsa/GPS Property
-- `DUDA::cap_rate_gas_station_Chile` — validar con tasador Tinsa/GPS
-- `DUDA::NOI_gas_station_Chile` — validar con operador (Copec/Enex/Aramco)
+- `DUDA::zonificacion_PRC_comunas` — GeoMinvu WMS disponible (`geominvu.minvu.gob.cl/geoserver/wms`), integrar para reemplazar zoning=1.0
+- `DUDA::cap_rate_comercial_Chile` — validar con Tinsa/GPS Property o estudios CBRE/Colliers Chile
+- `DUDA::NOI_comercial_Chile` — validar con operadores locales (Copec/Cruz Verde/Tottus)
+- `DUDA::retrain_con_DI_2019_2026` — esperar ≥10 comunas DI (~4 días más al ritmo actual)
 
 **Commits:** 8 commits atómicos `feat(opportunity): hour N - ...`
 

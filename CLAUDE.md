@@ -235,6 +235,9 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **Opportunity Engine v2 — accessibility real** — 116,752 puntos de vías trunk/primary/secondary RM, BallTree distancia real, 538,960 scores actualizados | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — CSV export** — botón descarga en OpportunityPanel frontend | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — HTML reports** — 4 reportes: gas_station RM, gas_station Maipú, pharmacy, supermarket, as_is | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — 7 use cases completos** — bank_branch (220k, 5195 high) + clinic (100k, 6887 high) + restaurant (pending) + competitors OSM: 8,043 total (6 use cases) | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — Hedonic XGBoost valuations** — 774,602 predicciones XGBoost + 779,208 trianguladas (comparables + hedonic avg) | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — Executive summary report** — `executive_summary_2026-04-30.html` con top 5 por cada uno de los 5 use cases principales | **Completado 2026-04-30** |
 | Retrain modelo con datos DI 2019-2026 (esperar R² > 0.70) | Pendiente (cuando DI tenga suficientes comunas) |
 | Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
 | MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |
