@@ -243,7 +243,8 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **DI nightly automático funcionando** — 4 comunas adicionales (Vitacura, Pirque, Talagante, Buin partial, Melipilla) = 12,891 rows. Total: 10/40 comunas | **Completado 2026-05-01** |
 | **Reentrenamiento modelo con DI 2019-2026** — n_train: 443k → 520k, R²: 0.6787 → 0.6712 (slight drop esperado por mayor varianza post-pandemia), 820k hedonic predictions actualizadas | **Completado 2026-05-01** |
 | **IP rotation support** — proxy/VPN URL per account vía `DI_PROXY_1/2/3` env vars, test_proxy.py script de validación, PROXY_SETUP.md con 3 estrategias (VPN free, residential proxy USD 35-140, VMs cloud USD 15/mes) | **Completado 2026-05-01** |
-| Retrain modelo con datos DI 2019-2026 (esperar R² > 0.70) | Pendiente (cuando DI tenga suficientes comunas) |
+| **Pipeline post-retrain ejecutado** — 12,891 candidatos DI ingestados → 56 nuevos eriazo → 12,058 nuevas valuaciones comparables + trianguladas → re-score base completo (842,227 candidatos) con modelo nuevo. **21,026 oportunidades alta score** (vs 11,827 antes, +9k). Re-score commercial overlays + 8 reportes HTML regenerados | **Completado 2026-05-01** |
+| **Modelo definitivo v1.0 (2026-05-01)** — XGBoost hedónico con 17 features · n_train: 520,574 · n_test: 12,265 · R²=0.6712 · RMSE=11.43 UF/m² (41.1% mediana) · MAE=7.79 UF/m². Entrenado sobre datos CBR 2008-2026 (incluye DI 2019-2026 reciente) | **Completado 2026-05-01** |
 | Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
 | MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |
 

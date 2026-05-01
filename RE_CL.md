@@ -515,21 +515,30 @@ La plataforma RE_CL está completamente implementada y operativa. A continuació
 
 **Modelo reentrenado (2026-05-01):** R²=0.6712 (vs 0.6787 anterior, slight drop por DI 2019-2026 post-pandemia más volátil), n_train: 520,574 (+77k incluyendo DI), 820,913 hedonic predictions actualizadas en `opportunity.valuations`.
 
-### Estado pipeline (2026-04-30)
+**Pipeline post-retrain ejecutado (2026-05-01):**
+- 12,891 candidatos DI nuevos ingestados a `opportunity.candidates`
+- +56 nuevos terrenos eriazo detectados
+- +12,058 nuevas valuaciones comparables + trianguladas
+- Re-score base completo: 842,227 candidatos con modelo nuevo
+- **21,026 oportunidades alta score (≥0.7)** vs 11,827 antes — **+9k oportunidades adicionales** descubiertas tras incluir datos post-pandemia
+- Re-score commercial overlays (gas_station 3,900 high · pharmacy 13,051 · supermarket 3,186 · bank_branch 5,195 · clinic 6,887 · restaurant 12,467)
+- 8 reportes HTML regenerados con scores actualizados
+
+### Estado pipeline (2026-05-01 — final)
 
 | Tabla | Rows |
 |-------|------|
-| `transactions_raw` | 1,429,036 |
-| `transactions_clean` | 824,333 |
-| `transaction_features` | 774,602 |
+| `transactions_raw` | 1,442,000+ (DI 55,140) |
+| `transactions_clean` | 837,224 |
+| `transaction_features` | 787,234 |
 | `model_scores` | 2,079,680 (4 perfiles × 519,920) |
 | `v_opportunities` | 1,737,208 |
-| `opportunity.candidates` | 829,336 (824k CBR + 5k scraped, 15,845 eriazo) |
-| `opportunity.valuations` | 1,611,451 (806k comparables + 805k triangulated) |
-| `opportunity.scores` | 866,934 (829k as_is + 37k gas_station) |
-| `opportunity.competitors` | 2,242 (485 gas, 1,212 pharmacy, 545 supermarket) |
+| `opportunity.candidates` | **842,227** (829k CBR + 12,891 DI nuevos + 5k scraped, 15,901 eriazo) |
+| `opportunity.valuations` | **2,509,377** (845k comparables + 821k hedonic_xgb + 843k triangulated) |
+| `opportunity.scores` | **1,680,427** (842k as_is + 37k gas + 242k pharmacy + 15k super + 220k bank + 100k clinic + 220k restaurant) |
+| `opportunity.competitors` | **8,043** (485 gas + 1,212 pharmacy + 687 bank + 545 super + 508 clinic + 4,606 restaurant) |
 
-**Modelo:** XGBoost hedónico v1.0, R²=0.6850, RMSE=39.91%, entrenado sobre 519,920 rows.
+**Modelo final v1.0 (2026-05-01):** XGBoost hedónico, **R²=0.6712**, RMSE=11.43 UF/m² (41.1% mediana), MAE=7.79 UF/m², n_train: 520,574 (CBR 2008-2026 incluyendo DI 2019-2026).
 
 ### Opportunity Engine v2 (2026-04-30)
 
