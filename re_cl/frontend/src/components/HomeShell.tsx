@@ -28,7 +28,9 @@ import { HeatmapToggle } from './HeatmapToggle'
 import { SettingsDrawer } from './SettingsDrawer'
 import { fmtUF } from '../lib/format'
 
-const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
+// Use 127.0.0.1 instead of localhost to avoid IPv6 (::1) resolution issues
+// Docker only listens on IPv4. Browsers may resolve "localhost" to ::1 → "Failed to fetch"
+const API = (import.meta as any).env?.VITE_API_URL || 'http://127.0.0.1:8000'
 
 const INITIAL_VIEW = {
   longitude: -70.67,

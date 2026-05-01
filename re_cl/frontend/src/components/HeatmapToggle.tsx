@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Map as MapIcon, X } from 'lucide-react'
 import { clsx } from 'clsx'
 
-const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
+const API = (import.meta as any).env?.VITE_API_URL || 'http://127.0.0.1:8000'
 
 interface CommuneStat {
   county_name: string

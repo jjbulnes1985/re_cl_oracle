@@ -10,7 +10,7 @@ import { X, Heart, MapPin } from 'lucide-react'
 import type { Candidate } from './HomeShell'
 import { fmtUFFull, scoreColor, scoreStars, PROPERTY_TYPE_LABELS } from '../lib/format'
 
-const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
+const API = (import.meta as any).env?.VITE_API_URL || 'http://127.0.0.1:8000'
 const WATCHLIST_KEY = 're_cl_watchlist_v2'
 
 interface Props {
