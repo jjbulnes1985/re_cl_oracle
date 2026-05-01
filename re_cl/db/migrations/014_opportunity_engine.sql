@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS opportunity.candidates (
     avaluo_to_market_ratio  NUMERIC(5,4),
 
     -- Underutilization signals
-    construction_ratio      NUMERIC(5,4),
+    construction_ratio      FLOAT,  -- FLOAT: handles extreme ratios (tall buildings on small lots)
     is_eriazo               BOOLEAN      DEFAULT FALSE,
     is_below_zoning_density BOOLEAN      DEFAULT FALSE,
     zoning_max_far          NUMERIC(5,2),
