@@ -23,6 +23,9 @@ import { TopOpportunitiesRail } from './TopOpportunitiesRail'
 import { PropertyDrawer } from './PropertyDrawer'
 import { WatchlistDrawer } from './WatchlistDrawer'
 import { EmptyStateCoach } from './EmptyStateCoach'
+import { ComparatorOverlay } from './ComparatorOverlay'
+import { HeatmapToggle } from './HeatmapToggle'
+import { SettingsDrawer } from './SettingsDrawer'
 import { fmtUF } from '../lib/format'
 
 const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
@@ -93,6 +96,10 @@ export function HomeShell() {
   const [showOnboarding, setShowOnboarding] = useState(!onboarding)
   const [selected, setSelected]       = useState<Candidate | null>(null)
   const [watchlistOpen, setWatchlistOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [heatmapOpen, setHeatmapOpen] = useState(false)
+  const [compareA, setCompareA]       = useState<Candidate | null>(null)
+  const [compareB, setCompareB]       = useState<Candidate | null>(null)
   const [hoveredId, setHoveredId]     = useState<number | null>(null)
   const [viewState, setViewState]     = useState(INITIAL_VIEW)
   const [activeLayers, setActiveLayers] = useState<Set<string>>(new Set())
@@ -243,7 +250,19 @@ export function HomeShell() {
           >
             <Heart size={18} />
           </button>
-          <button className="text-gray-400 hover:text-white p-2" aria-label="Settings">
+          <button
+            onClick={() => setHeatmapOpen(o => !o)}
+            className={clsx('text-gray-400 hover:text-white p-2', heatmapOpen && 'text-blue-400')}
+            aria-label="Heatmap comunas"
+            title="Heatmap comunas"
+          >
+            <Layers size={18} />
+          </button>
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="text-gray-400 hover:text-white p-2"
+            aria-label="Settings"
+          >
             <Settings size={18} />
           </button>
         </div>
@@ -348,6 +367,32 @@ export function HomeShell() {
             setSelected(c)
             setWatchlistOpen(false)
           }}
+        />
+      )}
+
+      {/* Settings drawer */}
+      {settingsOpen && <SettingsDrawer onClose={() => setSettingsOpen(false)} />}
+
+      {/* Heatmap overlay */}
+      {heatmapOpen && (
+        <HeatmapToggle
+          active={heatmapOpen}
+          onClose={() => setHeatmapOpen(false)}
+          onSelectCommune={(commune) => {
+            const next = { ...onboarding, communes: [commune] }
+            saveOnboardingState(next)
+            setOnboarding(next)
+            setHeatmapOpen(false)
+          }}
+        />
+      )}
+
+      {/* Comparator overlay */}
+      {compareA && compareB && (
+        <ComparatorOverlay
+          a={compareA}
+          b={compareB}
+          onClose={() => { setCompareA(null); setCompareB(null) }}
         />
       )}
     </div>

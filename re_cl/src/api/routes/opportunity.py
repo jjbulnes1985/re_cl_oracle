@@ -219,6 +219,105 @@ def list_profiles(conn=Depends(_get_conn)):
     return [dict(r._mapping) for r in rows]
 
 
+@router.get("/candidates/{candidate_id}/narrative")
+def get_narrative(candidate_id: int, profile: str = "income",
+                  hold_years: int = 5, conn=Depends(_get_conn)):
+    """
+    A5 Narrative Agent — generates institutional-grade prose for a candidate.
+
+    Combines: gap_pct, comparables, projected return, NOI estimate, risks.
+    Returns a single Spanish paragraph + structured fields the UI can use.
+    """
+    row = conn.execute(text("""
+        SELECT c.id, c.county_name, c.property_type_code,
+               c.surface_land_m2, c.surface_building_m2, c.is_eriazo,
+               c.last_transaction_uf, c.last_transaction_date,
+               s.opportunity_score, s.use_specific_score, s.max_payable_uf, s.drivers,
+               v.estimated_uf, v.p25_uf, v.p75_uf, v.confidence AS val_conf
+        FROM opportunity.candidates c
+        LEFT JOIN opportunity.scores s
+            ON s.candidate_id = c.id AND s.use_case = 'as_is' AND s.investor_profile = :profile
+        LEFT JOIN opportunity.valuations v
+            ON v.candidate_id = c.id AND v.method = 'triangulated'
+        WHERE c.id = :id
+    """), {"id": candidate_id, "profile": profile if profile != 'operator' else 'value'}).fetchone()
+
+    if not row:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Candidate not found")
+
+    d = dict(row._mapping)
+    drivers = d.get("drivers") or {}
+    gap_pct = drivers.get("gap_pct") if isinstance(drivers, dict) else None
+
+    # Industry-standard yields (Geltner-grade, INFO_NO_FIDEDIGNA)
+    YIELD_BY_PROFILE = {"income": 0.065, "growth": 0.045, "value": 0.055, "redevelopment": 0.04}
+    yield_rate = YIELD_BY_PROFILE.get(profile, 0.055)
+
+    GROWTH_RM = 0.05  # 5% anual histórico
+    is_land = d.get("property_type_code") == "land"
+    estimated = float(d.get("estimated_uf") or 0)
+
+    # Calculations
+    monthly_rent_uf = (estimated * yield_rate) / 12 if not is_land else None
+    monthly_rent_clp = monthly_rent_uf * 37000 if monthly_rent_uf else None  # UF→CLP fallback
+    projected_5y = estimated * ((1 + GROWTH_RM) ** hold_years) if estimated else None
+    appreciation_pct = ((projected_5y / estimated) - 1) * 100 if projected_5y else None
+
+    # Build narrative parts
+    parts = []
+    if gap_pct is not None:
+        g = float(gap_pct)
+        if g < -3:
+            parts.append(f"Esta propiedad está {abs(g):.0f}% bajo el precio promedio de su comuna.")
+        elif g > 3:
+            parts.append(f"Esta propiedad está {g:.0f}% sobre el precio promedio de su comuna.")
+
+    if monthly_rent_uf:
+        parts.append(
+            f"Si la arriendas, generaría aproximadamente {monthly_rent_uf:.0f} UF/mes "
+            f"(~${int(monthly_rent_clp/1000):,}k CLP), un rendimiento de {yield_rate*100:.1f}% anual."
+        )
+
+    if appreciation_pct:
+        parts.append(
+            f"Con la tendencia histórica de la RM (5% anual), su valor proyectado en {hold_years} años "
+            f"sería ~{int(projected_5y):,} UF (+{appreciation_pct:.0f}% de plusvalía)."
+        )
+
+    if d.get("is_eriazo"):
+        parts.append("Es un terreno subutilizado con alto potencial de redesarrollo.")
+
+    if d.get("val_conf") and float(d["val_conf"]) < 0.5:
+        parts.append("La confianza de la valoración es baja por escasez de comparables — validar con tasador.")
+
+    narrative = " ".join(parts) or "Esta propiedad cumple con los criterios mínimos de oportunidad."
+
+    return {
+        "candidate_id": candidate_id,
+        "narrative": narrative,
+        "structured": {
+            "gap_pct": gap_pct,
+            "monthly_rent_uf": round(monthly_rent_uf, 1) if monthly_rent_uf else None,
+            "monthly_rent_clp": round(monthly_rent_clp) if monthly_rent_clp else None,
+            "yield_pct": round(yield_rate * 100, 2) if not is_land else None,
+            "projected_value_uf": round(projected_5y) if projected_5y else None,
+            "appreciation_pct": round(appreciation_pct, 1) if appreciation_pct else None,
+            "hold_years": hold_years,
+            "is_land": is_land,
+            "is_eriazo": d.get("is_eriazo"),
+            "valuation_confidence": float(d["val_conf"]) if d.get("val_conf") else None,
+        },
+        "disclaimer": (
+            "INFO_NO_FIDEDIGNA::pendiente_validacion. "
+            f"Yields proxy industria (Geltner-grade): {yield_rate*100:.1f}%. "
+            f"Growth proxy histórico RM: {GROWTH_RM*100:.0f}%/año. "
+            "Validar con tasador profesional y asesor inmobiliario."
+        ),
+        "agent_version": "A5_narrative_v1.0"
+    }
+
+
 @router.get("/summary")
 def get_summary(conn=Depends(_get_conn)):
     """Summary statistics for the Opportunity Engine."""

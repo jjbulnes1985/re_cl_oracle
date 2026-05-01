@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-05-01T22:30:46.993011Z",
+  "score_distribution": {
+    "total": 842227,
+    "excellent": 3688,
+    "very_good": 17338,
+    "good": 203489,
+    "regular": 70063,
+    "low": 547649,
+    "avg": 0.37770298814927566,
+    "std": 0.1610863622604535
+  },
+  "commune_activity_30d": {
+    "communes": 0,
+    "rows_30d": 0
+  },
+  "di_progress": {
+    "done_communes": 10,
+    "rows_total": 55140
+  },
+  "valuation_confidence": {
+    "avg_confidence": 0.6567098282507229,
+    "pct_low_conf": 0.04141923444896662
+  },
+  "top_communes": [
+    {
+      "county_name": "Santiago",
+      "n": 108888,
+      "avg_score": 0.3601409797222834
+    },
+    {
+      "county_name": "Las Condes",
+      "n": 69130,
+      "avg_score": 0.35309799074208015
+    },
+    {
+      "county_name": "Ñuñoa",
+      "n": 66359,
+      "avg_score": 0.4256458581352944
+    },
+    {
+      "county_name": "La Florida",
+      "n": 49889,
+      "avg_score": 0.38118464190502915
+    },
+    {
+      "county_name": "Puente Alto",
+      "n": 44915,
+      "avg_score": 0.31964121117666705
+    },
+    {
+      "county_name": "Providencia",
+      "n": 44731,
+      "avg_score": 0.354329004493528
+    },
+    {
+      "county_name": "Maipu",
+      "n": 27203,
+      "avg_score": 0.2654575892364813
+    },
+    {
+      "county_name": "San Miguel",
+      "n": 25915,
+      "avg_score": 0.37112893305035694
+    },
+    {
+      "county_name": "Maipú",
+      "n": 24502,
+      "avg_score": 0.5365308668680108
+    },
+    {
+      "county_name": "Colina",
+      "n": 24091,
+      "avg_score": 0.41316643974928396
+    }
+  ],
+  "model": {
+    "version": "v1.0",
+    "trained_at": "2026-04-30 22:34:45.833489+00:00",
+    "metrics": {
+      "r2": 0.685,
+      "note": "XGBoost hedonic, trained on 519920 transactions",
+      "rmse_pct": 39.91
+    }
+  }
+}
