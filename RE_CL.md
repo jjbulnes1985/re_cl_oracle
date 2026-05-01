@@ -569,7 +569,23 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 **Top oportunidad Maipú gas_station:** score 0.82, max_payable 262,500 UF
 
 **API:** 6 endpoints `/opportunity/*` (candidates, competitors, use-cases, profiles, summary, detail)
-**Frontend (UX Phase 3 — 2026-04-30):**
+
+**Frontend (UX Phase 5 — 2026-05-01, vigente):**
+- **HomeShell único** — eliminados los 9 tabs. Header + mapa fullscreen + rail lateral + drawer
+- **Onboarding 3-pantallas** (objetivo / presupuesto / zonas) — mapping objetivo→use_case+profile oculto al usuario
+- **PropertyDrawer narrativo** — frase humana ("14% bajo el precio promedio + 7,2% rendimiento"), 3 tarjetas (Si arriendas / Si vendes / Tendencia comuna), riesgos antes del upside
+- **QuickReturnSimulator Geltner-grade DCF** — sliders (hold period / pie % / tasa hipoteca) → IRR anualizado + ROI total + payback con desglose
+- **WatchlistDrawer** — persistencia localStorage, sync con `/searches`
+- **EmptyStateCoach** — sugerencias inteligentes cuando 0 resultados (subir presupuesto / quitar comunas / cambiar objetivo)
+- Bundle 1068KB → 898KB (-16%)
+
+**Master Plan integrador (`prompts/master_plan_geltner.md`):**
+- Metodología Geltner (Income / Sales / Cost approaches)
+- Best practices industria CL (Colliers, CBRE, JLL, Tinsa, GPS Property)
+- Arquitectura multi-agente 6 agentes (A1 Valuation, A2 Demand, A3 Risk, A4 Score Fusion, A5 Narrative, A6 Monitoring, A7 Comparables)
+- Criterios parametrizables RM Chile fase 1 → resto del país fase 2
+
+**Frontend (UX Phase 3 — 2026-04-30, retirado en cutover v5):**
 - Mapa Deck.gl fullscreen con ScatterplotLayer + TextLayer (precios visibles directamente sobre cada pin)
 - Búsqueda con NLP simple: `"casa Maipú score alto"` o `"terreno menos de 5000 UF"`
 - Modo dual: 🏠 **Inversión** (compra/reventa) ↔ 🏪 **Operador** (operar negocio comercial)
