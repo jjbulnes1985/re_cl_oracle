@@ -24,6 +24,7 @@ from src.api.routes import properties, scores, profiles
 from src.api.routes.alerts import router as alerts_router
 from src.api.routes.analytics import router as analytics_router
 from src.api.routes.auth import router as auth_router
+from src.api.routes.opportunity import router as opportunity_router
 from src.api.routes.predict import router as predict_router
 from src.api.routes.saved_searches import router as searches_router
 from src.api.middleware.stale_data import stale_data_middleware
@@ -139,6 +140,7 @@ app.include_router(analytics_router)
 app.include_router(auth_router)
 app.include_router(searches_router)
 app.include_router(predict_router)
+app.include_router(opportunity_router, prefix="/opportunity", tags=["opportunity"])
 
 
 @app.get("/health", tags=["meta"])
