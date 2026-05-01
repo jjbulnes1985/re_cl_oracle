@@ -63,9 +63,11 @@ def main():
     use_cases = [
         ("gas_station",  "Estaciones de Servicio", "operator"),
         ("pharmacy",     "Farmacias",              "operator"),
-        ("supermarket",  "Supermercados",           "operator"),
-        ("bank_branch",  "Sucursales Bancarias",    "operator"),
-        ("as_is",        "Oportunidades Generales", "value"),
+        ("supermarket",  "Supermercados",          "operator"),
+        ("bank_branch",  "Sucursales Bancarias",   "operator"),
+        ("clinic",       "Clinicas / Centros Medicos", "operator"),
+        ("restaurant",   "Restaurantes",           "operator"),
+        ("as_is",        "Oportunidades Generales (inversion)", "value"),
     ]
 
     sections = ""
