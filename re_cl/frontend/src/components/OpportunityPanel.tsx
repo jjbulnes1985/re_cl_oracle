@@ -40,10 +40,11 @@ interface Candidate {
 }
 
 const USE_CASES = [
-  { value: 'as_is',       label: 'Cualquier propiedad' },
-  { value: 'gas_station', label: 'Estación de servicio' },
-  { value: 'pharmacy',    label: 'Farmacia' },
-  { value: 'supermarket', label: 'Supermercado' },
+  { value: 'as_is',        label: 'Cualquier propiedad' },
+  { value: 'gas_station',  label: 'Estación de servicio' },
+  { value: 'pharmacy',     label: 'Farmacia' },
+  { value: 'supermarket',  label: 'Supermercado' },
+  { value: 'bank_branch',  label: 'Sucursal bancaria' },
 ]
 
 const COMMUNES = [
