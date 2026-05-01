@@ -534,19 +534,32 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 - `scores` — scoring universal + overlays de uso específico
 - `competitors` — 2,242 competidores OSM (gas stations, farmacias, supermercados)
 
-**Gas station overlay (primer uso implementado):**
-- 37,598 candidatos scored con: accessibility, demand, competition (radio 2km calibrado)
-- `max_payable_uf` via cap inverso (8% mid, INFO_NO_FIDEDIGNA, banda ±150 bps)
-- Cross-validation Las Condes: **VALID** (251/2508 en top decile, score ≥ 0.70)
-- Top oportunidad Maipú: score 0.82, max_payable 262,500 UF
+**Overlays comerciales implementados (2026-04-30):**
 
-**API:** 6 endpoints `/opportunity/*` (candidates, competitors, use-cases, profiles, summary)
-**Frontend:** tab "Oportunidades" (9no tab) con sidebar filtros + lista top 10 + ficha detalle
+| Use case | Candidatos | score ≥ 0.7 | Competidores OSM |
+|----------|-----------|-------------|-----------------|
+| gas_station | 37,598 | 6,060 | 485 |
+| pharmacy | 242,941 | 25,060 | 1,212 |
+| supermarket | 15,480 | 3,264 | 545 |
+| as_is (universal) | 829,336 | 11,827 | — |
+
+**Accessibility real:** 116,752 puntos trunk/primary/secondary RM via Overpass, BallTree, mediana 206m, 538,960 scores actualizados.
+**Cross-validation Las Condes:** VALID (251/2508 en top decile, score ≥ 0.70)
+**Top oportunidad Maipú gas_station:** score 0.82, max_payable 262,500 UF
+
+**API:** 6 endpoints `/opportunity/*` (candidates, competitors, use-cases, profiles, summary, detail)
+**Frontend:** tab "Oportunidades" (9no tab) — sidebar filtros + lista + CSV export + ficha detalle con disclaimer
+
+**Reportes HTML exportados:**
+- `data/exports/opportunity_gas_station_2026-04-30.html` (top 20 RM)
+- `data/exports/opportunity_gas_station_maipu_2026-04-30.html` (top 10 Maipú)
+- `data/exports/opportunity_pharmacy_2026-04-30.html` (top 20)
+- `data/exports/opportunity_supermarket_2026-04-30.html` (top 15)
 
 **DUDA:: pendientes (Fase 2):**
-- `DUDA::zonificacion_PRC_comunas` — usar plan regulador real en vez de default=1.0
-- `DUDA::road_accessibility_OSM` — distancia a vías estructurantes (requires osm2pgsql)
-- `DUDA::bank_branch_overpass` — falló en ingesta; reintentar
+- `DUDA::zonificacion_PRC_comunas` — GeoMinvu WMS disponible, integrar para reemplazar zoning=1.0
+- `DUDA::bank_branch_overpass` — Overpass 406/504; reintentar en otro momento
+- `DUDA::cap_rate_gas_station_Chile` — validar con Tinsa/GPS Property
 - `DUDA::cap_rate_gas_station_Chile` — validar con tasador Tinsa/GPS
 - `DUDA::NOI_gas_station_Chile` — validar con operador (Copec/Enex/Aramco)
 

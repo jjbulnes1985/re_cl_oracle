@@ -231,6 +231,10 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **Fix model_scores schema** — columnas location_score, growth_score, safety_score, liquidity_score, crime_index agregadas via ALTER TABLE | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — COMPLETO** — schema `opportunity.*` (8 tablas), 829k candidatos, 1.6M valuaciones, 37k gas_station scored, 2,242 competidores OSM, 6 endpoints API, tab frontend "Oportunidades" | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — gas_station cross-validation** — Las Condes VALID (251/2508 en top decile, mean score 0.571) | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — pharmacy + supermarket scoring** — 242,941 + 15,480 candidatos scored | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — accessibility real** — 116,752 puntos de vías trunk/primary/secondary RM, BallTree distancia real, 538,960 scores actualizados | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — CSV export** — botón descarga en OpportunityPanel frontend | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — HTML reports** — 4 reportes: gas_station RM, gas_station Maipú, pharmacy, supermarket, as_is | **Completado 2026-04-30** |
 | Retrain modelo con datos DI 2019-2026 (esperar R² > 0.70) | Pendiente (cuando DI tenga suficientes comunas) |
 | Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
 | MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |
