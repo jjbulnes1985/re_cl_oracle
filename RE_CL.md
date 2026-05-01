@@ -585,6 +585,22 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 - Arquitectura multi-agente 6 agentes (A1 Valuation, A2 Demand, A3 Risk, A4 Score Fusion, A5 Narrative, A6 Monitoring, A7 Comparables)
 - Criterios parametrizables RM Chile fase 1 → resto del país fase 2
 
+**Backend agentes implementados (2026-05-01):**
+- **A1 Valuation** — XGBoost + comparables zonales + cap inverso + triangulated (ya existía)
+- **A2 Demand** — densidad poblacional INE + accesibilidad OSM (ya existía)
+- **A4 Score Fusion** — pesos por investor_profile (ya existía)
+- **A5 Narrative** — `GET /opportunity/candidates/{id}/narrative?profile=&hold_years=` genera frase + structured (monthly_rent_uf, yield_pct, projected_value_uf, appreciation_pct) con disclaimer institucional Geltner-grade
+- **A6 Monitoring** — `src/opportunity/monitoring.py` con baseline + drift detection + alerts (severity high/medium/low) en `data/monitoring/`
+- **A7 Comparables** — ComparatorOverlay frontend (side-by-side con highlight winner)
+- **A3 Risk** — pendiente (PRC + ambiental, fase 2)
+
+**Frontend UX Phase 5 completo (2026-05-01):**
+- HomeShell + Onboarding 3-pantallas + TopOpportunitiesRail + PropertyDrawer + QuickReturnSimulator
+- WatchlistDrawer (localStorage) + EmptyStateCoach (sugerencias)
+- **ComparatorOverlay** — modal A vs B con highlight verde/rojo automático
+- **HeatmapToggle** — panel ranking de comunas por métrica seleccionable
+- **SettingsDrawer + ExpertModeToggle** — revelar SHAP/scores/profile/vocabulario técnico
+
 **Frontend (UX Phase 3 — 2026-04-30, retirado en cutover v5):**
 - Mapa Deck.gl fullscreen con ScatterplotLayer + TextLayer (precios visibles directamente sobre cada pin)
 - Búsqueda con NLP simple: `"casa Maipú score alto"` o `"terreno menos de 5000 UF"`
