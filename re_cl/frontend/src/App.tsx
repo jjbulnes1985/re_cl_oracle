@@ -13,19 +13,21 @@ import { ComparatorPanel } from './components/ComparatorPanel'
 import { WatchlistPanel } from './components/WatchlistPanel'
 import { TrendPanel } from './components/TrendPanel'
 import { FinanzasPanel } from './components/FinanzasPanel'
+import { OpportunityPanel } from './components/OpportunityPanel'
 import { clsx } from 'clsx'
 
-type Tab = 'map' | 'ranking' | 'communes' | 'detail' | 'compare' | 'watchlist' | 'trends' | 'finance'
+type Tab = 'map' | 'ranking' | 'communes' | 'detail' | 'compare' | 'watchlist' | 'trends' | 'finance' | 'opportunity'
 
 const TABS = [
-  { id: 'map',       label: 'Mapa',        icon: Map },
-  { id: 'ranking',   label: 'Ranking',     icon: BarChart2 },
-  { id: 'communes',  label: 'Comunas',     icon: Building2 },
-  { id: 'detail',    label: 'Ficha',       icon: Info },
-  { id: 'compare',   label: 'Comparar',    icon: GitCompareArrows },
-  { id: 'watchlist', label: 'Watchlist',   icon: Bookmark },
-  { id: 'trends',    label: 'Tendencias',  icon: TrendingUp },
-  { id: 'finance',   label: 'Finanzas',    icon: DollarSign },
+  { id: 'map',         label: 'Mapa',          icon: Map },
+  { id: 'ranking',     label: 'Ranking',       icon: BarChart2 },
+  { id: 'communes',    label: 'Comunas',       icon: Building2 },
+  { id: 'detail',      label: 'Ficha',         icon: Info },
+  { id: 'compare',     label: 'Comparar',      icon: GitCompareArrows },
+  { id: 'watchlist',   label: 'Watchlist',     icon: Bookmark },
+  { id: 'trends',      label: 'Tendencias',    icon: TrendingUp },
+  { id: 'finance',     label: 'Finanzas',      icon: DollarSign },
+  { id: 'opportunity', label: 'Oportunidades', icon: TrendingUp },
 ]
 
 /** Parse window.location.hash into { tab, id } */
@@ -209,6 +211,12 @@ export default function App() {
           {activeTab === 'finance' && (
             <div className="h-full overflow-auto">
               <FinanzasPanel />
+            </div>
+          )}
+
+          {activeTab === 'opportunity' && (
+            <div className="h-full overflow-hidden">
+              <OpportunityPanel />
             </div>
           )}
         </div>
