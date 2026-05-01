@@ -397,17 +397,33 @@ async def _setup_context_with_cookies(
     email: Optional[str],
     password: Optional[str],
     headless: bool,
+    proxy_url: Optional[str] = None,
 ) -> tuple:
     """Create a new browser context, apply cookies or auto-login, navigate to SEARCH_PAGE.
 
     Session expiry detection: if after loading cookies the page redirects to /sign_in,
     the session has expired. We then attempt auto-login using credentials from env vars.
 
+    proxy_url: optional HTTP proxy URL (http://user:pass@host:port) for IP rotation.
+    Useful with residential proxies (Bright Data, IPRoyal) when DI quota is per-IP.
+
     Returns (context, page, csrf_token).
     """
-    context = await browser.new_context(
-        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    )
+    context_kwargs = {
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    }
+    if proxy_url:
+        from urllib.parse import urlparse
+        parsed = urlparse(proxy_url)
+        proxy_config = {"server": f"{parsed.scheme}://{parsed.hostname}:{parsed.port}"}
+        if parsed.username:
+            proxy_config["username"] = parsed.username
+        if parsed.password:
+            proxy_config["password"] = parsed.password
+        context_kwargs["proxy"] = proxy_config
+        logger.info(f"  Using proxy: {parsed.hostname}:{parsed.port}")
+
+    context = await browser.new_context(**context_kwargs)
 
     saved_cookies = _load_cookies(cookie_file)
     if saved_cookies and not manual_login:
@@ -502,6 +518,7 @@ async def scrape_all(
     manual_login: bool = False,
     cookie_file: Optional[Path] = None,
     extra_cookie_files: Optional[list[Path]] = None,
+    proxy_urls: Optional[list[str]] = None,
 ) -> int:
     """Stream-scrape communes, writing to DB page-by-page so partial progress is never lost.
 
@@ -559,8 +576,9 @@ async def scrape_all(
         )
 
         current_cookie_file = rotation_files[0]
+        current_proxy = (proxy_urls or [None] * len(rotation_files))[0] if proxy_urls else None
         context, page, csrf = await _setup_context_with_cookies(
-            browser, current_cookie_file, manual_login, email, password, headless
+            browser, current_cookie_file, manual_login, email, password, headless, proxy_url=current_proxy
         )
 
         if check_quota_only:
@@ -636,13 +654,15 @@ async def scrape_all(
                     current_account_idx += 1
                     next_cookie = rotation_files[0]
                     next_label  = next_cookie.name if next_cookie else COOKIE_FILE.name
+                    next_proxy  = proxy_urls[current_account_idx - 1] if proxy_urls and len(proxy_urls) >= current_account_idx else None
                     logger.warning(
                         f"Quota exhausted on account {current_account_idx - 1} "
                         f"— switching to account {current_account_idx}/{total_accounts} ({next_label})"
+                        + (f" via proxy {next_proxy.split('@')[-1] if '@' in next_proxy else next_proxy}" if next_proxy else "")
                     )
                     await context.close()
                     context, page, csrf = await _setup_context_with_cookies(
-                        browser, next_cookie, False, email, password, headless
+                        browser, next_cookie, False, email, password, headless, proxy_url=next_proxy
                     )
                     if commune_rows == 0:
                         # Nothing was written yet — retry same commune with fresh account

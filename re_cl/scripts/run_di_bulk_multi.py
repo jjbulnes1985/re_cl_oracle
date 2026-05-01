@@ -174,6 +174,25 @@ def main():
     primary  = accounts[0]
     extras   = accounts[1:] if len(accounts) > 1 else []
 
+    # Optional: per-account proxy URLs from .env (DI_PROXY_1, DI_PROXY_2, DI_PROXY_3, ...)
+    # Format: http://user:pass@host:port  (residential proxy) or http://host:port (open proxy)
+    proxy_urls = []
+    for i in range(1, len(accounts) + 1):
+        url = os.getenv(f"DI_PROXY_{i}")
+        proxy_urls.append(url if url else None)
+
+    if any(proxy_urls):
+        logger.info(f"Proxies configured: {sum(1 for p in proxy_urls if p)}/{len(accounts)}")
+        for i, p in enumerate(proxy_urls, 1):
+            if p:
+                # Hide credentials in log
+                masked = p.split("@")[-1] if "@" in p else p
+                logger.info(f"  Account {i}: via {masked}")
+            else:
+                logger.info(f"  Account {i}: direct (no proxy)")
+    else:
+        logger.info("No proxies configured (set DI_PROXY_1, DI_PROXY_2, DI_PROXY_3 in .env)")
+
     logger.info("=" * 60)
     logger.info(f"Starting bulk scrape: {len(pending)} communes, {len(accounts)} account(s)")
     logger.info("=" * 60)
@@ -189,6 +208,7 @@ def main():
         use_checkpoint    = True,
         cookie_file       = primary,
         extra_cookie_files= extras,
+        proxy_urls        = proxy_urls if any(proxy_urls) else None,
     ))
 
     # Final status
