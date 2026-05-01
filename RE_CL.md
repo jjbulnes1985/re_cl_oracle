@@ -524,6 +524,39 @@ La plataforma RE_CL está completamente implementada y operativa. A continuació
 - Re-score commercial overlays (gas_station 3,900 high · pharmacy 13,051 · supermarket 3,186 · bank_branch 5,195 · clinic 6,887 · restaurant 12,467)
 - 8 reportes HTML regenerados con scores actualizados
 
+### Resumen ejecutivo institucional (2026-05-01)
+
+**RE_CL es un motor de detección de oportunidades inmobiliarias para Chile RM con arquitectura multi-agente Geltner-grade:**
+
+| Bloque | Métrica |
+|--------|---------|
+| Backend modelo | XGBoost v1.0 R²=0.6712, n_train=520,574 (CBR 2008-2026 incluyendo DI 2019-2026) |
+| Candidatos | 842,227 propiedades (829k CBR + 12,891 DI nuevos + 5k scraped) |
+| Oportunidades alta score | **21,026** (≥0.7) en 7 use cases simultáneos |
+| Competidores OSM | 8,043 (gas/farma/super/banco/clínica/restaurant) |
+| Frontend | UX Phase 5 — HomeShell único, onboarding 3-pantallas, drawer narrativo, Geltner DCF embebido |
+| Agentes backend | A1 Valuation + A2 Demand + A4 Score Fusion + A5 Narrative + A6 Monitoring + A7 Comparables (A3 Risk fase 2) |
+| Reportes HTML | 8 (executive summary + 7 use cases) regenerados con modelo nuevo |
+| Scraping automático | DI nightly 06:00 con 3 cuentas, IP rotation listo (PROXY_SETUP.md) |
+| Cobertura territorial | RM completa (40 comunas), 10/40 con DI 2019-2026 |
+
+**Sentido Geltner aplicado:**
+- Income Approach (DCF + cap rate inverso) en QuickReturnSimulator
+- Sales Comparison Approach (comparables zonales p25-p50-p75) en valuation engine
+- Cost Approach (capex_uf_per_m2 catalog) para usos comerciales
+- Banda de valor obligatoria (low-mid-high), nunca punto único
+- Análisis de sensibilidad ±150 bps en cap rates
+- Disclaimer institucional `INFO_NO_FIDEDIGNA::pendiente_validación` en toda métrica financiera proxy
+
+**Próximos hitos:**
+1. VPN/proxy para 3x throughput DI (USD 0-140 según estrategia)
+2. Completar 30 comunas RM pendientes (~10 días con IP rotation)
+3. A3 Risk Agent (zonificación PRC + flags ambientales)
+4. Validar cap rates externamente (Tinsa / GPS Property)
+5. Fase 2 — extender al país completo
+
+---
+
 ### Estado pipeline (2026-05-01 — final)
 
 | Tabla | Rows |

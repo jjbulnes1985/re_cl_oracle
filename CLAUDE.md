@@ -171,7 +171,29 @@ re_cl/
 Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 `POSTGRES_PASSWORD`, `RAW_CSV_PATH`, `DATABASE_URL` (o las `POSTGRES_*` individuales).
 
-## Estado (actualizado: 2026-04-23)
+## Estado (actualizado: 2026-05-01)
+
+### Snapshot ejecutivo
+
+- **842,227 candidatos** en `opportunity.candidates` (829k CBR + 12,891 DI nuevos + 5k scraped)
+- **2,509,377 valuaciones** (845k comparables + 821k hedonic_xgb + 843k triangulated)
+- **1,680,427 scores** (842k as_is + 6 use cases comerciales)
+- **21,026 oportunidades alta score (≥0.7)** — ranking institucional disponible
+- **8,043 competidores OSM** en 6 categorías (gas/farma/super/banco/clínica/restaurant)
+- **Modelo XGBoost v1.0** R²=0.6712, n_train=520,574 (CBR 2008-2026)
+- **DI scraping** 10/40 comunas RM (~55,140 rows), nightly automático 06:00 con 3 cuentas
+- **Frontend UX Phase 5** — HomeShell único + 7 componentes nuevos + Geltner-grade simulator
+- **Multi-agente backend** — 6 de 7 agentes implementados (A3 Risk pendiente fase 2)
+
+### Próximos pasos prioritarios
+
+1. **VPN/proxy para 3x throughput DI** (`scripts/PROXY_SETUP.md` con 3 estrategias listas)
+2. **Completar 30 comunas DI restantes** (~10 días con VPN, ~25 sin)
+3. **A3 Risk Agent** (PRC scraping + flags ambientales)
+4. **Validar cap rates** con tasador externo (Tinsa / GPS Property)
+5. **Extender al país** (Chile completo) — fase 2
+
+
 
 | Fase | Estado |
 |------|--------|
