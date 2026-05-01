@@ -119,14 +119,28 @@ export function HomeShell() {
     return params
   }, [onboarding])
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['home-shell', onboarding?.useCase, onboarding?.profile, onboarding?.communes?.[0], onboarding?.maxBudgetUF],
     queryFn: async () => {
       if (!queryParams) return { items: [], total: 0 }
-      const r = await fetch(`${API}/opportunity/candidates?${queryParams}`)
-      return r.json()
+      const url = `${API}/opportunity/candidates?${queryParams}`
+      console.log('[RE_CL] Fetching:', url)
+      try {
+        const r = await fetch(url)
+        if (!r.ok) {
+          console.error(`[RE_CL] API error ${r.status} on`, url)
+          throw new Error(`API ${r.status}: ${r.statusText}`)
+        }
+        const json = await r.json()
+        console.log(`[RE_CL] Received ${json.items?.length ?? 0} items / total=${json.total ?? 0}`)
+        return json
+      } catch (e) {
+        console.error('[RE_CL] Fetch failed:', e)
+        throw e
+      }
     },
     enabled: !!queryParams,
+    retry: 1,
   })
 
   // Client-side filtering for budget + multi-commune + bbox
@@ -312,8 +326,17 @@ export function HomeShell() {
             <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Regular</div>
           </div>
 
+          {/* API error banner */}
+          {error && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-red-950/95 border border-red-700 rounded-xl px-4 py-3 max-w-md shadow-lg">
+              <div className="text-xs font-semibold text-red-400 mb-1">Error de conexión con la API</div>
+              <div className="text-xs text-red-300">{(error as Error).message}</div>
+              <div className="text-[10px] text-red-500 mt-1">Verifica que la API esté corriendo en {API}</div>
+            </div>
+          )}
+
           {/* Empty state coach */}
-          {!isLoading && items.length === 0 && onboarding && (
+          {!isLoading && !error && items.length === 0 && onboarding && (
             <EmptyStateCoach
               onboarding={onboarding}
               onUpdateBudget={(b) => {
