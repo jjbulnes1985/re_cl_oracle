@@ -238,6 +238,7 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **Opportunity Engine v2 — 7 use cases completos** — gas_station (37k/6060 high) + pharmacy (242k/25060) + supermarket (15k/3264) + bank_branch (220k/5195) + clinic (100k/6887) + restaurant (220k/12467) + as_is (829k/11827) · 8,043 competidores OSM | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — Hedonic XGBoost valuations** — 774,602 predicciones XGBoost + 779,208 trianguladas (comparables + hedonic avg) | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — Executive summary report** — `executive_summary_2026-04-30.html` con top 5 por cada uno de los 5 use cases principales | **Completado 2026-04-30** |
+| **UX Phase 3 — map-first interface** — Deck.gl ScatterplotLayer + TextLayer con precios visibles, NLP search ("casa Maipú score alto"), modo dual Inversionista/Operador, ficha narrativa (oraciones, no datasheet), filtros como floating chips, riesgos antes del upside | **Completado 2026-04-30** |
 | Retrain modelo con datos DI 2019-2026 (esperar R² > 0.70) | Pendiente (cuando DI tenga suficientes comunas) |
 | Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
 | MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |

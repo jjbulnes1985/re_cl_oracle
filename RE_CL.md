@@ -551,7 +551,13 @@ Motor universal de detección de oportunidades de compra — cualquier tipo de p
 **Top oportunidad Maipú gas_station:** score 0.82, max_payable 262,500 UF
 
 **API:** 6 endpoints `/opportunity/*` (candidates, competitors, use-cases, profiles, summary, detail)
-**Frontend:** tab "Oportunidades" (9no tab) — sidebar filtros + lista + CSV export + ficha detalle con disclaimer
+**Frontend (UX Phase 3 — 2026-04-30):**
+- Mapa Deck.gl fullscreen con ScatterplotLayer + TextLayer (precios visibles directamente sobre cada pin)
+- Búsqueda con NLP simple: `"casa Maipú score alto"` o `"terreno menos de 5000 UF"`
+- Modo dual: 🏠 **Inversión** (compra/reventa) ↔ 🏪 **Operador** (operar negocio comercial)
+- Filtros como floating chips (no sidebar denso)
+- Ficha narrativa: oraciones en lugar de datasheet, riesgos antes del upside
+- Color del pin por opportunity_score (verde/amarillo/rojo), tamaño por superficie
 
 **Reportes HTML exportados:**
 - `data/exports/executive_summary_2026-04-30.html` — resumen ejecutivo todos los use cases
