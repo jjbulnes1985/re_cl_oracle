@@ -73,6 +73,26 @@ USE_CASE_QUERIES = {
         );
         out center;
     """,
+    "clinic": f"""
+        [out:json][timeout:60];
+        (
+          node["amenity"="clinic"]({RM_BBOX});
+          way["amenity"="clinic"]({RM_BBOX});
+          node["amenity"="hospital"]({RM_BBOX});
+          way["amenity"="hospital"]({RM_BBOX});
+        );
+        out center;
+    """,
+    "restaurant": f"""
+        [out:json][timeout:60];
+        (
+          node["amenity"="restaurant"]({RM_BBOX});
+          way["amenity"="restaurant"]({RM_BBOX});
+          node["amenity"="fast_food"]({RM_BBOX});
+          way["amenity"="fast_food"]({RM_BBOX});
+        );
+        out center;
+    """,
 }
 
 # Canonical operator name mapping (brand → canonical)

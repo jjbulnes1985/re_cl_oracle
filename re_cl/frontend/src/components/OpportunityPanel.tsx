@@ -45,6 +45,8 @@ const USE_CASES = [
   { value: 'pharmacy',     label: 'Farmacia' },
   { value: 'supermarket',  label: 'Supermercado' },
   { value: 'bank_branch',  label: 'Sucursal bancaria' },
+  { value: 'clinic',       label: 'Clínica / hospital' },
+  { value: 'restaurant',   label: 'Restaurante' },
 ]
 
 const COMMUNES = [
