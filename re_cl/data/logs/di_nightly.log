@@ -63,3 +63,201 @@ Pending communes (34, smallest first):
 2026-04-30 07:00:15.836 | INFO     | __main__:main:205 - Run again tomorrow with refreshed VPN/accounts to continue.
 2026-04-30 07:00:15.836 | INFO     | __main__:main:208 - ============================================================
 [30-04-2026  7:00:16,03] Done 
+[01-05-2026  6:00:02,55] Starting DI nightly bulk scrape  
+2026-05-01 06:00:05.693 | INFO     | __main__:main:149 - Accounts configured: 3
+2026-05-01 06:00:05.696 | INFO     | __main__:main:151 -   Account 1: datainmobiliaria_cookies.json
+2026-05-01 06:00:05.697 | INFO     | __main__:main:151 -   Account 2: di_cookies_2.json
+2026-05-01 06:00:05.697 | INFO     | __main__:main:151 -   Account 3: di_cookies_3.json
+2026-05-01 06:00:08.432 | INFO     | __main__:main:162 - 
+Pending communes (34, smallest first):
+2026-05-01 06:00:08.432 | INFO     | __main__:main:165 -   Vitacura                  ~500 rows est.
+2026-05-01 06:00:08.432 | INFO     | __main__:main:165 -   Pirque                    ~600 rows est.
+2026-05-01 06:00:08.432 | INFO     | __main__:main:165 -   Talagante                 ~900 rows est.
+2026-05-01 06:00:08.433 | INFO     | __main__:main:165 -   Buin                      ~900 rows est.
+2026-05-01 06:00:08.433 | INFO     | __main__:main:165 -   Melipilla                 ~900 rows est.
+2026-05-01 06:00:08.433 | INFO     | __main__:main:165 -   Independencia             ~1500 rows est.
+2026-05-01 06:00:08.433 | INFO     | __main__:main:165 -   Cerrillos                 ~1500 rows est.
+2026-05-01 06:00:08.433 | INFO     | __main__:main:165 -   Lampa                     ~1500 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Estación Central          ~2000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Lo Barnechea              ~2000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Huechuraba                ~2000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   San Joaquín               ~2000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   La Cisterna               ~2000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Colina                    ~2000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   San Ramón                 ~3000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Lo Espejo                 ~3000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Pedro Aguirre Cerda       ~3000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Lo Prado                  ~3000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Cerro Navia               ~3000 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Recoleta                  ~3500 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Quinta Normal             ~3500 rows est.
+2026-05-01 06:00:08.434 | INFO     | __main__:main:165 -   Conchalí                  ~3500 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   Macul                     ~4000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   Renca                     ~4000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   San Miguel                ~4000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   La Granja                 ~5000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   El Bosque                 ~5000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   La Reina                  ~? rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   Peñalolén                 ~7000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   La Pintana                ~8000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   Quilicura                 ~8000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   San Bernardo              ~12000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   Pudahuel                  ~12600 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:165 -   Puente Alto               ~15000 rows est.
+2026-05-01 06:00:08.435 | INFO     | __main__:main:167 - 
+2026-05-01 06:00:09.652 | INFO     | __main__:main:177 - ============================================================
+2026-05-01 06:00:09.652 | INFO     | __main__:main:178 - Starting bulk scrape: 34 communes, 3 account(s)
+2026-05-01 06:00:09.652 | INFO     | __main__:main:179 - ============================================================
+2026-05-01 06:00:38.077 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:416 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-05-01 06:00:45.891 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:466 - CSRF token acquired: yes
+2026-05-01 06:00:45.892 | INFO     | src.scraping.datainmobiliaria:scrape_all:592 - Communes: 34 | fuente=ventas | min_year=2019 | max_pages=100
+2026-05-01 06:00:45.892 | INFO     | src.scraping.datainmobiliaria:scrape_all:593 - Accounts configured: 3
+2026-05-01 06:00:45.893 | INFO     | src.scraping.datainmobiliaria:scrape_all:594 - ============================================================
+2026-05-01 06:00:45.893 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Vitacura (account 1/3)
+2026-05-01 06:00:46.215 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 1: 155 records, has_more=True
+2026-05-01 06:00:49.150 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 2: 138 records, has_more=True
+2026-05-01 06:00:50.060 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 3: 145 records, has_more=True
+2026-05-01 06:00:51.005 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 4: 134 records, has_more=True
+2026-05-01 06:00:51.875 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 5: 161 records, has_more=True
+2026-05-01 06:00:52.834 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 6: 138 records, has_more=True
+2026-05-01 06:00:53.773 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 7: 146 records, has_more=True
+2026-05-01 06:00:54.684 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 8: 173 records, has_more=True
+2026-05-01 06:00:55.581 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 9: 154 records, has_more=True
+2026-05-01 06:00:56.504 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 10: 141 records, has_more=True
+2026-05-01 06:00:57.404 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 11: 138 records, has_more=True
+2026-05-01 06:00:58.261 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 12: 163 records, has_more=True
+2026-05-01 06:00:59.134 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 13: 143 records, has_more=True
+2026-05-01 06:01:00.096 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 14: 136 records, has_more=True
+2026-05-01 06:01:00.979 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 15: 140 records, has_more=True
+2026-05-01 06:01:01.861 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 16: 140 records, has_more=True
+2026-05-01 06:01:02.770 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 17: 154 records, has_more=True
+2026-05-01 06:01:03.664 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 18: 131 records, has_more=True
+2026-05-01 06:01:04.632 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 19: 175 records, has_more=True
+2026-05-01 06:01:05.634 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 20: 146 records, has_more=True
+2026-05-01 06:01:06.739 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 21: 144 records, has_more=True
+2026-05-01 06:01:07.748 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 22: 144 records, has_more=True
+2026-05-01 06:01:08.860 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 23: 170 records, has_more=True
+2026-05-01 06:01:09.801 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 24: 151 records, has_more=True
+2026-05-01 06:01:10.694 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 25: 126 records, has_more=True
+2026-05-01 06:01:11.601 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 26: 143 records, has_more=True
+2026-05-01 06:01:12.497 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 27: 153 records, has_more=True
+2026-05-01 06:01:13.420 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 28: 148 records, has_more=True
+2026-05-01 06:01:14.357 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 29: 121 records, has_more=True
+2026-05-01 06:01:15.242 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 30: 168 records, has_more=True
+2026-05-01 06:01:16.165 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 31: 151 records, has_more=True
+2026-05-01 06:01:17.060 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 32: 138 records, has_more=True
+2026-05-01 06:01:17.963 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 33: 140 records, has_more=True
+2026-05-01 06:01:18.865 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 34: 151 records, has_more=True
+2026-05-01 06:01:19.831 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 35: 153 records, has_more=True
+2026-05-01 06:01:20.751 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 36: 135 records, has_more=True
+2026-05-01 06:01:21.683 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 37: 146 records, has_more=True
+2026-05-01 06:01:22.593 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 38: 123 records, has_more=True
+2026-05-01 06:01:23.676 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 39: 153 records, has_more=True
+2026-05-01 06:01:24.631 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 40: 119 records, has_more=True
+2026-05-01 06:01:25.565 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 41: 152 records, has_more=True
+2026-05-01 06:01:26.481 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 42: 145 records, has_more=True
+2026-05-01 06:01:27.442 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 43: 141 records, has_more=True
+2026-05-01 06:01:28.419 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 44: 146 records, has_more=True
+2026-05-01 06:01:29.312 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 45: 157 records, has_more=True
+2026-05-01 06:01:30.224 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 46: 149 records, has_more=True
+2026-05-01 06:01:31.150 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 47: 155 records, has_more=True
+2026-05-01 06:01:32.039 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 48: 153 records, has_more=True
+2026-05-01 06:01:32.990 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 49: 133 records, has_more=True
+2026-05-01 06:01:33.923 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 50: 145 records, has_more=True
+2026-05-01 06:01:34.868 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 51: 150 records, has_more=True
+2026-05-01 06:01:35.846 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 52: 145 records, has_more=True
+2026-05-01 06:01:36.789 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 53: 140 records, has_more=True
+2026-05-01 06:01:37.714 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 54: 144 records, has_more=True
+2026-05-01 06:01:38.637 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 55: 166 records, has_more=True
+2026-05-01 06:01:39.618 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 56: 155 records, has_more=True
+2026-05-01 06:01:40.523 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 57: 141 records, has_more=True
+2026-05-01 06:01:41.482 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 58: 157 records, has_more=True
+2026-05-01 06:01:42.402 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 59: 148 records, has_more=True
+2026-05-01 06:01:43.354 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 60: 141 records, has_more=True
+2026-05-01 06:01:44.271 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 61: 146 records, has_more=True
+2026-05-01 06:01:45.216 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 62: 176 records, has_more=True
+2026-05-01 06:01:46.180 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 63: 145 records, has_more=True
+2026-05-01 06:01:47.094 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 64: 141 records, has_more=True
+2026-05-01 06:01:48.022 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 65: 142 records, has_more=True
+2026-05-01 06:01:48.978 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 66: 149 records, has_more=True
+2026-05-01 06:01:49.947 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 67: 137 records, has_more=True
+2026-05-01 06:01:50.922 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 68: 125 records, has_more=True
+2026-05-01 06:01:51.868 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 69: 153 records, has_more=True
+2026-05-01 06:01:52.779 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 70: 145 records, has_more=True
+2026-05-01 06:01:53.683 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 71: 136 records, has_more=True
+2026-05-01 06:01:54.654 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 72: 130 records, has_more=True
+2026-05-01 06:01:55.591 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 73: 148 records, has_more=True
+2026-05-01 06:01:56.569 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 74: 132 records, has_more=True
+2026-05-01 06:01:57.475 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 75: 139 records, has_more=True
+2026-05-01 06:01:58.459 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 76: 134 records, has_more=True
+2026-05-01 06:01:59.442 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 77: 144 records, has_more=True
+2026-05-01 06:02:00.406 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 78: 137 records, has_more=True
+2026-05-01 06:02:01.333 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 79: 141 records, has_more=True
+2026-05-01 06:02:02.262 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 80: 147 records, has_more=True
+2026-05-01 06:02:03.238 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 81: 155 records, has_more=True
+2026-05-01 06:02:04.201 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 82: 137 records, has_more=True
+2026-05-01 06:02:05.128 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 83: 150 records, has_more=True
+2026-05-01 06:02:06.082 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 84: 152 records, has_more=True
+2026-05-01 06:02:07.029 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 85: 149 records, has_more=True
+2026-05-01 06:02:07.969 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 86: 115 records, has_more=True
+2026-05-01 06:02:08.858 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 87: 43 records, has_more=False
+2026-05-01 06:02:08.931 | INFO     | src.scraping.datainmobiliaria:scrape_all:673 -   Vitacura: 11578 rows written — complete
+2026-05-01 06:02:10.950 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Pirque (account 1/3)
+2026-05-01 06:02:11.206 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 1: 128 records, has_more=True
+2026-05-01 06:02:12.075 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 2: 35 records, has_more=False
+2026-05-01 06:02:12.126 | INFO     | src.scraping.datainmobiliaria:scrape_all:673 -   Pirque: 154 rows written — complete
+2026-05-01 06:02:14.137 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Talagante (account 1/3)
+2026-05-01 06:02:14.356 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 1: 86 records, has_more=True
+2026-05-01 06:02:15.209 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 2: 88 records, has_more=True
+2026-05-01 06:02:16.058 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 3: 96 records, has_more=True
+2026-05-01 06:02:16.888 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 4: 92 records, has_more=True
+2026-05-01 06:02:17.774 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 5: 94 records, has_more=True
+2026-05-01 06:02:18.632 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 6: 96 records, has_more=True
+2026-05-01 06:02:19.553 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 7: 90 records, has_more=True
+2026-05-01 06:02:20.337 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 8: 47 records, has_more=False
+2026-05-01 06:02:20.430 | INFO     | src.scraping.datainmobiliaria:scrape_all:673 -   Talagante: 657 rows written — complete
+2026-05-01 06:02:22.444 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Buin (account 1/3)
+2026-05-01 06:02:22.667 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 1: 169 records, has_more=True
+2026-05-01 06:02:23.557 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 2: 171 records, has_more=True
+2026-05-01 06:02:24.386 | DEBUG    | src.scraping.datainmobiliaria:_fetch_commune_streaming:309 -   Page 3: 168 records, has_more=True
+2026-05-01 06:02:25.103 | WARNING  | src.scraping.datainmobiliaria:_fetch_commune_streaming:291 -   API 402 on page 4 — quota exhausted
+2026-05-01 06:02:25.104 | WARNING  | src.scraping.datainmobiliaria:scrape_all:639 - Quota exhausted on account 1 — switching to account 2/3 (di_cookies_2.json)
+2026-05-01 06:02:25.260 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:416 - Restored 14 cookies from di_cookies_2.json
+2026-05-01 06:02:28.982 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:466 - CSRF token acquired: yes
+2026-05-01 06:02:28.982 | INFO     | src.scraping.datainmobiliaria:scrape_all:653 -   Buin: 502 rows written before quota hit — saved as partial, continuing with next commune
+2026-05-01 06:02:28.985 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Melipilla (account 2/3)
+2026-05-01 06:02:29.016 | WARNING  | src.scraping.datainmobiliaria:_fetch_commune_streaming:291 -   API 402 on page 1 — quota exhausted
+2026-05-01 06:02:29.016 | WARNING  | src.scraping.datainmobiliaria:scrape_all:639 - Quota exhausted on account 2 — switching to account 3/3 (di_cookies_3.json)
+2026-05-01 06:02:29.093 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:416 - Restored 14 cookies from di_cookies_3.json
+2026-05-01 06:02:32.751 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:466 - CSRF token acquired: yes
+2026-05-01 06:02:32.751 | INFO     | src.scraping.datainmobiliaria:scrape_all:649 -   Retrying Melipilla from page 1 (0 rows written so far)
+2026-05-01 06:02:32.751 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Melipilla (account 3/3)
+2026-05-01 06:02:32.788 | WARNING  | src.scraping.datainmobiliaria:_fetch_commune_streaming:291 -   API 402 on page 1 — quota exhausted
+2026-05-01 06:02:32.789 | ERROR    | src.scraping.datainmobiliaria:scrape_all:665 - All accounts exhausted. Stopping. Run again after midnight or register additional accounts.
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:689 - ============================================================
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:690 - DONE: 12891 rows written in 2.4min
+2026-05-01 06:02:33.136 | WARNING  | src.scraping.datainmobiliaria:scrape_all:692 - NOTE: Run stopped early — all accounts exhausted.
+2026-05-01 06:02:33.136 | WARNING  | src.scraping.datainmobiliaria:scrape_all:693 - TIP: Register additional free accounts at datainmobiliaria.cl
+2026-05-01 06:02:33.136 | WARNING  | src.scraping.datainmobiliaria:scrape_all:694 -      and pass their cookie files via --extra-cookie-files.
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:695 - ============================================================
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:698 - Next steps:
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:699 -   py src/ingestion/clean_transactions.py
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:700 -   py src/ingestion/normalize_county.py
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:701 -   py src/features/build_features.py --skip-ieut
+2026-05-01 06:02:33.136 | INFO     | src.scraping.datainmobiliaria:scrape_all:702 -   py src/models/hedonic_model.py
+2026-05-01 06:02:33.137 | INFO     | __main__:main:199 - 
+2026-05-01 06:02:33.137 | INFO     | __main__:main:200 - ============================================================
+2026-05-01 06:02:33.137 | INFO     | __main__:main:201 - Session complete: 12891 rows written
+2026-05-01 06:02:33.137 | INFO     | __main__:main:202 - Communes finished this session: 4/34
+2026-05-01 06:02:33.137 | INFO     | __main__:main:204 - Still pending (30): Melipilla, Independencia, Cerrillos, Lampa, Estación Central...
+2026-05-01 06:02:33.138 | INFO     | __main__:main:205 - Run again tomorrow with refreshed VPN/accounts to continue.
+2026-05-01 06:02:33.138 | INFO     | __main__:main:208 - ============================================================
+2026-05-01 06:02:33.138 | INFO     | __main__:main:212 - 
+Updating PostGIS geom for new rows...
+2026-05-01 06:02:34.519 | INFO     | __main__:main:224 -   geom updated: 12891 rows
+2026-05-01 06:02:34.530 | INFO     | __main__:main:228 - 
+Next steps:
+2026-05-01 06:02:34.530 | INFO     | __main__:main:229 -   py src/ingestion/clean_transactions.py
+2026-05-01 06:02:34.530 | INFO     | __main__:main:230 -   py src/features/build_features.py --skip-ieut
+2026-05-01 06:02:34.530 | INFO     | __main__:main:231 -   py src/models/hedonic_model.py
+[01-05-2026  6:02:34,86] Done 
