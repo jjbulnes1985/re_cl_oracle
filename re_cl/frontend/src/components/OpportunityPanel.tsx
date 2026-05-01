@@ -13,7 +13,7 @@
 
 import { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Search, AlertTriangle, TrendingUp, MapPin, ChevronRight, RefreshCw } from 'lucide-react'
+import { Search, AlertTriangle, TrendingUp, MapPin, RefreshCw, Download } from 'lucide-react'
 import { clsx } from 'clsx'
 
 const API = 'http://localhost:8000'
@@ -344,9 +344,38 @@ export function OpportunityPanel() {
             <span className="text-xs text-gray-500">
               {isLoading ? 'Cargando...' : `${data?.total?.toLocaleString('es-CL') ?? 0} resultados`}
             </span>
-            <button onClick={() => refetch()} className="text-gray-600 hover:text-gray-300">
-              <RefreshCw size={12} />
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  if (!items.length) return
+                  const headers = ['id','comuna','tipo','score','estimado_uf','max_pagable_uf','terreno_m2','eriazo','lat','lon']
+                  const rows = items.map(c => [
+                    c.id, c.county_name, c.property_type_code,
+                    c.opportunity_score?.toFixed(3),
+                    c.estimated_uf ? Math.round(c.estimated_uf) : '',
+                    c.max_payable_uf ? Math.round(c.max_payable_uf) : '',
+                    c.surface_land_m2 ? Math.round(c.surface_land_m2) : '',
+                    c.is_eriazo ? '1' : '0',
+                    c.latitude, c.longitude
+                  ])
+                  const csv = [headers, ...rows].map(r => r.join(',')).join('\n')
+                  const blob = new Blob([csv], { type: 'text/csv' })
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `oportunidades_${useCase}_${new Date().toISOString().slice(0,10)}.csv`
+                  a.click()
+                  URL.revokeObjectURL(url)
+                }}
+                title="Exportar CSV"
+                className="text-gray-600 hover:text-green-400 transition-colors"
+              >
+                <Download size={12} />
+              </button>
+              <button onClick={() => refetch()} className="text-gray-600 hover:text-gray-300">
+                <RefreshCw size={12} />
+              </button>
+            </div>
           </div>
 
           {items.slice(0, 20).map((c, i) => (
