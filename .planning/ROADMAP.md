@@ -138,13 +138,13 @@
 **Goal:** Maximize scraped listings from Portal Inmobiliario, Toctoc, and Data Inmobiliaria without credentials/proxies by converting the three serial scrapers into an asyncio.gather()-based parallel system, with automatic post-scraping pipeline (normalize_county -> scraped_to_scored) and Prefect daily scheduling for Data Inmobiliaria. Target: >5,000 unique listings per full run.
 **Requirements**: RF-11, PH9-D01..D09 (internal Phase 9 decisions), PH9-SC01 (>5k listings), PH9-SC02 (pipeline automation)
 **Depends on:** Phase 8
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 09-01-PLAN.md -- Foundation: fix PI RM_COMMUNES duplicate (40 unique) + DB pool size=10 for scraper tasks
-- [ ] 09-02-PLAN.md -- Parallel wrappers: toctoc.run_parallel (4 types via asyncio.gather) + portal_inmobiliario.run_parallel (40 communes x 4 types in batches of 6)
-- [ ] 09-03-PLAN.md -- Prefect integration: 5 new tasks (pi/toctoc/di/normalize/score) + parallel_scrape_flow + scripts/run_parallel_scrape.py one-command CLI
-- [ ] 09-04-PLAN.md -- Validation: live run >5k listings + scripts/validate_parallel_scrape.py + Prefect daily cron for datainmobiliaria_daily_flow
+- [x] 09-01-PLAN.md -- Foundation: fix PI RM_COMMUNES duplicate (40 unique) + DB pool size=10 for scraper tasks
+- [x] 09-02-PLAN.md -- Parallel wrappers: toctoc.run_parallel (4 types via asyncio.gather) + portal_inmobiliario.run_parallel (40 communes x 4 types in batches of 6)
+- [x] 09-03-PLAN.md -- Prefect integration: 5 new tasks (pi/toctoc/di/normalize/score) + parallel_scrape_flow + scripts/run_parallel_scrape.py one-command CLI
+- [x] 09-04-PLAN.md -- Validation: live run >5k listings + scripts/validate_parallel_scrape.py + Prefect daily cron for datainmobiliaria_daily_flow
 
 ---
 

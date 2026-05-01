@@ -1,0 +1,986 @@
+[23-04-2026  6:00:02,38] Starting nightly datainmobiliaria scrape 
+2026-04-23 06:00:23.200 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-23 06:01:05.447 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-23 06:01:15.776 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-23 06:01:15.777 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-23 06:01:15.777 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-23 06:01:15.777 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-23 06:01:16.207 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-23 06:01:16.676 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-23 06:01:17.050 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-23 06:01:17.050 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.9min
+2026-04-23 06:01:17.050 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-23 06:01:17.051 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-23 06:01:17.051 | INFO     | __main__:scrape_all:528 - ============================================================
+[23-04-2026  6:01:17,44] Done 
+[24-04-2026  6:00:02,54] Starting nightly datainmobiliaria scrape 
+2026-04-24 06:00:13.264 | INFO     | __main__:main:575 - --next-commune: picked 'La Florida'
+2026-04-24 06:00:32.560 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-24 06:00:40.522 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-24 06:00:40.522 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-24 06:00:40.522 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-24 06:00:40.522 | INFO     | __main__:scrape_all:449 - Scraping: La Florida
+2026-04-24 06:00:40.875 | DEBUG    | __main__:_fetch_commune:283 -   Page 1: 145 records, has_more=True
+2026-04-24 06:00:41.556 | DEBUG    | __main__:_fetch_commune:283 -   Page 2: 153 records, has_more=True
+2026-04-24 06:00:42.274 | DEBUG    | __main__:_fetch_commune:283 -   Page 3: 151 records, has_more=True
+2026-04-24 06:00:42.993 | DEBUG    | __main__:_fetch_commune:283 -   Page 4: 166 records, has_more=True
+2026-04-24 06:00:43.706 | DEBUG    | __main__:_fetch_commune:283 -   Page 5: 163 records, has_more=True
+2026-04-24 06:00:44.424 | DEBUG    | __main__:_fetch_commune:283 -   Page 6: 141 records, has_more=True
+2026-04-24 06:00:45.299 | DEBUG    | __main__:_fetch_commune:283 -   Page 7: 115 records, has_more=True
+2026-04-24 06:00:46.130 | DEBUG    | __main__:_fetch_commune:283 -   Page 8: 126 records, has_more=True
+2026-04-24 06:00:46.901 | DEBUG    | __main__:_fetch_commune:283 -   Page 9: 149 records, has_more=True
+2026-04-24 06:00:47.599 | DEBUG    | __main__:_fetch_commune:283 -   Page 10: 147 records, has_more=True
+2026-04-24 06:00:48.315 | DEBUG    | __main__:_fetch_commune:283 -   Page 11: 144 records, has_more=True
+2026-04-24 06:00:49.028 | DEBUG    | __main__:_fetch_commune:283 -   Page 12: 148 records, has_more=True
+2026-04-24 06:00:49.748 | DEBUG    | __main__:_fetch_commune:283 -   Page 13: 158 records, has_more=True
+2026-04-24 06:00:50.473 | DEBUG    | __main__:_fetch_commune:283 -   Page 14: 133 records, has_more=True
+2026-04-24 06:00:51.194 | DEBUG    | __main__:_fetch_commune:283 -   Page 15: 109 records, has_more=True
+2026-04-24 06:00:51.935 | DEBUG    | __main__:_fetch_commune:283 -   Page 16: 125 records, has_more=True
+2026-04-24 06:00:52.653 | DEBUG    | __main__:_fetch_commune:283 -   Page 17: 154 records, has_more=True
+2026-04-24 06:00:53.366 | DEBUG    | __main__:_fetch_commune:283 -   Page 18: 153 records, has_more=True
+2026-04-24 06:00:54.088 | DEBUG    | __main__:_fetch_commune:283 -   Page 19: 133 records, has_more=True
+2026-04-24 06:00:54.799 | DEBUG    | __main__:_fetch_commune:283 -   Page 20: 145 records, has_more=True
+2026-04-24 06:00:55.531 | DEBUG    | __main__:_fetch_commune:283 -   Page 21: 147 records, has_more=True
+2026-04-24 06:00:56.235 | DEBUG    | __main__:_fetch_commune:283 -   Page 22: 120 records, has_more=True
+2026-04-24 06:00:56.962 | DEBUG    | __main__:_fetch_commune:283 -   Page 23: 140 records, has_more=True
+2026-04-24 06:00:57.711 | DEBUG    | __main__:_fetch_commune:283 -   Page 24: 119 records, has_more=True
+2026-04-24 06:00:58.424 | DEBUG    | __main__:_fetch_commune:283 -   Page 25: 122 records, has_more=True
+2026-04-24 06:00:59.124 | DEBUG    | __main__:_fetch_commune:283 -   Page 26: 141 records, has_more=True
+2026-04-24 06:00:59.865 | DEBUG    | __main__:_fetch_commune:283 -   Page 27: 152 records, has_more=True
+2026-04-24 06:01:00.596 | DEBUG    | __main__:_fetch_commune:283 -   Page 28: 160 records, has_more=True
+2026-04-24 06:01:01.310 | DEBUG    | __main__:_fetch_commune:283 -   Page 29: 153 records, has_more=True
+2026-04-24 06:01:02.046 | DEBUG    | __main__:_fetch_commune:283 -   Page 30: 149 records, has_more=True
+2026-04-24 06:01:02.817 | DEBUG    | __main__:_fetch_commune:283 -   Page 31: 120 records, has_more=True
+2026-04-24 06:01:03.540 | DEBUG    | __main__:_fetch_commune:283 -   Page 32: 136 records, has_more=True
+2026-04-24 06:01:04.276 | DEBUG    | __main__:_fetch_commune:283 -   Page 33: 123 records, has_more=True
+2026-04-24 06:01:04.996 | DEBUG    | __main__:_fetch_commune:283 -   Page 34: 153 records, has_more=True
+2026-04-24 06:01:05.716 | DEBUG    | __main__:_fetch_commune:283 -   Page 35: 142 records, has_more=True
+2026-04-24 06:01:06.431 | DEBUG    | __main__:_fetch_commune:283 -   Page 36: 150 records, has_more=True
+2026-04-24 06:01:07.146 | DEBUG    | __main__:_fetch_commune:283 -   Page 37: 155 records, has_more=True
+2026-04-24 06:01:07.923 | DEBUG    | __main__:_fetch_commune:283 -   Page 38: 150 records, has_more=True
+2026-04-24 06:01:08.661 | DEBUG    | __main__:_fetch_commune:283 -   Page 39: 138 records, has_more=True
+2026-04-24 06:01:09.405 | DEBUG    | __main__:_fetch_commune:283 -   Page 40: 134 records, has_more=True
+2026-04-24 06:01:10.147 | DEBUG    | __main__:_fetch_commune:283 -   Page 41: 119 records, has_more=True
+2026-04-24 06:01:10.889 | DEBUG    | __main__:_fetch_commune:283 -   Page 42: 161 records, has_more=True
+2026-04-24 06:01:11.615 | DEBUG    | __main__:_fetch_commune:283 -   Page 43: 149 records, has_more=True
+2026-04-24 06:01:12.353 | DEBUG    | __main__:_fetch_commune:283 -   Page 44: 136 records, has_more=True
+2026-04-24 06:01:13.092 | DEBUG    | __main__:_fetch_commune:283 -   Page 45: 149 records, has_more=True
+2026-04-24 06:01:13.848 | DEBUG    | __main__:_fetch_commune:283 -   Page 46: 148 records, has_more=True
+2026-04-24 06:01:14.572 | DEBUG    | __main__:_fetch_commune:283 -   Page 47: 147 records, has_more=True
+2026-04-24 06:01:15.313 | DEBUG    | __main__:_fetch_commune:283 -   Page 48: 133 records, has_more=True
+2026-04-24 06:01:16.037 | DEBUG    | __main__:_fetch_commune:283 -   Page 49: 134 records, has_more=True
+2026-04-24 06:01:16.768 | DEBUG    | __main__:_fetch_commune:283 -   Page 50: 152 records, has_more=True
+2026-04-24 06:01:17.505 | DEBUG    | __main__:_fetch_commune:283 -   Page 51: 151 records, has_more=True
+2026-04-24 06:01:18.225 | DEBUG    | __main__:_fetch_commune:283 -   Page 52: 144 records, has_more=True
+2026-04-24 06:01:19.055 | DEBUG    | __main__:_fetch_commune:283 -   Page 53: 147 records, has_more=True
+2026-04-24 06:01:19.766 | DEBUG    | __main__:_fetch_commune:283 -   Page 54: 146 records, has_more=True
+2026-04-24 06:01:20.500 | DEBUG    | __main__:_fetch_commune:283 -   Page 55: 141 records, has_more=True
+2026-04-24 06:01:21.247 | DEBUG    | __main__:_fetch_commune:283 -   Page 56: 136 records, has_more=True
+2026-04-24 06:01:21.992 | DEBUG    | __main__:_fetch_commune:283 -   Page 57: 136 records, has_more=True
+2026-04-24 06:01:22.737 | DEBUG    | __main__:_fetch_commune:283 -   Page 58: 128 records, has_more=True
+2026-04-24 06:01:23.465 | DEBUG    | __main__:_fetch_commune:283 -   Page 59: 131 records, has_more=True
+2026-04-24 06:01:24.203 | DEBUG    | __main__:_fetch_commune:283 -   Page 60: 155 records, has_more=True
+2026-04-24 06:01:24.945 | DEBUG    | __main__:_fetch_commune:283 -   Page 61: 137 records, has_more=True
+2026-04-24 06:01:25.708 | DEBUG    | __main__:_fetch_commune:283 -   Page 62: 133 records, has_more=True
+2026-04-24 06:01:26.458 | DEBUG    | __main__:_fetch_commune:283 -   Page 63: 156 records, has_more=True
+2026-04-24 06:01:27.202 | DEBUG    | __main__:_fetch_commune:283 -   Page 64: 119 records, has_more=True
+2026-04-24 06:01:27.939 | DEBUG    | __main__:_fetch_commune:283 -   Page 65: 109 records, has_more=True
+2026-04-24 06:01:28.681 | DEBUG    | __main__:_fetch_commune:283 -   Page 66: 108 records, has_more=True
+2026-04-24 06:01:29.425 | DEBUG    | __main__:_fetch_commune:283 -   Page 67: 141 records, has_more=True
+2026-04-24 06:01:30.175 | DEBUG    | __main__:_fetch_commune:283 -   Page 68: 154 records, has_more=True
+2026-04-24 06:01:30.932 | DEBUG    | __main__:_fetch_commune:283 -   Page 69: 151 records, has_more=True
+2026-04-24 06:01:31.674 | DEBUG    | __main__:_fetch_commune:283 -   Page 70: 153 records, has_more=True
+2026-04-24 06:01:32.420 | DEBUG    | __main__:_fetch_commune:283 -   Page 71: 149 records, has_more=True
+2026-04-24 06:01:33.152 | DEBUG    | __main__:_fetch_commune:283 -   Page 72: 115 records, has_more=True
+2026-04-24 06:01:33.963 | DEBUG    | __main__:_fetch_commune:283 -   Page 73: 126 records, has_more=True
+2026-04-24 06:01:34.712 | DEBUG    | __main__:_fetch_commune:283 -   Page 74: 142 records, has_more=True
+2026-04-24 06:01:35.521 | DEBUG    | __main__:_fetch_commune:283 -   Page 75: 133 records, has_more=True
+2026-04-24 06:01:36.266 | DEBUG    | __main__:_fetch_commune:283 -   Page 76: 133 records, has_more=True
+2026-04-24 06:01:37.011 | DEBUG    | __main__:_fetch_commune:283 -   Page 77: 144 records, has_more=True
+2026-04-24 06:01:37.752 | DEBUG    | __main__:_fetch_commune:283 -   Page 78: 173 records, has_more=True
+2026-04-24 06:01:38.509 | DEBUG    | __main__:_fetch_commune:283 -   Page 79: 164 records, has_more=True
+2026-04-24 06:01:39.276 | DEBUG    | __main__:_fetch_commune:283 -   Page 80: 147 records, has_more=True
+2026-04-24 06:01:40.024 | DEBUG    | __main__:_fetch_commune:283 -   Page 81: 128 records, has_more=True
+2026-04-24 06:01:40.791 | DEBUG    | __main__:_fetch_commune:283 -   Page 82: 142 records, has_more=True
+2026-04-24 06:01:41.550 | DEBUG    | __main__:_fetch_commune:283 -   Page 83: 142 records, has_more=True
+2026-04-24 06:01:42.295 | DEBUG    | __main__:_fetch_commune:283 -   Page 84: 156 records, has_more=True
+2026-04-24 06:01:43.069 | DEBUG    | __main__:_fetch_commune:283 -   Page 85: 161 records, has_more=True
+2026-04-24 06:01:43.846 | DEBUG    | __main__:_fetch_commune:283 -   Page 86: 159 records, has_more=True
+2026-04-24 06:01:44.607 | DEBUG    | __main__:_fetch_commune:283 -   Page 87: 144 records, has_more=True
+2026-04-24 06:01:45.363 | DEBUG    | __main__:_fetch_commune:283 -   Page 88: 143 records, has_more=True
+2026-04-24 06:01:46.123 | DEBUG    | __main__:_fetch_commune:283 -   Page 89: 132 records, has_more=True
+2026-04-24 06:01:46.874 | DEBUG    | __main__:_fetch_commune:283 -   Page 90: 124 records, has_more=True
+2026-04-24 06:01:47.628 | DEBUG    | __main__:_fetch_commune:283 -   Page 91: 134 records, has_more=True
+2026-04-24 06:01:48.365 | DEBUG    | __main__:_fetch_commune:283 -   Page 92: 144 records, has_more=True
+2026-04-24 06:01:49.124 | DEBUG    | __main__:_fetch_commune:283 -   Page 93: 134 records, has_more=True
+2026-04-24 06:01:49.878 | DEBUG    | __main__:_fetch_commune:283 -   Page 94: 157 records, has_more=True
+2026-04-24 06:01:50.649 | DEBUG    | __main__:_fetch_commune:283 -   Page 95: 170 records, has_more=True
+2026-04-24 06:01:51.406 | DEBUG    | __main__:_fetch_commune:283 -   Page 96: 146 records, has_more=True
+2026-04-24 06:01:52.215 | DEBUG    | __main__:_fetch_commune:283 -   Page 97: 115 records, has_more=True
+2026-04-24 06:01:52.969 | DEBUG    | __main__:_fetch_commune:283 -   Page 98: 123 records, has_more=True
+2026-04-24 06:01:53.748 | DEBUG    | __main__:_fetch_commune:283 -   Page 99: 134 records, has_more=True
+2026-04-24 06:01:54.509 | DEBUG    | __main__:_fetch_commune:283 -   Page 100: 147 records, has_more=True
+2026-04-24 06:01:55.026 | INFO     | __main__:scrape_all:477 -   14127 raw records
+2026-04-24 06:01:57.649 | INFO     | __main__:scrape_all:481 -   14127 parsed records
+2026-04-24 06:02:02.614 | INFO     | __main__:scrape_all:513 -   Written 14127 rows (0 dupes skipped)
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:524 - DONE: 14127 rows written in 1.9min
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:528 - ============================================================
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:531 - Next steps:
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:532 -   py src/ingestion/clean_transactions.py
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:533 -   py src/ingestion/normalize_county.py
+2026-04-24 06:02:05.016 | INFO     | __main__:scrape_all:534 -   py src/features/build_features.py --skip-ieut
+2026-04-24 06:02:05.017 | INFO     | __main__:scrape_all:535 -   py src/models/hedonic_model.py
+[24-04-2026  6:02:05,29] Done 
+[25-04-2026  6:00:02,30] Starting nightly datainmobiliaria scrape 
+2026-04-25 06:00:20.042 | INFO     | __main__:main:575 - --next-commune: picked 'Maipú'
+2026-04-25 06:00:57.738 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-25 06:01:07.097 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-25 06:01:07.097 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-25 06:01:07.098 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-25 06:01:07.098 | INFO     | __main__:scrape_all:449 - Scraping: Maipú
+2026-04-25 06:01:08.415 | DEBUG    | __main__:_fetch_commune:283 -   Page 1: 137 records, has_more=True
+2026-04-25 06:01:09.240 | WARNING  | __main__:_fetch_commune:266 -   API error page 2: 402
+2026-04-25 06:01:09.240 | INFO     | __main__:scrape_all:477 -   137 raw records
+2026-04-25 06:01:09.325 | INFO     | __main__:scrape_all:481 -   137 parsed records
+Traceback (most recent call last):
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 598, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 583, in main
+    asyncio.run(scrape_all(
+    ~~~~~~~~~~~^^^^^^^^^^^^
+        engine,
+        ^^^^^^^
+    ...<8 lines>...
+        manual_login     = args.manual_login,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 491, in scrape_all
+    with engine.begin() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3257, in begin
+    with self.connect() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3293, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2448, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[25-04-2026  6:01:14,69] Done 
+[26-04-2026 21:18:38,09] Starting nightly datainmobiliaria scrape 
+2026-04-26 21:19:06.320 | INFO     | __main__:main:575 - --next-commune: picked 'Maipú'
+2026-04-26 21:19:30.967 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-26 21:19:41.253 | INFO     | __main__:scrape_all:414 - CSRF token acquired: no
+2026-04-26 21:19:41.254 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-26 21:19:41.254 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-26 21:19:41.254 | INFO     | __main__:scrape_all:449 - Scraping: Maipú
+2026-04-26 21:19:44.714 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 502
+2026-04-26 21:19:47.781 | INFO     | __main__:scrape_all:472 -   No records found for Maipú (status=502)
+2026-04-26 21:19:48.173 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-26 21:19:48.174 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.7min
+2026-04-26 21:19:48.174 | INFO     | __main__:scrape_all:528 - ============================================================
+[26-04-2026 21:19:48,39] Done 
+[27-04-2026  9:23:11,24] Starting nightly datainmobiliaria scrape 
+2026-04-27 09:23:25.019 | INFO     | __main__:main:575 - --next-commune: picked 'Pudahuel'
+2026-04-27 09:23:52.833 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-27 09:24:05.246 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-27 09:24:05.247 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-27 09:24:05.247 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-27 09:24:05.248 | INFO     | __main__:scrape_all:449 - Scraping: Pudahuel
+2026-04-27 09:24:06.207 | DEBUG    | __main__:_fetch_commune:283 -   Page 1: 116 records, has_more=True
+2026-04-27 09:24:07.616 | DEBUG    | __main__:_fetch_commune:283 -   Page 2: 138 records, has_more=True
+2026-04-27 09:24:08.930 | DEBUG    | __main__:_fetch_commune:283 -   Page 3: 118 records, has_more=True
+2026-04-27 09:24:09.807 | WARNING  | __main__:_fetch_commune:266 -   API error page 4: 402
+2026-04-27 09:24:09.808 | INFO     | __main__:scrape_all:477 -   372 raw records
+2026-04-27 09:24:10.248 | INFO     | __main__:scrape_all:481 -   372 parsed records
+Traceback (most recent call last):
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 598, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 583, in main
+    asyncio.run(scrape_all(
+    ~~~~~~~~~~~^^^^^^^^^^^^
+        engine,
+        ^^^^^^^
+    ...<8 lines>...
+        manual_login     = args.manual_login,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 491, in scrape_all
+    with engine.begin() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3257, in begin
+    with self.connect() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3293, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2448, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[27-04-2026  9:24:15,86] Done 
+[28-04-2026  8:24:13,63] Starting nightly datainmobiliaria scrape 
+2026-04-28 08:24:29.427 | INFO     | __main__:main:575 - --next-commune: picked 'Pudahuel'
+2026-04-28 08:24:43.207 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-28 08:24:50.741 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-28 08:24:50.742 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-28 08:24:50.742 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-28 08:24:50.742 | INFO     | __main__:scrape_all:449 - Scraping: Pudahuel
+2026-04-28 08:24:51.109 | DEBUG    | __main__:_fetch_commune:283 -   Page 1: 114 records, has_more=True
+2026-04-28 08:24:51.882 | DEBUG    | __main__:_fetch_commune:283 -   Page 2: 141 records, has_more=True
+2026-04-28 08:24:52.622 | DEBUG    | __main__:_fetch_commune:283 -   Page 3: 117 records, has_more=True
+2026-04-28 08:24:53.409 | DEBUG    | __main__:_fetch_commune:283 -   Page 4: 137 records, has_more=True
+2026-04-28 08:24:54.183 | DEBUG    | __main__:_fetch_commune:283 -   Page 5: 121 records, has_more=True
+2026-04-28 08:24:55.092 | DEBUG    | __main__:_fetch_commune:283 -   Page 6: 119 records, has_more=True
+2026-04-28 08:24:55.916 | DEBUG    | __main__:_fetch_commune:283 -   Page 7: 131 records, has_more=True
+2026-04-28 08:24:56.633 | DEBUG    | __main__:_fetch_commune:283 -   Page 8: 136 records, has_more=True
+2026-04-28 08:24:57.423 | DEBUG    | __main__:_fetch_commune:283 -   Page 9: 120 records, has_more=True
+2026-04-28 08:24:58.216 | DEBUG    | __main__:_fetch_commune:283 -   Page 10: 125 records, has_more=True
+2026-04-28 08:24:58.935 | DEBUG    | __main__:_fetch_commune:283 -   Page 11: 121 records, has_more=True
+2026-04-28 08:24:59.908 | DEBUG    | __main__:_fetch_commune:283 -   Page 12: 137 records, has_more=True
+2026-04-28 08:25:00.631 | DEBUG    | __main__:_fetch_commune:283 -   Page 13: 142 records, has_more=True
+2026-04-28 08:25:01.487 | DEBUG    | __main__:_fetch_commune:283 -   Page 14: 116 records, has_more=True
+2026-04-28 08:25:02.260 | DEBUG    | __main__:_fetch_commune:283 -   Page 15: 133 records, has_more=True
+2026-04-28 08:25:02.987 | DEBUG    | __main__:_fetch_commune:283 -   Page 16: 119 records, has_more=True
+2026-04-28 08:25:03.696 | DEBUG    | __main__:_fetch_commune:283 -   Page 17: 125 records, has_more=True
+2026-04-28 08:25:04.448 | DEBUG    | __main__:_fetch_commune:283 -   Page 18: 120 records, has_more=True
+2026-04-28 08:25:05.182 | DEBUG    | __main__:_fetch_commune:283 -   Page 19: 127 records, has_more=True
+2026-04-28 08:25:05.900 | DEBUG    | __main__:_fetch_commune:283 -   Page 20: 127 records, has_more=True
+2026-04-28 08:25:06.661 | DEBUG    | __main__:_fetch_commune:283 -   Page 21: 130 records, has_more=True
+2026-04-28 08:25:07.391 | DEBUG    | __main__:_fetch_commune:283 -   Page 22: 127 records, has_more=True
+2026-04-28 08:25:08.125 | DEBUG    | __main__:_fetch_commune:283 -   Page 23: 135 records, has_more=True
+2026-04-28 08:25:08.842 | DEBUG    | __main__:_fetch_commune:283 -   Page 24: 119 records, has_more=True
+2026-04-28 08:25:09.584 | DEBUG    | __main__:_fetch_commune:283 -   Page 25: 117 records, has_more=True
+2026-04-28 08:25:10.315 | DEBUG    | __main__:_fetch_commune:283 -   Page 26: 123 records, has_more=True
+2026-04-28 08:25:11.012 | DEBUG    | __main__:_fetch_commune:283 -   Page 27: 121 records, has_more=True
+2026-04-28 08:25:11.766 | DEBUG    | __main__:_fetch_commune:283 -   Page 28: 126 records, has_more=True
+2026-04-28 08:25:12.480 | DEBUG    | __main__:_fetch_commune:283 -   Page 29: 114 records, has_more=True
+2026-04-28 08:25:13.216 | DEBUG    | __main__:_fetch_commune:283 -   Page 30: 129 records, has_more=True
+2026-04-28 08:25:14.039 | DEBUG    | __main__:_fetch_commune:283 -   Page 31: 122 records, has_more=True
+2026-04-28 08:25:14.738 | DEBUG    | __main__:_fetch_commune:283 -   Page 32: 130 records, has_more=True
+2026-04-28 08:25:15.475 | DEBUG    | __main__:_fetch_commune:283 -   Page 33: 123 records, has_more=True
+2026-04-28 08:25:16.211 | DEBUG    | __main__:_fetch_commune:283 -   Page 34: 131 records, has_more=True
+2026-04-28 08:25:16.995 | DEBUG    | __main__:_fetch_commune:283 -   Page 35: 135 records, has_more=True
+2026-04-28 08:25:17.707 | DEBUG    | __main__:_fetch_commune:283 -   Page 36: 131 records, has_more=True
+2026-04-28 08:25:18.478 | DEBUG    | __main__:_fetch_commune:283 -   Page 37: 127 records, has_more=True
+2026-04-28 08:25:19.182 | DEBUG    | __main__:_fetch_commune:283 -   Page 38: 126 records, has_more=True
+2026-04-28 08:25:19.886 | DEBUG    | __main__:_fetch_commune:283 -   Page 39: 136 records, has_more=True
+2026-04-28 08:25:20.630 | DEBUG    | __main__:_fetch_commune:283 -   Page 40: 128 records, has_more=True
+2026-04-28 08:25:21.369 | DEBUG    | __main__:_fetch_commune:283 -   Page 41: 128 records, has_more=True
+2026-04-28 08:25:22.109 | DEBUG    | __main__:_fetch_commune:283 -   Page 42: 114 records, has_more=True
+2026-04-28 08:25:22.850 | DEBUG    | __main__:_fetch_commune:283 -   Page 43: 147 records, has_more=True
+2026-04-28 08:25:23.584 | DEBUG    | __main__:_fetch_commune:283 -   Page 44: 115 records, has_more=True
+2026-04-28 08:25:24.319 | DEBUG    | __main__:_fetch_commune:283 -   Page 45: 133 records, has_more=True
+2026-04-28 08:25:25.024 | DEBUG    | __main__:_fetch_commune:283 -   Page 46: 124 records, has_more=True
+2026-04-28 08:25:25.740 | DEBUG    | __main__:_fetch_commune:283 -   Page 47: 130 records, has_more=True
+2026-04-28 08:25:26.463 | DEBUG    | __main__:_fetch_commune:283 -   Page 48: 135 records, has_more=True
+2026-04-28 08:25:27.188 | DEBUG    | __main__:_fetch_commune:283 -   Page 49: 135 records, has_more=True
+2026-04-28 08:25:27.925 | DEBUG    | __main__:_fetch_commune:283 -   Page 50: 124 records, has_more=True
+2026-04-28 08:25:28.663 | DEBUG    | __main__:_fetch_commune:283 -   Page 51: 133 records, has_more=True
+2026-04-28 08:25:29.414 | DEBUG    | __main__:_fetch_commune:283 -   Page 52: 143 records, has_more=True
+2026-04-28 08:25:30.086 | DEBUG    | __main__:_fetch_commune:283 -   Page 53: 42 records, has_more=False
+2026-04-28 08:25:30.087 | INFO     | __main__:scrape_all:477 -   6661 raw records
+2026-04-28 08:25:32.730 | INFO     | __main__:scrape_all:481 -   6661 parsed records
+Traceback (most recent call last):
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 598, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 583, in main
+    asyncio.run(scrape_all(
+    ~~~~~~~~~~~^^^^^^^^^^^^
+        engine,
+        ^^^^^^^
+    ...<8 lines>...
+        manual_login     = args.manual_login,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 491, in scrape_all
+    with engine.begin() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3257, in begin
+    with self.connect() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3293, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2448, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[28-04-2026  8:25:37,69] Done 
+[29-04-2026  6:00:02,40] Starting nightly datainmobiliaria scrape 
+2026-04-29 06:00:07.503 | INFO     | __main__:main:725 - --next-commune: picked 'Pudahuel'
+2026-04-29 06:00:11.128 | INFO     | __main__:_setup_context_with_cookies:364 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-29 06:00:19.119 | INFO     | __main__:_setup_context_with_cookies:406 - CSRF token acquired: yes
+2026-04-29 06:00:19.119 | INFO     | __main__:scrape_all:516 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-29 06:00:19.120 | INFO     | __main__:scrape_all:517 - Accounts configured: 1
+2026-04-29 06:00:19.120 | INFO     | __main__:scrape_all:518 - ============================================================
+2026-04-29 06:00:19.120 | INFO     | __main__:scrape_all:531 - Scraping: Pudahuel (account 1/1)
+2026-04-29 06:00:19.471 | DEBUG    | __main__:_fetch_commune:304 -   Page 1: 114 records, has_more=True
+2026-04-29 06:00:20.252 | DEBUG    | __main__:_fetch_commune:304 -   Page 2: 140 records, has_more=True
+2026-04-29 06:00:20.994 | DEBUG    | __main__:_fetch_commune:304 -   Page 3: 118 records, has_more=True
+2026-04-29 06:00:21.738 | DEBUG    | __main__:_fetch_commune:304 -   Page 4: 137 records, has_more=True
+2026-04-29 06:00:22.562 | DEBUG    | __main__:_fetch_commune:304 -   Page 5: 124 records, has_more=True
+2026-04-29 06:00:23.285 | DEBUG    | __main__:_fetch_commune:304 -   Page 6: 116 records, has_more=True
+2026-04-29 06:00:24.028 | DEBUG    | __main__:_fetch_commune:304 -   Page 7: 133 records, has_more=True
+2026-04-29 06:00:24.797 | DEBUG    | __main__:_fetch_commune:304 -   Page 8: 132 records, has_more=True
+2026-04-29 06:00:25.579 | DEBUG    | __main__:_fetch_commune:304 -   Page 9: 122 records, has_more=True
+2026-04-29 06:00:26.309 | DEBUG    | __main__:_fetch_commune:304 -   Page 10: 126 records, has_more=True
+2026-04-29 06:00:27.121 | DEBUG    | __main__:_fetch_commune:304 -   Page 11: 121 records, has_more=True
+2026-04-29 06:00:27.857 | DEBUG    | __main__:_fetch_commune:304 -   Page 12: 136 records, has_more=True
+2026-04-29 06:00:28.591 | DEBUG    | __main__:_fetch_commune:304 -   Page 13: 144 records, has_more=True
+2026-04-29 06:00:29.340 | DEBUG    | __main__:_fetch_commune:304 -   Page 14: 119 records, has_more=True
+2026-04-29 06:00:30.068 | DEBUG    | __main__:_fetch_commune:304 -   Page 15: 127 records, has_more=True
+2026-04-29 06:00:30.855 | DEBUG    | __main__:_fetch_commune:304 -   Page 16: 120 records, has_more=True
+2026-04-29 06:00:31.625 | DEBUG    | __main__:_fetch_commune:304 -   Page 17: 125 records, has_more=True
+2026-04-29 06:00:32.369 | DEBUG    | __main__:_fetch_commune:304 -   Page 18: 118 records, has_more=True
+2026-04-29 06:00:33.131 | DEBUG    | __main__:_fetch_commune:304 -   Page 19: 127 records, has_more=True
+2026-04-29 06:00:33.878 | DEBUG    | __main__:_fetch_commune:304 -   Page 20: 128 records, has_more=True
+2026-04-29 06:00:34.609 | DEBUG    | __main__:_fetch_commune:304 -   Page 21: 130 records, has_more=True
+2026-04-29 06:00:35.339 | DEBUG    | __main__:_fetch_commune:304 -   Page 22: 128 records, has_more=True
+2026-04-29 06:00:36.112 | DEBUG    | __main__:_fetch_commune:304 -   Page 23: 137 records, has_more=True
+2026-04-29 06:00:36.935 | DEBUG    | __main__:_fetch_commune:304 -   Page 24: 117 records, has_more=True
+2026-04-29 06:00:37.674 | DEBUG    | __main__:_fetch_commune:304 -   Page 25: 118 records, has_more=True
+2026-04-29 06:00:38.440 | DEBUG    | __main__:_fetch_commune:304 -   Page 26: 123 records, has_more=True
+2026-04-29 06:00:39.184 | DEBUG    | __main__:_fetch_commune:304 -   Page 27: 123 records, has_more=True
+2026-04-29 06:00:39.942 | DEBUG    | __main__:_fetch_commune:304 -   Page 28: 123 records, has_more=True
+2026-04-29 06:00:40.709 | DEBUG    | __main__:_fetch_commune:304 -   Page 29: 116 records, has_more=True
+2026-04-29 06:00:41.464 | DEBUG    | __main__:_fetch_commune:304 -   Page 30: 131 records, has_more=True
+2026-04-29 06:00:42.344 | DEBUG    | __main__:_fetch_commune:304 -   Page 31: 120 records, has_more=True
+2026-04-29 06:00:43.098 | DEBUG    | __main__:_fetch_commune:304 -   Page 32: 129 records, has_more=True
+2026-04-29 06:00:43.841 | DEBUG    | __main__:_fetch_commune:304 -   Page 33: 125 records, has_more=True
+2026-04-29 06:00:44.591 | DEBUG    | __main__:_fetch_commune:304 -   Page 34: 128 records, has_more=True
+2026-04-29 06:00:45.343 | DEBUG    | __main__:_fetch_commune:304 -   Page 35: 133 records, has_more=True
+2026-04-29 06:00:46.099 | DEBUG    | __main__:_fetch_commune:304 -   Page 36: 135 records, has_more=True
+2026-04-29 06:00:46.862 | DEBUG    | __main__:_fetch_commune:304 -   Page 37: 128 records, has_more=True
+2026-04-29 06:00:47.616 | DEBUG    | __main__:_fetch_commune:304 -   Page 38: 123 records, has_more=True
+2026-04-29 06:00:48.382 | DEBUG    | __main__:_fetch_commune:304 -   Page 39: 138 records, has_more=True
+2026-04-29 06:00:49.134 | DEBUG    | __main__:_fetch_commune:304 -   Page 40: 129 records, has_more=True
+2026-04-29 06:00:49.896 | DEBUG    | __main__:_fetch_commune:304 -   Page 41: 129 records, has_more=True
+2026-04-29 06:00:50.725 | DEBUG    | __main__:_fetch_commune:304 -   Page 42: 112 records, has_more=True
+2026-04-29 06:00:51.540 | DEBUG    | __main__:_fetch_commune:304 -   Page 43: 148 records, has_more=True
+2026-04-29 06:00:52.328 | DEBUG    | __main__:_fetch_commune:304 -   Page 44: 114 records, has_more=True
+2026-04-29 06:00:53.075 | DEBUG    | __main__:_fetch_commune:304 -   Page 45: 135 records, has_more=True
+2026-04-29 06:00:53.851 | DEBUG    | __main__:_fetch_commune:304 -   Page 46: 117 records, has_more=True
+2026-04-29 06:00:54.607 | DEBUG    | __main__:_fetch_commune:304 -   Page 47: 132 records, has_more=True
+2026-04-29 06:00:55.365 | DEBUG    | __main__:_fetch_commune:304 -   Page 48: 136 records, has_more=True
+2026-04-29 06:00:56.119 | DEBUG    | __main__:_fetch_commune:304 -   Page 49: 136 records, has_more=True
+2026-04-29 06:00:56.877 | DEBUG    | __main__:_fetch_commune:304 -   Page 50: 125 records, has_more=True
+2026-04-29 06:00:57.643 | DEBUG    | __main__:_fetch_commune:304 -   Page 51: 132 records, has_more=True
+2026-04-29 06:00:58.442 | DEBUG    | __main__:_fetch_commune:304 -   Page 52: 144 records, has_more=True
+2026-04-29 06:00:59.171 | DEBUG    | __main__:_fetch_commune:304 -   Page 53: 48 records, has_more=False
+2026-04-29 06:00:59.172 | INFO     | __main__:scrape_all:605 -   6669 raw records
+2026-04-29 06:01:00.915 | INFO     | __main__:scrape_all:609 -   6669 parsed records
+Traceback (most recent call last):
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 750, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 733, in main
+    asyncio.run(scrape_all(
+    ~~~~~~~~~~~^^^^^^^^^^^^
+        engine,
+        ^^^^^^^
+    ...<10 lines>...
+        extra_cookie_files  = args.extra_cookie_files,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 620, in scrape_all
+    with engine.begin() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3257, in begin
+    with self.connect() as conn:
+         ~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3293, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2448, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\impl.py", line 175, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[29-04-2026  6:01:06,64] Done 
+[30-04-2026  6:00:02,16] Starting nightly datainmobiliaria scrape 
+2026-04-30 06:00:14.044 | INFO     | __main__:main:763 - --next-commune: picked 'Maipú'
+2026-04-30 06:00:43.475 | INFO     | __main__:_setup_context_with_cookies:416 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-30 06:00:51.439 | INFO     | __main__:_setup_context_with_cookies:466 - CSRF token acquired: yes
+2026-04-30 06:00:51.440 | INFO     | __main__:scrape_all:592 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-30 06:00:51.440 | INFO     | __main__:scrape_all:593 - Accounts configured: 1
+2026-04-30 06:00:51.441 | INFO     | __main__:scrape_all:594 - ============================================================
+2026-04-30 06:00:51.441 | INFO     | __main__:scrape_all:607 - Scraping: Maipú (account 1/1)
+2026-04-30 06:00:51.759 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 1: 137 records, has_more=True
+2026-04-30 06:00:53.362 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 2: 134 records, has_more=True
+2026-04-30 06:00:54.208 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 3: 117 records, has_more=True
+2026-04-30 06:00:55.123 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 4: 122 records, has_more=True
+2026-04-30 06:00:55.983 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 5: 134 records, has_more=True
+2026-04-30 06:00:56.912 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 6: 131 records, has_more=True
+2026-04-30 06:00:57.830 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 7: 132 records, has_more=True
+2026-04-30 06:00:58.744 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 8: 116 records, has_more=True
+2026-04-30 06:00:59.590 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 9: 142 records, has_more=True
+2026-04-30 06:01:00.485 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 10: 146 records, has_more=True
+2026-04-30 06:01:01.388 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 11: 141 records, has_more=True
+2026-04-30 06:01:02.277 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 12: 123 records, has_more=True
+2026-04-30 06:01:03.180 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 13: 135 records, has_more=True
+2026-04-30 06:01:04.118 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 14: 138 records, has_more=True
+2026-04-30 06:01:04.981 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 15: 138 records, has_more=True
+2026-04-30 06:01:05.846 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 16: 139 records, has_more=True
+2026-04-30 06:01:06.699 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 17: 125 records, has_more=True
+2026-04-30 06:01:07.564 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 18: 145 records, has_more=True
+2026-04-30 06:01:08.413 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 19: 130 records, has_more=True
+2026-04-30 06:01:09.294 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 20: 137 records, has_more=True
+2026-04-30 06:01:10.209 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 21: 134 records, has_more=True
+2026-04-30 06:01:11.292 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 22: 143 records, has_more=True
+2026-04-30 06:01:12.271 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 23: 131 records, has_more=True
+2026-04-30 06:01:13.189 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 24: 119 records, has_more=True
+2026-04-30 06:01:14.077 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 25: 128 records, has_more=True
+2026-04-30 06:01:14.955 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 26: 139 records, has_more=True
+2026-04-30 06:01:15.822 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 27: 137 records, has_more=True
+2026-04-30 06:01:16.814 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 28: 134 records, has_more=True
+2026-04-30 06:01:17.695 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 29: 119 records, has_more=True
+2026-04-30 06:01:18.574 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 30: 134 records, has_more=True
+2026-04-30 06:01:19.457 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 31: 139 records, has_more=True
+2026-04-30 06:01:20.328 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 32: 146 records, has_more=True
+2026-04-30 06:01:21.244 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 33: 123 records, has_more=True
+2026-04-30 06:01:22.153 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 34: 132 records, has_more=True
+2026-04-30 06:01:23.029 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 35: 135 records, has_more=True
+2026-04-30 06:01:23.914 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 36: 145 records, has_more=True
+2026-04-30 06:01:24.850 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 37: 135 records, has_more=True
+2026-04-30 06:01:25.715 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 38: 121 records, has_more=True
+2026-04-30 06:01:26.663 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 39: 141 records, has_more=True
+2026-04-30 06:01:27.644 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 40: 134 records, has_more=True
+2026-04-30 06:01:28.513 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 41: 123 records, has_more=True
+2026-04-30 06:01:29.390 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 42: 126 records, has_more=True
+2026-04-30 06:01:30.271 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 43: 122 records, has_more=True
+2026-04-30 06:01:31.182 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 44: 128 records, has_more=True
+2026-04-30 06:01:32.063 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 45: 127 records, has_more=True
+2026-04-30 06:01:33.018 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 46: 115 records, has_more=True
+2026-04-30 06:01:33.895 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 47: 127 records, has_more=True
+2026-04-30 06:01:34.735 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 48: 134 records, has_more=True
+2026-04-30 06:01:35.674 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 49: 144 records, has_more=True
+2026-04-30 06:01:36.572 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 50: 121 records, has_more=True
+2026-04-30 06:01:37.463 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 51: 114 records, has_more=True
+2026-04-30 06:01:38.354 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 52: 131 records, has_more=True
+2026-04-30 06:01:39.221 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 53: 131 records, has_more=True
+2026-04-30 06:01:40.156 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 54: 135 records, has_more=True
+2026-04-30 06:01:41.050 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 55: 127 records, has_more=True
+2026-04-30 06:01:41.937 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 56: 125 records, has_more=True
+2026-04-30 06:01:42.956 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 57: 132 records, has_more=True
+2026-04-30 06:01:43.841 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 58: 147 records, has_more=True
+2026-04-30 06:01:44.771 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 59: 127 records, has_more=True
+2026-04-30 06:01:45.716 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 60: 127 records, has_more=True
+2026-04-30 06:01:46.657 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 61: 141 records, has_more=True
+2026-04-30 06:01:47.591 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 62: 122 records, has_more=True
+2026-04-30 06:01:48.473 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 63: 108 records, has_more=True
+2026-04-30 06:01:49.348 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 64: 144 records, has_more=True
+2026-04-30 06:01:50.279 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 65: 128 records, has_more=True
+2026-04-30 06:01:51.227 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 66: 127 records, has_more=True
+2026-04-30 06:01:52.118 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 67: 118 records, has_more=True
+2026-04-30 06:01:53.052 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 68: 128 records, has_more=True
+2026-04-30 06:01:53.965 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 69: 118 records, has_more=True
+2026-04-30 06:01:54.891 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 70: 136 records, has_more=True
+2026-04-30 06:01:55.829 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 71: 152 records, has_more=True
+2026-04-30 06:01:56.732 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 72: 129 records, has_more=True
+2026-04-30 06:01:57.701 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 73: 120 records, has_more=True
+2026-04-30 06:01:58.665 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 74: 136 records, has_more=True
+2026-04-30 06:01:59.564 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 75: 130 records, has_more=True
+2026-04-30 06:02:00.482 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 76: 126 records, has_more=True
+2026-04-30 06:02:01.393 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 77: 132 records, has_more=True
+2026-04-30 06:02:02.274 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 78: 143 records, has_more=True
+2026-04-30 06:02:03.206 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 79: 118 records, has_more=True
+2026-04-30 06:02:04.152 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 80: 150 records, has_more=True
+2026-04-30 06:02:05.089 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 81: 137 records, has_more=True
+2026-04-30 06:02:06.039 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 82: 142 records, has_more=True
+2026-04-30 06:02:07.012 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 83: 141 records, has_more=True
+2026-04-30 06:02:07.913 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 84: 137 records, has_more=True
+2026-04-30 06:02:08.806 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 85: 134 records, has_more=True
+2026-04-30 06:02:09.771 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 86: 122 records, has_more=True
+2026-04-30 06:02:10.670 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 87: 129 records, has_more=True
+2026-04-30 06:02:11.620 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 88: 125 records, has_more=True
+2026-04-30 06:02:12.516 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 89: 121 records, has_more=True
+2026-04-30 06:02:13.424 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 90: 131 records, has_more=True
+2026-04-30 06:02:14.497 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 91: 138 records, has_more=True
+2026-04-30 06:02:15.402 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 92: 133 records, has_more=True
+2026-04-30 06:02:16.377 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 93: 118 records, has_more=True
+2026-04-30 06:02:17.305 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 94: 147 records, has_more=True
+2026-04-30 06:02:18.209 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 95: 143 records, has_more=True
+2026-04-30 06:02:19.255 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 96: 128 records, has_more=True
+2026-04-30 06:02:20.199 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 97: 103 records, has_more=True
+2026-04-30 06:02:21.138 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 98: 124 records, has_more=True
+2026-04-30 06:02:22.068 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 99: 118 records, has_more=True
+2026-04-30 06:02:22.975 | DEBUG    | __main__:_fetch_commune_streaming:309 -   Page 100: 139 records, has_more=True
+2026-04-30 06:02:23.605 | INFO     | __main__:scrape_all:673 -   Maipú: 11505 rows written — complete
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:689 - ============================================================
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:690 - DONE: 11505 rows written in 2.2min
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:695 - ============================================================
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:698 - Next steps:
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:699 -   py src/ingestion/clean_transactions.py
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:700 -   py src/ingestion/normalize_county.py
+2026-04-30 06:02:25.983 | INFO     | __main__:scrape_all:701 -   py src/features/build_features.py --skip-ieut
+2026-04-30 06:02:25.984 | INFO     | __main__:scrape_all:702 -   py src/models/hedonic_model.py
+[30-04-2026  6:02:26,20] Done 

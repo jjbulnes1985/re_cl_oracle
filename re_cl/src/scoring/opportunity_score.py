@@ -118,10 +118,11 @@ def build_model_scores_df(
     return scores_df
 
 
-def write_scores(df: pd.DataFrame, engine, dry_run: bool = False) -> int:
+def write_scores(df: pd.DataFrame, engine, dry_run: bool = False, profile_name: str = "default") -> int:
     """
     Writes scores to model_scores table.
-    Deletes existing rows for this model_version first (idempotent).
+    Deletes existing rows for (model_version, scoring_profile) first — idempotent per profile.
+    Multiple profiles coexist in the same table.
     """
     if dry_run:
         logger.info(f"[DRY RUN] Would write {len(df):,} rows to model_scores (version={MODEL_VERSION})")
@@ -130,11 +131,11 @@ def write_scores(df: pd.DataFrame, engine, dry_run: bool = False) -> int:
 
     with engine.begin() as conn:
         deleted = conn.execute(
-            text("DELETE FROM model_scores WHERE model_version = :v"),
-            {"v": MODEL_VERSION}
+            text("DELETE FROM model_scores WHERE model_version = :v AND scoring_profile = :p"),
+            {"v": MODEL_VERSION, "p": profile_name}
         ).rowcount
         if deleted > 0:
-            logger.info(f"Deleted {deleted:,} existing scores for version {MODEL_VERSION}")
+            logger.info(f"Deleted {deleted:,} existing scores for version {MODEL_VERSION} / profile {profile_name}")
 
     df.to_sql("model_scores", engine, if_exists="append", index=False,
               method="multi", chunksize=2000)
@@ -213,7 +214,7 @@ def main(dry_run: bool = False, profile_name: str = None) -> None:
     scores_df = compute_profile_score(scores_df, profile)
 
     # Write to DB
-    n = write_scores(scores_df, engine, dry_run=dry_run)
+    n = write_scores(scores_df, engine, dry_run=dry_run, profile_name=profile_name)
 
     if not dry_run:
         print_summary(engine)

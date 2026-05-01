@@ -1,0 +1,333 @@
+[22-04-2026 23:06:39,26] Comuna 1 iniciada 
+2026-04-22 23:06:40.051 | INFO     | __main__:main:575 - --next-commune: picked 'Santiago'
+2026-04-22 23:06:41.808 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:06:50.762 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:06:50.763 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:06:50.763 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:06:50.763 | INFO     | __main__:scrape_all:449 - Scraping: Santiago
+2026-04-22 23:06:52.049 | DEBUG    | __main__:_fetch_commune:283 -   Page 1: 167 records, has_more=True
+2026-04-22 23:06:53.451 | DEBUG    | __main__:_fetch_commune:283 -   Page 2: 127 records, has_more=True
+2026-04-22 23:06:54.686 | DEBUG    | __main__:_fetch_commune:283 -   Page 3: 110 records, has_more=True
+2026-04-22 23:06:55.547 | WARNING  | __main__:_fetch_commune:266 -   API error page 4: 402
+2026-04-22 23:06:55.548 | INFO     | __main__:scrape_all:477 -   404 raw records
+2026-04-22 23:06:55.648 | INFO     | __main__:scrape_all:481 -   404 parsed records
+2026-04-22 23:06:56.445 | INFO     | __main__:scrape_all:513 -   Written 404 rows (0 dupes skipped)
+2026-04-22 23:06:58.689 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:524 - DONE: 404 rows written in 0.3min
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:528 - ============================================================
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:531 - Next steps:
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:532 -   py src/ingestion/clean_transactions.py
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:533 -   py src/ingestion/normalize_county.py
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:534 -   py src/features/build_features.py --skip-ieut
+2026-04-22 23:06:58.690 | INFO     | __main__:scrape_all:535 -   py src/models/hedonic_model.py
+[22-04-2026 23:07:29,26] Comuna 2 iniciada 
+2026-04-22 23:07:30.135 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:07:30.854 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:07:39.362 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:07:39.362 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:07:39.362 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:07:39.363 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:07:39.733 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:07:40.094 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:07:40.313 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:07:40.313 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:07:40.313 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:07:40.315 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:07:40.315 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:08:11,15] Comuna 3 iniciada 
+2026-04-22 23:08:11.896 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:08:12.582 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:08:20.923 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:08:20.924 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:08:20.924 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:08:20.924 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:08:21.276 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:08:21.525 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:08:21.712 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:08:21.712 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:08:21.712 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:08:21.712 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:08:21.713 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:08:52,01] Comuna 4 iniciada 
+2026-04-22 23:08:52.724 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:08:53.418 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:09:01.621 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:09:01.621 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:09:01.622 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:09:01.622 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:09:01.977 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:09:02.330 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:09:02.519 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:09:02.520 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:09:02.520 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:09:02.521 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:09:02.521 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:09:33,13] Comuna 5 iniciada 
+2026-04-22 23:09:33.907 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:09:34.633 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:09:43.234 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:09:43.234 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:09:43.235 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:09:43.235 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:09:43.588 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:09:43.827 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:09:44.017 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:09:44.018 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:09:44.019 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:09:44.019 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:09:44.020 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:10:14,98] Comuna 6 iniciada 
+2026-04-22 23:10:15.889 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:10:16.597 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:10:24.608 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:10:24.609 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:10:24.610 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:10:24.610 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:10:24.851 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:10:25.089 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:10:25.271 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:10:25.272 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:10:25.272 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:10:25.273 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:10:25.273 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:10:56,24] Comuna 7 iniciada 
+2026-04-22 23:10:57.123 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:10:57.867 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:11:06.061 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:11:06.062 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:11:06.063 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:11:06.063 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:11:06.419 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:11:06.776 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:11:06.974 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:11:06.975 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:11:06.975 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:11:06.976 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:11:06.977 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:11:38,09] Comuna 8 iniciada 
+2026-04-22 23:11:38.951 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:11:39.715 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:11:48.152 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:11:48.153 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:11:48.154 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:11:48.154 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:11:48.407 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:11:48.762 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:11:48.923 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:11:48.923 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:11:48.923 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:11:48.924 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:11:48.924 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:12:20,16] Comuna 9 iniciada 
+2026-04-22 23:12:20.941 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:12:21.579 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:12:30.120 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:12:30.121 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:12:30.122 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:12:30.122 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:12:30.486 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:12:30.734 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:12:30.898 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:12:30.899 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:12:30.899 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:12:30.900 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:12:30.900 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:13:02,04] Comuna 10 iniciada 
+2026-04-22 23:13:02.980 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:13:03.657 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+Traceback (most recent call last):
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 598, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 583, in main
+    asyncio.run(scrape_all(
+    ~~~~~~~~~~~^^^^^^^^^^^^
+        engine,
+        ^^^^^^^
+    ...<8 lines>...
+        manual_login     = args.manual_login,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\jjbul\Dropbox\Trabajos (Material)\JJB\IA\Juan Montes\RE_CL\re_cl\src\scraping\datainmobiliaria.py", line 410, in scrape_all
+    await page.goto(SEARCH_PAGE, wait_until="domcontentloaded")
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\playwright\async_api\_generated.py", line 9045, in goto
+    await self._impl_obj.goto(
+        url=url, timeout=timeout, waitUntil=wait_until, referer=referer
+    )
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\playwright\_impl\_page.py", line 552, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\playwright\_impl\_frame.py", line 153, in goto
+    await self._channel.send(
+        "goto", self._navigation_timeout, locals_to_params(locals())
+    )
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\playwright\_impl\_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\jjbul\AppData\Local\Programs\Python\Python313\Lib\site-packages\playwright\_impl\_connection.py", line 559, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://datainmobiliaria.cl/reports/busqueda_poligono", waiting until "domcontentloaded"
+
+[22-04-2026 23:40:48,65] Comuna 1 iniciada 
+2026-04-22 23:40:49.510 | INFO     | __main__:main:575 - --next-commune: picked 'Providencia'
+2026-04-22 23:40:50.753 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:41:00.308 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:41:00.309 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:41:00.309 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:41:00.309 | INFO     | __main__:scrape_all:449 - Scraping: Providencia
+2026-04-22 23:41:01.514 | DEBUG    | __main__:_fetch_commune:283 -   Page 1: 145 records, has_more=True
+2026-04-22 23:41:03.018 | DEBUG    | __main__:_fetch_commune:283 -   Page 2: 150 records, has_more=True
+2026-04-22 23:41:04.623 | DEBUG    | __main__:_fetch_commune:283 -   Page 3: 139 records, has_more=True
+2026-04-22 23:41:05.546 | WARNING  | __main__:_fetch_commune:266 -   API error page 4: 402
+2026-04-22 23:41:05.546 | INFO     | __main__:scrape_all:477 -   434 raw records
+2026-04-22 23:41:05.665 | INFO     | __main__:scrape_all:481 -   434 parsed records
+2026-04-22 23:41:06.055 | INFO     | __main__:scrape_all:513 -   Written 434 rows (0 dupes skipped)
+2026-04-22 23:41:08.290 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:524 - DONE: 434 rows written in 0.3min
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:528 - ============================================================
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:531 - Next steps:
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:532 -   py src/ingestion/clean_transactions.py
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:533 -   py src/ingestion/normalize_county.py
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:534 -   py src/features/build_features.py --skip-ieut
+2026-04-22 23:41:08.291 | INFO     | __main__:scrape_all:535 -   py src/models/hedonic_model.py
+[22-04-2026 23:41:39,09] Comuna 2 iniciada 
+2026-04-22 23:41:40.073 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:41:40.835 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:41:50.007 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:41:50.008 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:41:50.009 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:41:50.009 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:41:50.286 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:41:50.695 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:41:50.814 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:41:50.814 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:41:50.814 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:41:50.815 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:41:50.815 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:42:20,88] Comuna 3 iniciada 
+2026-04-22 23:42:21.727 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:42:22.404 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:42:31.780 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:42:31.781 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:42:31.782 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:42:31.783 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:42:32.549 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:42:33.057 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:42:33.251 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:42:33.252 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:42:33.252 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:42:33.252 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:42:33.253 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:43:04,08] Comuna 4 iniciada 
+2026-04-22 23:43:04.887 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:43:05.518 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:43:14.900 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:43:14.901 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:43:14.901 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:43:14.902 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:43:15.319 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:43:15.735 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:43:15.904 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:43:15.905 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:43:15.906 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:43:15.907 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:43:15.907 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:43:47,02] Comuna 5 iniciada 
+2026-04-22 23:43:47.785 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:43:48.543 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:43:57.920 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:43:57.921 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:43:57.922 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:43:57.923 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:43:58.330 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:43:58.754 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:43:58.929 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:43:58.930 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:43:58.930 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:43:58.930 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:43:58.931 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:44:29,94] Comuna 6 iniciada 
+2026-04-22 23:44:30.721 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:44:31.371 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:44:40.580 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:44:40.581 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:44:40.582 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:44:40.582 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:44:41.001 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:44:41.417 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:44:41.591 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:44:41.592 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:44:41.593 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:44:41.593 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:44:41.594 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:45:12,05] Comuna 7 iniciada 
+2026-04-22 23:45:12.831 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:45:13.541 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:45:23.008 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:45:23.009 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:45:23.009 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:45:23.010 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:45:23.421 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:45:23.764 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:45:23.925 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:45:23.925 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:45:23.926 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:45:23.926 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:45:23.926 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:45:55,03] Comuna 8 iniciada 
+2026-04-22 23:45:55.918 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:45:56.622 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:46:05.705 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:46:05.705 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:46:05.706 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:46:05.706 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:46:06.122 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:46:06.541 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:46:06.754 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:46:06.755 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:46:06.756 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:46:06.756 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:46:06.757 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:46:37,32] Comuna 9 iniciada 
+2026-04-22 23:46:38.321 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:46:39.027 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:46:48.407 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:46:48.408 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:46:48.409 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:46:48.409 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:46:48.908 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:46:49.317 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:46:49.498 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:46:49.499 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:46:49.500 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:46:49.501 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:46:49.501 | INFO     | __main__:scrape_all:528 - ============================================================
+[22-04-2026 23:47:20,05] Comuna 10 iniciada 
+2026-04-22 23:47:20.917 | INFO     | __main__:main:575 - --next-commune: picked 'Las Condes'
+2026-04-22 23:47:21.705 | INFO     | __main__:scrape_all:370 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-22 23:47:31.024 | INFO     | __main__:scrape_all:414 - CSRF token acquired: yes
+2026-04-22 23:47:31.025 | INFO     | __main__:scrape_all:438 - Communes: 1 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-22 23:47:31.026 | INFO     | __main__:scrape_all:439 - ============================================================
+2026-04-22 23:47:31.026 | INFO     | __main__:scrape_all:449 - Scraping: Las Condes
+2026-04-22 23:47:31.449 | WARNING  | __main__:_fetch_commune:266 -   API error page 1: 402
+2026-04-22 23:47:31.853 | ERROR    | __main__:scrape_all:468 -   Quota exhausted (402). Stopping. Run again after midnight or add credentials.
+2026-04-22 23:47:32.057 | INFO     | __main__:scrape_all:523 - ============================================================
+2026-04-22 23:47:32.058 | INFO     | __main__:scrape_all:524 - DONE: 0 rows written in 0.2min
+2026-04-22 23:47:32.058 | WARNING  | __main__:scrape_all:526 - NOTE: Run stopped early — quota exhausted. Re-run after midnight.
+2026-04-22 23:47:32.058 | WARNING  | __main__:scrape_all:527 - TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.
+2026-04-22 23:47:32.058 | INFO     | __main__:scrape_all:528 - ============================================================

@@ -464,6 +464,136 @@ FASE 10. IMPLEMENTACIÓN EN VS CODE
 - No escribas todo el software de una vez.
 - Construye primero la base sólida.
 
+---
+
+## ESTADO DE IMPLEMENTACIÓN (actualizado 2026-04-23)
+
+La plataforma RE_CL está completamente implementada y operativa. A continuación el estado real:
+
+### Stack implementado
+| Capa | Tecnología | Estado |
+|------|-----------|--------|
+| Base de datos | PostgreSQL 15 + PostGIS | Operativo |
+| ETL/Pipelines | Python 3.11, Pandas, SQLAlchemy | Operativo |
+| ML/Scoring | XGBoost, scikit-learn, SHAP | R²=0.6850 |
+| GIS/Mapas | GeoPandas, Folium | Operativo |
+| Dashboard | Streamlit (8 tabs) | Operativo |
+| Frontend | React + Deck.gl (8 tabs) | Operativo |
+| API | FastAPI (28 endpoints) | Operativo |
+| Orquestación | Prefect V2 | Operativo |
+| Scraping | Playwright (PI, Toctoc, DI) | 5,003 listings + DI 3/40 comunas |
+| Docker | Docker Compose + Nginx | Operativo |
+
+### Datos reales procesados
+- **transactions_raw**: 1,386,787 filas (CBR RM 2008-2018)
+- **transactions_clean**: 783,637 filas
+- **transaction_features**: 734,334 filas (incl. 16 ieut spatial features)
+- **model_scores**: 961,126 (959,256 transactions + 1,870 scraped)
+- **v_opportunities**: 808,860 oportunidades
+- **scraped_listings**: 5,003 listings (PI + Toctoc)
+- **Modelo**: XGBoost hedónico, R²=0.6850, RMSE=39.9%
+
+### Data Inmobiliaria — progreso acumulación CBR 2019-2026
+| Comuna | Filas | Fecha |
+|--------|-------|-------|
+| Santiago | 404 | 2026-04-22 |
+| Providencia | 434 | 2026-04-22 |
+| Las Condes | 142 | 2026-04-23 |
+| Ñuñoa | 15,637 | 2026-04-23 |
+| La Florida | 14,127 | 2026-04-24 |
+| Maipú | 11,505 | 2026-04-30 |
+| **Total** | **42,249** | **6/40 comunas** |
+
+**Setup multi-cuenta (2026-04-30):** 3 cuentas Google configuradas (`datainmobiliaria_cookies.json`, `di_cookies_2.json`, `di_cookies_3.json`). Quota es **por IP** (~15k rows/día compartido entre cuentas desde la misma IP). Task Scheduler `RE_CL_DataInmobiliaria_Daily` corre a las 06:00 diario con `run_di_bulk_multi.py` — rota automáticamente entre cuentas al llegar a 402. Para refrescar cookies: `py scripts/di_setup_accounts.py --account N --email E --password P`.
+
+### Estado pipeline (2026-04-30)
+
+| Tabla | Rows |
+|-------|------|
+| `transactions_raw` | 1,429,036 |
+| `transactions_clean` | 824,333 |
+| `transaction_features` | 774,602 |
+| `model_scores` | 2,079,680 (4 perfiles × 519,920) |
+| `v_opportunities` | 1,737,208 |
+| `opportunity.candidates` | 829,336 (824k CBR + 5k scraped, 15,845 eriazo) |
+| `opportunity.valuations` | 1,611,451 (806k comparables + 805k triangulated) |
+| `opportunity.scores` | 866,934 (829k as_is + 37k gas_station) |
+| `opportunity.competitors` | 2,242 (485 gas, 1,212 pharmacy, 545 supermarket) |
+
+**Modelo:** XGBoost hedónico v1.0, R²=0.6850, RMSE=39.91%, entrenado sobre 519,920 rows.
+
+### Opportunity Engine v2 (2026-04-30)
+
+Motor universal de detección de oportunidades de compra — cualquier tipo de propiedad.
+
+**Schema:** `opportunity.*` — 8 tablas + vista `v_top_opportunities`
+- `property_types` — 13 tipos (residencial/comercial/industrial/terreno + 6 usos como overlay)
+- `investor_profiles` — 6 perfiles (value/growth/income/redevelopment/flipper/operator)
+- `candidates` — 829k propiedades candidatas de 2 fuentes (CBR + scraped)
+- `valuations` — multi-método (comparables + cap_inverse + triangulated)
+- `scores` — scoring universal + overlays de uso específico
+- `competitors` — 2,242 competidores OSM (gas stations, farmacias, supermercados)
+
+**Gas station overlay (primer uso implementado):**
+- 37,598 candidatos scored con: accessibility, demand, competition (radio 2km calibrado)
+- `max_payable_uf` via cap inverso (8% mid, INFO_NO_FIDEDIGNA, banda ±150 bps)
+- Cross-validation Las Condes: **VALID** (251/2508 en top decile, score ≥ 0.70)
+- Top oportunidad Maipú: score 0.82, max_payable 262,500 UF
+
+**API:** 6 endpoints `/opportunity/*` (candidates, competitors, use-cases, profiles, summary)
+**Frontend:** tab "Oportunidades" (9no tab) con sidebar filtros + lista top 10 + ficha detalle
+
+**DUDA:: pendientes (Fase 2):**
+- `DUDA::zonificacion_PRC_comunas` — usar plan regulador real en vez de default=1.0
+- `DUDA::road_accessibility_OSM` — distancia a vías estructurantes (requires osm2pgsql)
+- `DUDA::bank_branch_overpass` — falló en ingesta; reintentar
+- `DUDA::cap_rate_gas_station_Chile` — validar con tasador Tinsa/GPS
+- `DUDA::NOI_gas_station_Chile` — validar con operador (Copec/Enex/Aramco)
+
+**Commits:** 8 commits atómicos `feat(opportunity): hour N - ...`
+
+### Fases completadas
+- **Fase 1-3**: Entorno, ingesta CSV, limpieza y normalización
+- **Fase 4**: Feature engineering (precio, espacial, temporal, thesis, OSM, GTFS, ieut)
+- **Fase 5**: Modelo hedónico XGBoost + scoring 6 perfiles + SHAP
+- **Fase 6**: Mapas Folium + commune ranking
+- **Fase 7**: Dashboard Streamlit (8 tabs) + API FastAPI (28 endpoints)
+- **Fase 8 (V2-V6.7)**: Prefect, React frontend, Docker, alertas, auth JWT, scrapers PI+Toctoc
+- **Fase 8 (Phase 8)**: CBR 2017-2018 + ieut spatial (16 features) + calibración comunal + terrenos
+- **Fase 9 (Phase 9)**: Scraping paralelo — PI+Toctoc concurrent (ThreadPoolExecutor), DI 3 cuentas automático
+- **2026-04-30**: Pipeline enriquecimiento DI ejecutado — 42,249 rows DI integrados al modelo completo
+- **2026-04-30**: Opportunity Engine v2 — motor universal de oportunidades de compra completado
+
+### Comandos principales
+```bash
+# Pipeline completo
+cd re_cl && py scripts/setup_pipeline.py
+
+# Scraping paralelo (nuevo — Phase 9)
+py scripts/run_parallel_scrape.py          # PI + Toctoc + DI + normalize + score
+py scripts/validate_parallel_scrape.py     # verificar resultados
+
+# Data Inmobiliaria (CBR 2019-2026, quota ~15k/IP/día — multi-cuenta automático)
+py scripts/run_di_bulk_multi.py --min-year 2019        # corre todas las cuentas en rotación
+py src/scraping/datainmobiliaria.py --check-quota      # verificar quota (200=ok, 402=agotado)
+py src/scraping/datainmobiliaria.py --list-status      # progreso X/40 comunas
+py scripts/di_setup_accounts.py --list                 # ver cuentas configuradas
+py scripts/di_setup_accounts.py --account N --email E --password P  # agregar/refrescar cuenta N
+
+# Post-procesamiento tras cada sesión DI
+py src/ingestion/normalize_county.py
+py src/scoring/scraped_to_scored.py
+
+# Stack completo
+cd re_cl && docker-compose up -d
+```
+
+### Próximos pasos prioritarios
+1. **Data Inmobiliaria**: completar las 40 comunas RM — **4/40 done** (Santiago, Providencia, Las Condes, Maipú). Task Scheduler corre automático a las 06:00 con 3 cuentas en rotación (~15k rows/día por IP). Para acelerar: usar VPN con IP distinta.
+2. **Reentrenar modelo** después de cargar datos DI 2019-2026 (esperar R² > 0.70)
+3. **Yapo**: necesita rotación de proxies o cookie manual (bloqueado por reCAPTCHA v3)
+4. **MercadoLibre**: necesita OAuth2 del portal de desarrolladores ML
+
 FASE 11. VALIDACIÓN INSTITUCIONAL
 - Diseña cómo probar si la plataforma realmente encuentra valor.
 - Propón:

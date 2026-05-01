@@ -21,6 +21,11 @@ Authenticated strategy (recommended):
   Set DATA_INMOBILIARIA_EMAIL + DATA_INMOBILIARIA_PASSWORD in .env
   and run all 40 communes in one session (~90 min).
 
+Multi-account rotation:
+  When a 402 is encountered, automatically rotate to the next cookie file and
+  retry the current commune from page 1. Use --extra-cookie-files to pass
+  additional accounts.
+
 Usage:
   py src/scraping/datainmobiliaria.py --dry-run
   py src/scraping/datainmobiliaria.py --commune "Las Condes" --min-year 2019
@@ -28,6 +33,9 @@ Usage:
   py src/scraping/datainmobiliaria.py --next-commune            # resume: pick next unscraped commune
   py src/scraping/datainmobiliaria.py --fuente catastro         # cadastral data
   py src/scraping/datainmobiliaria.py --check-quota             # test if API is accessible
+  py src/scraping/datainmobiliaria.py --cookie-file data/processed/di_cookies_acct2.json
+  py src/scraping/datainmobiliaria.py --extra-cookie-files data/processed/di_cookies_acct2.json data/processed/di_cookies_acct3.json
+  py src/scraping/datainmobiliaria.py --list-status             # show checkpoint + configured accounts
 """
 
 import argparse
@@ -37,6 +45,7 @@ import os
 import re
 import sys
 import time
+from collections import deque
 from pathlib import Path
 from typing import Optional
 
@@ -51,27 +60,36 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 # Checkpoint file: tracks which communes have been successfully scraped
 CHECKPOINT_FILE = Path(__file__).resolve().parents[2] / "data" / "processed" / "datainmobiliaria_checkpoint.json"
 
+# Default cookie file
+COOKIE_FILE = Path(__file__).resolve().parents[2] / "data" / "processed" / "datainmobiliaria_cookies.json"
+
 
 def _load_checkpoint() -> dict:
-    """Load checkpoint data. Returns {commune: {"rows": N, "ts": "..."}}."""
+    """Load checkpoint data. Returns {commune: {"rows": N, "ts": "...", "partial": bool}}."""
     if CHECKPOINT_FILE.exists():
         try:
-            return json.loads(CHECKPOINT_FILE.read_text())
+            return json.loads(CHECKPOINT_FILE.read_text(encoding="utf-8"))
         except Exception:
             pass
     return {}
 
 
-def _save_checkpoint(commune: str, rows_written: int) -> None:
+def _save_checkpoint(commune: str, rows_written: int, partial: bool = False) -> None:
     CHECKPOINT_FILE.parent.mkdir(parents=True, exist_ok=True)
     data = _load_checkpoint()
-    data[commune] = {"rows": rows_written, "ts": pd.Timestamp.now().isoformat()}
-    CHECKPOINT_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    entry: dict = {"rows": rows_written, "ts": pd.Timestamp.now().isoformat()}
+    if partial:
+        entry["partial"] = True
+    elif "partial" in data.get(commune, {}):
+        pass  # will be replaced by new entry without partial flag
+    data[commune] = entry
+    CHECKPOINT_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def _next_unscraped_commune() -> Optional[str]:
-    """Return the first commune not yet in checkpoint."""
-    done = set(_load_checkpoint().keys())
+    """Return the first commune not yet fully scraped (excludes partial entries)."""
+    cp = _load_checkpoint()
+    done = {k for k, v in cp.items() if not v.get("partial")}
     for name in RM_COMMUNE_POLYGONS:
         if name not in done:
             return name
@@ -234,16 +252,21 @@ def _parse_record(rec: dict, commune: str) -> Optional[dict]:
         return None
 
 
-async def _fetch_commune(
+async def _fetch_commune_streaming(
     page,
     commune: str,
     polygon: list,
     fuente: str = "ventas",
     max_pages: int = 999,
     min_year: Optional[int] = None,
-) -> list[dict]:
-    """Paginate through all records for a commune polygon."""
-    records = []
+):
+    """Async generator that yields (batch, quota_hit) one page at a time.
+
+    Yields:
+        (records: list[dict], quota_hit: bool)
+        quota_hit=True on the final yield when 402 is received.
+        quota_hit=False for normal pages; after the last page the generator ends.
+    """
     p_num = 1
 
     while p_num <= max_pages:
@@ -263,14 +286,18 @@ async def _fetch_commune(
         }}''')
 
         if "error" in result:
-            logger.warning(f"  API error page {p_num}: {result['error']}")
-            break
+            status = result["error"]
+            if status == 402:
+                logger.warning(f"  API 402 on page {p_num} — quota exhausted")
+                yield [], True
+                return
+            logger.warning(f"  API error page {p_num}: {status}")
+            return
 
         batch = result.get("resultados", [])
         if not batch:
-            break
+            return
 
-        # Filter by min_year if specified
         if min_year:
             def _year(rec):
                 d = str(rec.get("date_inscripcion") or "")
@@ -278,35 +305,188 @@ async def _fetch_commune(
                 return int(m.group(1)) if m else 0
             batch = [r for r in batch if _year(r) >= min_year]
 
-        records.extend(batch)
         has_more = result.get("has_more", False)
         logger.debug(f"  Page {p_num}: {len(batch)} records, has_more={has_more}")
 
+        yield batch, False
+
         if not has_more:
-            break
+            return
 
         p_num += 1
         await asyncio.sleep(0.5)
 
-    return records
+
+def _save_cookies(cookies: list, path: Optional[Path] = None) -> None:
+    target = path or COOKIE_FILE
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(cookies, indent=2, ensure_ascii=False))
+    logger.info(f"Session cookies saved → {target}")
 
 
-COOKIE_FILE = Path(__file__).resolve().parents[2] / "data" / "processed" / "datainmobiliaria_cookies.json"
-
-
-def _save_cookies(cookies: list) -> None:
-    COOKIE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    COOKIE_FILE.write_text(json.dumps(cookies, indent=2, ensure_ascii=False))
-    logger.info(f"Session cookies saved → {COOKIE_FILE}")
-
-
-def _load_cookies() -> list:
-    if COOKIE_FILE.exists():
+def _load_cookies(path: Optional[Path] = None) -> list:
+    target = path or COOKIE_FILE
+    if target.exists():
         try:
-            return json.loads(COOKIE_FILE.read_text())
+            return json.loads(target.read_text())
         except Exception:
             pass
     return []
+
+
+def _discover_cookie_files() -> list[Path]:
+    """Return all cookie files in data/processed/ matching di_cookies_*.json plus the default."""
+    processed_dir = COOKIE_FILE.parent
+    files = []
+    if COOKIE_FILE.exists():
+        files.append(COOKIE_FILE)
+    for p in sorted(processed_dir.glob("di_cookies_*.json")):
+        if p not in files:
+            files.append(p)
+    return files
+
+
+def _credentials_for_cookie_file(cookie_file: Optional[Path]) -> tuple[Optional[str], Optional[str]]:
+    """Return (email, password) from env vars for a given cookie file.
+
+    Looks for DATA_INMOBILIARIA_EMAIL_N / PASSWORD_N where N matches the
+    cookie filename suffix (di_cookies_2.json → N=2). Falls back to the
+    unnumbered DATA_INMOBILIARIA_EMAIL / PASSWORD for the default file.
+    """
+    fname = cookie_file.name if cookie_file else COOKIE_FILE.name
+    # di_cookies_2.json → "2", di_cookies_3.json → "3", default → ""
+    import re as _re
+    m = _re.search(r"_(\d+)\.json$", fname)
+    suffix = m.group(1) if m else ""
+    if suffix:
+        email = os.getenv(f"DATA_INMOBILIARIA_EMAIL_{suffix}")
+        pwd   = os.getenv(f"DATA_INMOBILIARIA_PASSWORD_{suffix}")
+    else:
+        email = os.getenv("DATA_INMOBILIARIA_EMAIL")
+        pwd   = os.getenv("DATA_INMOBILIARIA_PASSWORD")
+    return email or None, pwd or None
+
+
+async def _auto_login(page, context, email: str, password: str, cookie_file: Optional[Path]) -> bool:
+    """Attempt email+password login. Returns True on success."""
+    logger.info(f"  Auto-login as {email}...")
+    try:
+        await page.goto(LOGIN_URL, wait_until="domcontentloaded")
+        await page.wait_for_timeout(2000)
+        await page.fill('input[type="email"], #user_email', email)
+        await page.fill('input[type="password"], #user_password', password)
+        await page.click('input[type="submit"], button[type="submit"]')
+        await page.wait_for_timeout(3000)
+        if "sign_in" not in page.url:
+            cookies = await context.cookies()
+            _save_cookies(cookies, cookie_file)
+            logger.info(f"  Auto-login successful — cookies refreshed")
+            return True
+        else:
+            logger.warning(f"  Auto-login failed (wrong credentials?)")
+            return False
+    except Exception as e:
+        logger.warning(f"  Auto-login error: {e}")
+        return False
+
+
+async def _setup_context_with_cookies(
+    browser,
+    cookie_file: Optional[Path],
+    manual_login: bool,
+    email: Optional[str],
+    password: Optional[str],
+    headless: bool,
+) -> tuple:
+    """Create a new browser context, apply cookies or auto-login, navigate to SEARCH_PAGE.
+
+    Session expiry detection: if after loading cookies the page redirects to /sign_in,
+    the session has expired. We then attempt auto-login using credentials from env vars.
+
+    Returns (context, page, csrf_token).
+    """
+    context = await browser.new_context(
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    )
+
+    saved_cookies = _load_cookies(cookie_file)
+    if saved_cookies and not manual_login:
+        await context.add_cookies(saved_cookies)
+        label = cookie_file.name if cookie_file else COOKIE_FILE.name
+        logger.info(f"Restored {len(saved_cookies)} cookies from {label}")
+
+    page = await context.new_page()
+
+    if manual_login:
+        logger.info("Opening browser for manual login...")
+        await page.goto(LOGIN_URL, wait_until="domcontentloaded")
+        print("\n" + "="*60)
+        print("  Browser abierto en datainmobiliaria.cl")
+        print("  1. Haz login con Google en el browser")
+        print("  2. Espera a que cargue la página principal")
+        print("  3. Vuelve aquí y presiona ENTER para continuar")
+        print("="*60)
+        await asyncio.get_event_loop().run_in_executor(None, input, "  → Presiona ENTER cuando estés logueado: ")
+        await page.wait_for_timeout(2000)
+        logger.info(f"  Guardando cookies desde: {page.url}")
+        cookies = await context.cookies()
+        _save_cookies(cookies, cookie_file)
+    else:
+        # Resolve credentials for this account (env vars take priority over caller args)
+        acct_email, acct_pwd = _credentials_for_cookie_file(cookie_file)
+        if not acct_email:
+            acct_email, acct_pwd = email, password
+
+        if not saved_cookies and acct_email and acct_pwd:
+            # No saved session — login fresh
+            await _auto_login(page, context, acct_email, acct_pwd, cookie_file)
+
+    # Navigate to search page and detect session expiry
+    await page.goto(SEARCH_PAGE, wait_until="domcontentloaded")
+    await page.wait_for_timeout(3000)
+
+    # If redirected to login page, session has expired — try auto-login
+    if "sign_in" in page.url:
+        acct_email, acct_pwd = _credentials_for_cookie_file(cookie_file)
+        if not acct_email:
+            acct_email, acct_pwd = email, password
+        if acct_email and acct_pwd:
+            logger.warning("  Session expired — attempting auto-login")
+            ok = await _auto_login(page, context, acct_email, acct_pwd, cookie_file)
+            if ok:
+                await page.goto(SEARCH_PAGE, wait_until="domcontentloaded")
+                await page.wait_for_timeout(3000)
+            else:
+                logger.warning("  Auto-login failed — will scrape as guest (quota may be limited)")
+        else:
+            logger.warning("  Session expired and no credentials available for this account")
+            logger.warning("  Add DATA_INMOBILIARIA_EMAIL[_N] / PASSWORD[_N] to .env for auto-login")
+
+    csrf = await page.evaluate('() => document.querySelector("meta[name=csrf-token]")?.content || ""')
+    logger.info(f"CSRF token acquired: {'yes' if csrf else 'no'}")
+
+    return context, page, csrf
+
+
+def _write_page_to_db(engine, parsed: list[dict], commune: str) -> int:
+    """Write a parsed page to DB, skipping duplicates. Returns new rows written."""
+    if not parsed:
+        return 0
+    df = pd.DataFrame(parsed)
+    with engine.begin() as conn:
+        roles = df["id_role"].dropna().unique().tolist()
+        existing: set = set()
+        if roles:
+            res = conn.execute(
+                text("SELECT id_role FROM transactions_raw WHERE id_role = ANY(:roles) AND data_source='data_inmobiliaria'"),
+                {"roles": roles},
+            )
+            existing = {r[0] for r in res}
+        new_rows = df[~df["id_role"].isin(existing)] if existing else df
+        if new_rows.empty:
+            return 0
+        new_rows.to_sql("transactions_raw", conn, if_exists="append", index=False, method="multi")
+        return len(new_rows)
 
 
 async def scrape_all(
@@ -320,8 +500,17 @@ async def scrape_all(
     use_checkpoint: bool = True,
     check_quota_only: bool = False,
     manual_login: bool = False,
+    cookie_file: Optional[Path] = None,
+    extra_cookie_files: Optional[list[Path]] = None,
 ) -> int:
-    """Returns number of rows written. Raises RuntimeError on quota exhaustion."""
+    """Stream-scrape communes, writing to DB page-by-page so partial progress is never lost.
+
+    Account rotation on 402:
+    - 0 rows written for this commune → rotate and retry same commune from page 1.
+    - >0 rows written (partial commune) → save partial checkpoint, rotate and continue
+      with next commune. On the next daily run the partial commune is retried; dedup
+      via id_role handles any overlap.
+    """
     try:
         from playwright.async_api import async_playwright
     except ImportError:
@@ -330,24 +519,33 @@ async def scrape_all(
     if communes is None:
         communes = list(RM_COMMUNE_POLYGONS.keys())
 
-    # Skip already-scraped communes when using checkpoint
+    # Skip fully-scraped communes (partial ones are retried)
     if use_checkpoint and not dry_run and not check_quota_only:
         checkpoint = _load_checkpoint()
-        communes_todo = [c for c in communes if c not in checkpoint]
+        done = {k for k, v in checkpoint.items() if not v.get("partial")}
+        communes_todo = [c for c in communes if c not in done]
         skipped = len(communes) - len(communes_todo)
         if skipped:
-            logger.info(f"Checkpoint: skipping {skipped} already-scraped communes")
+            logger.info(f"Checkpoint: skipping {skipped} fully-scraped communes")
         communes = communes_todo
 
     if not communes and not check_quota_only:
         logger.info("All communes already scraped per checkpoint. Done.")
         return 0
 
-    # Check credentials for optional login
+    primary_cookie = cookie_file
+    rotation_files: deque[Optional[Path]] = deque([primary_cookie])
+    if extra_cookie_files:
+        for ef in extra_cookie_files:
+            if ef not in rotation_files:
+                rotation_files.append(ef)
+
+    total_accounts = len(rotation_files)
+    current_account_idx = 1
+
     email    = os.getenv("DATA_INMOBILIARIA_EMAIL")
     password = os.getenv("DATA_INMOBILIARIA_PASSWORD")
 
-    # manual_login forces headed mode
     if manual_login:
         headless = False
 
@@ -359,172 +557,141 @@ async def scrape_all(
             headless=headless,
             args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
         )
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+
+        current_cookie_file = rotation_files[0]
+        context, page, csrf = await _setup_context_with_cookies(
+            browser, current_cookie_file, manual_login, email, password, headless
         )
 
-        # Restore saved cookies if available (from a prior --manual-login session)
-        saved_cookies = _load_cookies()
-        if saved_cookies and not manual_login:
-            await context.add_cookies(saved_cookies)
-            logger.info(f"Restored {len(saved_cookies)} cookies from {COOKIE_FILE.name}")
-
-        page = await context.new_page()
-
-        # --manual-login: open browser, let user do Google OAuth, then press Enter
-        if manual_login:
-            logger.info("Opening browser for manual login...")
-            await page.goto(LOGIN_URL, wait_until="domcontentloaded")
-            print("\n" + "="*60)
-            print("  Browser abierto en datainmobiliaria.cl")
-            print("  1. Haz login con Google en el browser")
-            print("  2. Espera a que cargue la página principal")
-            print("  3. Vuelve aquí y presiona ENTER para continuar")
-            print("="*60)
-            await asyncio.get_event_loop().run_in_executor(None, input, "  → Presiona ENTER cuando estés logueado: ")
-            await page.wait_for_timeout(2000)
-            logger.info(f"  Guardando cookies desde: {page.url}")
-            cookies = await context.cookies()
-            _save_cookies(cookies)
-
-        # Optional email/password login (for non-Google accounts)
-        elif email and password and not saved_cookies:
-            logger.info(f"Logging in as {email}...")
-            await page.goto(LOGIN_URL, wait_until="domcontentloaded")
-            await page.wait_for_timeout(2000)
-            try:
-                await page.fill('input[type="email"], #user_email', email)
-                await page.fill('input[type="password"], #user_password', password)
-                await page.click('input[type="submit"], button[type="submit"]')
-                await page.wait_for_timeout(3000)
-                if "sign_in" not in page.url:
-                    logger.info("  Login successful")
-                    cookies = await context.cookies()
-                    _save_cookies(cookies)
-                else:
-                    logger.warning("  Login may have failed — continuing as guest")
-            except Exception as e:
-                logger.warning(f"  Login error: {e} — continuing as guest")
-
-        # Load the search page to get CSRF token + session state
-        await page.goto(SEARCH_PAGE, wait_until="domcontentloaded")
-        await page.wait_for_timeout(3000)
-
-        csrf = await page.evaluate('() => document.querySelector("meta[name=csrf-token]")?.content || ""')
-        logger.info(f"CSRF token acquired: {'yes' if csrf else 'no'}")
-
-        # --check-quota: probe one small request to see if API is accessible
         if check_quota_only:
             test_polygon = list(RM_COMMUNE_POLYGONS.values())[0]
-            body = {"polygon": test_polygon, "fuente": fuente, "page": 1}
-            result = await page.evaluate(f'''async () => {{
-                const r = await fetch('/reports/busqueda_poligono_data', {{
-                    method: 'POST',
-                    headers: {{'Content-Type':'application/json','Accept':'application/json','X-CSRF-Token': document.querySelector('meta[name=csrf-token]')?.content||''}},
-                    body: JSON.stringify({json.dumps(body)})
-                }});
-                return {{status: r.status}};
-            }}''')
-            status = result.get("status", 0)
+            statuses = []
+            for probe_page in [1, 2]:
+                body = {"polygon": test_polygon, "fuente": fuente, "page": probe_page}
+                result = await page.evaluate(f'''async () => {{
+                    const r = await fetch('/reports/busqueda_poligono_data', {{
+                        method: 'POST',
+                        headers: {{'Content-Type':'application/json','Accept':'application/json','X-CSRF-Token': document.querySelector('meta[name=csrf-token]')?.content||''}},
+                        body: JSON.stringify({json.dumps(body)})
+                    }});
+                    return {{status: r.status}};
+                }}''')
+                statuses.append(result.get("status", 0))
+                if result.get("status") == 402:
+                    break
+            status = statuses[-1]
             if status == 200:
-                logger.info("Quota check: API accessible (200). Ready to scrape.")
+                logger.info(f"Quota check: API accessible (200 on page {len(statuses)}). Ready to scrape.")
             elif status == 402:
-                logger.warning("Quota check: 402 — guest quota exhausted. Wait until midnight or add credentials to .env")
+                logger.warning("Quota check: 402 — quota exhausted. Wait until midnight or switch session.")
             else:
                 logger.warning(f"Quota check: unexpected status {status}")
             await browser.close()
             return 0
 
         logger.info(f"Communes: {len(communes)} | fuente={fuente} | min_year={min_year} | max_pages={max_pages}")
+        logger.info(f"Accounts configured: {total_accounts}")
         logger.info("=" * 60)
 
-        quota_exhausted = False
+        all_accounts_exhausted = False
+        commune_idx = 0
 
-        for commune in communes:
+        while commune_idx < len(communes):
+            commune = communes[commune_idx]
             polygon = RM_COMMUNE_POLYGONS.get(commune)
             if not polygon:
                 logger.warning(f"No polygon defined for {commune}, skipping")
+                commune_idx += 1
                 continue
 
-            logger.info(f"Scraping: {commune}")
-            raw_records = await _fetch_commune(
+            logger.info(f"Scraping: {commune} (account {current_account_idx}/{total_accounts})")
+
+            commune_rows = 0   # rows written for this commune in this session
+            quota_hit    = False
+
+            async for batch, is_quota in _fetch_commune_streaming(
                 page, commune, polygon, fuente=fuente,
                 max_pages=max_pages, min_year=min_year,
-            )
-
-            # Detect quota exhaustion: 0 records AND error on page 1 means 402
-            if not raw_records:
-                # Do a quick probe to confirm quota vs genuinely empty commune
-                probe_body = {"polygon": polygon, "fuente": fuente, "page": 1}
-                probe = await page.evaluate(f'''async () => {{
-                    const r = await fetch('/reports/busqueda_poligono_data', {{
-                        method: 'POST',
-                        headers: {{'Content-Type':'application/json','Accept':'application/json','X-CSRF-Token': document.querySelector('meta[name=csrf-token]')?.content||''}},
-                        body: JSON.stringify({json.dumps(probe_body)})
-                    }});
-                    return {{status: r.status}};
-                }}''')
-                if probe.get("status") == 402:
-                    logger.error(f"  Quota exhausted (402). Stopping. Run again after midnight or add credentials.")
-                    quota_exhausted = True
+            ):
+                if is_quota:
+                    quota_hit = True
                     break
-                else:
-                    logger.info(f"  No records found for {commune} (status={probe.get('status')})")
-                    if use_checkpoint and not dry_run:
-                        _save_checkpoint(commune, 0)
+                if not batch:
                     continue
 
-            logger.info(f"  {len(raw_records)} raw records")
+                parsed = [_parse_record(r, commune) for r in batch]
+                parsed = [r for r in parsed if r]
 
-            parsed = [_parse_record(r, commune) for r in raw_records]
-            parsed = [r for r in parsed if r]
-            logger.info(f"  {len(parsed)} parsed records")
+                if dry_run:
+                    logger.info(f"  [DRY RUN] Page: {len(parsed)} rows")
+                    continue
 
-            if dry_run:
-                logger.info(f"  [DRY RUN] Would insert {len(parsed)} rows for {commune}")
-                if parsed:
-                    logger.info(f"  Sample: year={parsed[0].get('year')} uf={parsed[0].get('uf_value')} uf_m2={parsed[0].get('uf_m2_u')}")
-                continue
+                n = _write_page_to_db(engine, parsed, commune)
+                commune_rows   += n
+                total_written  += n
 
-            # Upsert into transactions_raw (skip existing roles)
-            df = pd.DataFrame(parsed)
-            with engine.begin() as conn:
-                existing = set()
-                roles = tuple(df["id_role"].dropna().unique().tolist())
-                if roles:
-                    res = conn.execute(
-                        text("SELECT id_role FROM transactions_raw WHERE id_role = ANY(:roles) AND data_source='data_inmobiliaria'"),
-                        {"roles": list(roles)}
+            if quota_hit:
+                rotation_files.popleft()
+                if rotation_files:
+                    current_account_idx += 1
+                    next_cookie = rotation_files[0]
+                    next_label  = next_cookie.name if next_cookie else COOKIE_FILE.name
+                    logger.warning(
+                        f"Quota exhausted on account {current_account_idx - 1} "
+                        f"— switching to account {current_account_idx}/{total_accounts} ({next_label})"
                     )
-                    existing = {r[0] for r in res}
+                    await context.close()
+                    context, page, csrf = await _setup_context_with_cookies(
+                        browser, next_cookie, False, email, password, headless
+                    )
+                    if commune_rows == 0:
+                        # Nothing was written yet — retry same commune with fresh account
+                        logger.info(f"  Retrying {commune} from page 1 (0 rows written so far)")
+                        continue
+                    else:
+                        # Partial data saved — checkpoint as partial, advance to next commune
+                        logger.info(
+                            f"  {commune}: {commune_rows} rows written before quota hit "
+                            f"— saved as partial, continuing with next commune"
+                        )
+                        if use_checkpoint and not dry_run:
+                            _save_checkpoint(commune, commune_rows, partial=True)
+                        commune_idx += 1
+                        continue
+                else:
+                    if commune_rows > 0 and use_checkpoint and not dry_run:
+                        _save_checkpoint(commune, commune_rows, partial=True)
+                        logger.info(f"  {commune}: partial checkpoint saved ({commune_rows} rows)")
+                    logger.error(
+                        "All accounts exhausted. "
+                        "Stopping. Run again after midnight or register additional accounts."
+                    )
+                    all_accounts_exhausted = True
+                    break
 
-                new_rows = df[~df["id_role"].isin(existing)] if existing else df
-                dupes = len(df) - len(new_rows)
+            if not dry_run and commune_rows > 0 and not quota_hit:
+                logger.info(f"  {commune}: {commune_rows} rows written — complete")
+                if use_checkpoint:
+                    _save_checkpoint(commune, commune_rows)
+            elif not dry_run and commune_rows == 0 and not quota_hit:
+                logger.info(f"  {commune}: no new rows (all already in DB or no data)")
+                if use_checkpoint:
+                    _save_checkpoint(commune, 0)
 
-                if new_rows.empty:
-                    logger.info(f"  All {len(df)} rows already in DB")
-                    if use_checkpoint:
-                        _save_checkpoint(commune, 0)
-                    continue
+            commune_idx += 1
+            if not quota_hit:
+                await asyncio.sleep(2)
 
-                new_rows.to_sql("transactions_raw", conn, if_exists="append", index=False, method="multi")
-                n = len(new_rows)
-                total_written += n
-                logger.info(f"  Written {n} rows ({dupes} dupes skipped)")
-
-            if use_checkpoint:
-                _save_checkpoint(commune, len(new_rows))
-
-            await asyncio.sleep(2)  # polite delay between communes
-
+        await context.close()
         await browser.close()
 
     elapsed = time.time() - t_start
     logger.info("=" * 60)
     logger.info(f"DONE: {total_written} rows written in {elapsed/60:.1f}min")
-    if quota_exhausted:
-        logger.warning("NOTE: Run stopped early — quota exhausted. Re-run after midnight.")
-        logger.warning("TIP: Register free at datainmobiliaria.cl and add credentials to .env to remove limit.")
+    if all_accounts_exhausted:
+        logger.warning("NOTE: Run stopped early — all accounts exhausted.")
+        logger.warning("TIP: Register additional free accounts at datainmobiliaria.cl")
+        logger.warning("     and pass their cookie files via --extra-cookie-files.")
     logger.info("=" * 60)
 
     if total_written > 0 and not dry_run:
@@ -549,21 +716,42 @@ def main():
     parser.add_argument("--next-commune",   action="store_true",         help="Auto-pick next unscraped commune from checkpoint (for daily scheduling)")
     parser.add_argument("--check-quota",    action="store_true",         help="Test if API quota is available (200=ok, 402=exhausted)")
     parser.add_argument("--skip-checkpoint",action="store_true",         help="Ignore checkpoint — rescrape all communes")
-    parser.add_argument("--list-status",    action="store_true",         help="Show checkpoint status and exit")
+    parser.add_argument("--list-status",    action="store_true",         help="Show checkpoint status and configured accounts, then exit")
+    parser.add_argument("--cookie-file",    type=Path, default=None,     help="Override default cookie file path (e.g. data/processed/di_cookies_acct2.json)")
+    parser.add_argument("--extra-cookie-files", type=Path, nargs="+", default=None,
+                        help="Additional cookie files for multi-account rotation (space-separated paths)")
     args = parser.parse_args()
 
     if args.list_status:
         cp = _load_checkpoint()
         all_communes = list(RM_COMMUNE_POLYGONS.keys())
-        done = [c for c in all_communes if c in cp]
-        todo = [c for c in all_communes if c not in cp]
-        print(f"\nCheckpoint: {len(done)}/{len(all_communes)} communes scraped")
-        for c in done:
-            print(f"  DONE  {c:25s}  {cp[c]['rows']:6d} rows  ({cp[c]['ts'][:10]})")
+        fully_done   = [c for c in all_communes if c in cp and not cp[c].get("partial")]
+        partial_done = [c for c in all_communes if c in cp and cp[c].get("partial")]
+        todo         = [c for c in all_communes if c not in cp]
+        print(f"\nCheckpoint: {len(fully_done)}/{len(all_communes)} communes complete"
+              f" (+{len(partial_done)} partial)")
+        for c in fully_done:
+            print(f"  DONE     {c:25s}  {cp[c]['rows']:6d} rows  ({cp[c]['ts'][:10]})")
+        for c in partial_done:
+            print(f"  PARTIAL  {c:25s}  {cp[c]['rows']:6d} rows  ({cp[c]['ts'][:10]}) — will retry")
         if todo:
             print(f"\n  Pending ({len(todo)}):")
             for c in todo:
                 print(f"  TODO  {c}")
+
+        # Show configured accounts
+        print("\nConfigured accounts:")
+        cookie_files = _discover_cookie_files()
+        if args.cookie_file:
+            primary = args.cookie_file
+            extras = [f for f in cookie_files if f != primary]
+            cookie_files = [primary] + extras
+        if not cookie_files:
+            print("  (none found — run --manual-login to save a session)")
+        for i, cf in enumerate(cookie_files, 1):
+            exists = "OK" if cf.exists() else "MISSING"
+            label = "(default)" if cf == COOKIE_FILE else ""
+            print(f"  Account {i}: {cf.name} [{exists}] {label}")
         return
 
     if args.next_commune:
@@ -582,15 +770,17 @@ def main():
 
     asyncio.run(scrape_all(
         engine,
-        communes         = communes,
-        fuente           = args.fuente,
-        dry_run          = args.dry_run,
-        max_pages        = args.max_pages,
-        min_year         = args.min_year,
-        headless         = not args.no_headless,
-        use_checkpoint   = not args.skip_checkpoint,
-        check_quota_only = args.check_quota,
-        manual_login     = args.manual_login,
+        communes            = communes,
+        fuente              = args.fuente,
+        dry_run             = args.dry_run,
+        max_pages           = args.max_pages,
+        min_year            = args.min_year,
+        headless            = not args.no_headless,
+        use_checkpoint      = not args.skip_checkpoint,
+        check_quota_only    = args.check_quota,
+        manual_login        = args.manual_login,
+        cookie_file         = args.cookie_file,
+        extra_cookie_files  = args.extra_cookie_files,
     ))
 
 

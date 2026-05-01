@@ -171,7 +171,7 @@ re_cl/
 Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 `POSTGRES_PASSWORD`, `RAW_CSV_PATH`, `DATABASE_URL` (o las `POSTGRES_*` individuales).
 
-## Estado (actualizado: 2026-04-20)
+## Estado (actualizado: 2026-04-23)
 
 | Fase | Estado |
 |------|--------|
@@ -223,7 +223,17 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **Ejecutar pipeline con CSV real** (1,048,557 raw → 562,854 clean → modelo R²=0.679 → 455,945 scored → 40 comunas → heatmap + report) | **Completado 2026-04-20** |
 | Dashboard Deal Flow UX — dirección, Rol SII, vendedor CBR, Google Maps, drill-down comunas | Completado 2026-04-20 |
 | Portal Inmobiliario scraper — selectores MeLi Polaris UI 2025 (poly-card, __PRELOADED_STATE__, JSON-LD) | Completado 2026-04-20 |
-| Validar scrapers live en producción (ejecutar --dump-html para verificar selectores) | Pendiente |
+| Phase 9: Scraping paralelo PI+Toctoc (ThreadPoolExecutor) + DI guest mode + 5,003 listings | Completado 2026-04-22 |
+| **Data Inmobiliaria CBR 2019-2026** — acumulación progresiva 40 comunas RM (quota ~15k/IP/día) | **En progreso 6/40 comunas** (Santiago 404, Providencia 434, Las Condes 142, Ñuñoa 15,637, La Florida 14,127, Maipú 11,505 — 42,249 rows total — 2026-04-30) |
+| **DI multi-cuenta automatizado** — 3 cuentas configuradas (di_cookies 1/2/3), Task Scheduler 06:00 diario con run_di_bulk_multi.py + rotación automática de cuentas | **Completado 2026-04-30** |
+| **Pipeline enriquecimiento DI** — 42,249 rows DI procesados: clean (824,333) → features (774,602) → scoring 4 perfiles (2,079,680 scores) → v_opportunities (1,737,208) | **Completado 2026-04-30** |
+| **Fix opportunity_score.py** — write_scores ahora borra por (model_version, scoring_profile) en vez de solo model_version — 4 perfiles coexisten en model_scores | **Completado 2026-04-30** |
+| **Fix model_scores schema** — columnas location_score, growth_score, safety_score, liquidity_score, crime_index agregadas via ALTER TABLE | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — COMPLETO** — schema `opportunity.*` (8 tablas), 829k candidatos, 1.6M valuaciones, 37k gas_station scored, 2,242 competidores OSM, 6 endpoints API, tab frontend "Oportunidades" | **Completado 2026-04-30** |
+| **Opportunity Engine v2 — gas_station cross-validation** — Las Condes VALID (251/2508 en top decile, mean score 0.571) | **Completado 2026-04-30** |
+| Retrain modelo con datos DI 2019-2026 (esperar R² > 0.70) | Pendiente (cuando DI tenga suficientes comunas) |
+| Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
+| MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |
 
 ## Roadmap V5 (completado)
 

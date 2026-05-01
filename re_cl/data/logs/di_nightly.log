@@ -1,0 +1,65 @@
+[30-04-2026  7:00:01,79] Starting DI nightly bulk scrape 
+2026-04-30 07:00:03.183 | INFO     | __main__:main:149 - Accounts configured: 1
+2026-04-30 07:00:03.183 | INFO     | __main__:main:151 -   Account 1: datainmobiliaria_cookies.json
+2026-04-30 07:00:04.832 | INFO     | __main__:main:162 - 
+Pending communes (34, smallest first):
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Vitacura                  ~500 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Pirque                    ~600 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Talagante                 ~900 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Buin                      ~900 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Melipilla                 ~900 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Independencia             ~1500 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Cerrillos                 ~1500 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Lampa                     ~1500 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Estación Central          ~2000 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Lo Barnechea              ~2000 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Huechuraba                ~2000 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   San Joaquín               ~2000 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   La Cisterna               ~2000 rows est.
+2026-04-30 07:00:04.832 | INFO     | __main__:main:165 -   Colina                    ~2000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   San Ramón                 ~3000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Lo Espejo                 ~3000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Pedro Aguirre Cerda       ~3000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Lo Prado                  ~3000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Cerro Navia               ~3000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Recoleta                  ~3500 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Quinta Normal             ~3500 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Conchalí                  ~3500 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Macul                     ~4000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Renca                     ~4000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   San Miguel                ~4000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   La Granja                 ~5000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   El Bosque                 ~5000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   La Reina                  ~? rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Peñalolén                 ~7000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   La Pintana                ~8000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Quilicura                 ~8000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   San Bernardo              ~12000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Pudahuel                  ~12600 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:165 -   Puente Alto               ~15000 rows est.
+2026-04-30 07:00:04.833 | INFO     | __main__:main:167 - 
+2026-04-30 07:00:04.922 | INFO     | __main__:main:177 - ============================================================
+2026-04-30 07:00:04.923 | INFO     | __main__:main:178 - Starting bulk scrape: 34 communes, 1 account(s)
+2026-04-30 07:00:04.923 | INFO     | __main__:main:179 - ============================================================
+2026-04-30 07:00:07.903 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:416 - Restored 11 cookies from datainmobiliaria_cookies.json
+2026-04-30 07:00:15.511 | INFO     | src.scraping.datainmobiliaria:_setup_context_with_cookies:466 - CSRF token acquired: yes
+2026-04-30 07:00:15.511 | INFO     | src.scraping.datainmobiliaria:scrape_all:592 - Communes: 34 | fuente=ventas | min_year=2019 | max_pages=100
+2026-04-30 07:00:15.511 | INFO     | src.scraping.datainmobiliaria:scrape_all:593 - Accounts configured: 1
+2026-04-30 07:00:15.512 | INFO     | src.scraping.datainmobiliaria:scrape_all:594 - ============================================================
+2026-04-30 07:00:15.512 | INFO     | src.scraping.datainmobiliaria:scrape_all:607 - Scraping: Vitacura (account 1/1)
+2026-04-30 07:00:15.565 | WARNING  | src.scraping.datainmobiliaria:_fetch_commune_streaming:291 -   API 402 on page 1 — quota exhausted
+2026-04-30 07:00:15.567 | ERROR    | src.scraping.datainmobiliaria:scrape_all:665 - All accounts exhausted. Stopping. Run again after midnight or register additional accounts.
+2026-04-30 07:00:15.834 | INFO     | src.scraping.datainmobiliaria:scrape_all:689 - ============================================================
+2026-04-30 07:00:15.834 | INFO     | src.scraping.datainmobiliaria:scrape_all:690 - DONE: 0 rows written in 0.2min
+2026-04-30 07:00:15.834 | WARNING  | src.scraping.datainmobiliaria:scrape_all:692 - NOTE: Run stopped early — all accounts exhausted.
+2026-04-30 07:00:15.834 | WARNING  | src.scraping.datainmobiliaria:scrape_all:693 - TIP: Register additional free accounts at datainmobiliaria.cl
+2026-04-30 07:00:15.834 | WARNING  | src.scraping.datainmobiliaria:scrape_all:694 -      and pass their cookie files via --extra-cookie-files.
+2026-04-30 07:00:15.834 | INFO     | src.scraping.datainmobiliaria:scrape_all:695 - ============================================================
+2026-04-30 07:00:15.835 | INFO     | __main__:main:199 - 
+2026-04-30 07:00:15.836 | INFO     | __main__:main:200 - ============================================================
+2026-04-30 07:00:15.836 | INFO     | __main__:main:201 - Session complete: 0 rows written
+2026-04-30 07:00:15.836 | INFO     | __main__:main:202 - Communes finished this session: 0/34
+2026-04-30 07:00:15.836 | INFO     | __main__:main:204 - Still pending (34): Vitacura, Pirque, Talagante, Buin, Melipilla...
+2026-04-30 07:00:15.836 | INFO     | __main__:main:205 - Run again tomorrow with refreshed VPN/accounts to continue.
+2026-04-30 07:00:15.836 | INFO     | __main__:main:208 - ============================================================
+[30-04-2026  7:00:16,03] Done 

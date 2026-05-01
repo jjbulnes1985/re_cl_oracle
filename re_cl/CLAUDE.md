@@ -340,7 +340,31 @@ The opportunity score supports 4 built-in profiles + custom mode:
 - `pythonpath = ["."]` in `pyproject.toml` — all `src.*` imports run from `re_cl/`.
 - DBSCAN: `eps_km=0.5, min_samples=10` prod; tests use `eps_km=5.0, min_samples=3`.
 
-## Status (2026-04-21)
+### Parallel scraping (V9 — Phase 9)
+```bash
+# Run all scrapers in parallel (PI + Toctoc concurrent, DI sequential) + post-processing
+py scripts/run_parallel_scrape.py                          # full run (uses DI cookies if saved)
+py scripts/run_parallel_scrape.py --skip-di                # PI + Toctoc only
+py scripts/run_parallel_scrape.py --batch-size 6           # PI commune batch size (default 6)
+py scripts/run_parallel_scrape.py --max-pages-toctoc 100   # Toctoc pages per type
+py scripts/run_parallel_scrape.py --dry-run                # preview without DB writes
+
+# Validate results
+py scripts/validate_parallel_scrape.py                     # check listings count + sources
+py scripts/validate_parallel_scrape.py --json              # JSON report
+py scripts/validate_parallel_scrape.py --exit-code         # exits 1 if FAIL (CI use)
+
+# Data Inmobiliaria — guest mode, 1 commune/day (uses saved cookies)
+py src/scraping/datainmobiliaria.py --check-quota          # verify API accessible (200=ok, 402=exhausted)
+py src/scraping/datainmobiliaria.py --next-commune --min-year 2019  # scrape next unscraped commune
+py src/scraping/datainmobiliaria.py --list-status          # show checkpoint progress (X/40 communes)
+py src/scraping/datainmobiliaria.py --manual-login --check-quota    # Google OAuth login → save cookies
+
+# Prefect flow — parallel scraping orchestrated
+py src/pipelines/flows.py --flow parallel                  # parallel_scrape_flow (PI+Toctoc+DI+normalize+score)
+```
+
+## Status (2026-04-22)
 
 | Component | Status |
 |-----------|--------|
@@ -429,9 +453,18 @@ The opportunity score supports 4 built-in profiles + custom mode:
 | **Portal audit + fixes (3 agentes)** — Streamlit: 5 bugs (calibrated cols, project_type_name); FastAPI: 4 bugs (shap type, profiles query, alerts default_factory, stale middleware); React: DetailPanel error state, SHAP parsing | **Completado 2026-04-21** |
 | **nginx.conf** — resolver 127.0.0.11 + proxy_read_timeout 120s (502/504 fix); API limit 5k→10k | **Completado 2026-04-21** |
 | **Data Inmobiliaria** — Investigado: datainmobiliaria.cl, 9M+ propiedades, 15 años CBR, registro gratis=queries ilimitadas, API $100k CLP/mes | **Investigado 2026-04-21** |
+| **Phase 9: Scraping Paralelo Multi-fuente** — PI+Toctoc concurrent (ThreadPoolExecutor), DI guest 1 comuna/día, 5,003 listings, 29 tests | **Completado 2026-04-22** |
+| **datainmobiliaria.py** — Playwright scraper: 40 comunas RM, guest mode (402 detection), --manual-login Google OAuth, cookie persistence, checkpoint resume | **Completado 2026-04-22** |
+| **toctoc.run_parallel()** — asyncio.gather 4 tipos simultáneos, stagger 0-2s, return_exceptions=True | **Completado 2026-04-22** |
+| **portal_inmobiliario.run_parallel()** — 160 requests (40 comunas × 4 tipos) en batches de 6 via asyncio.gather | **Completado 2026-04-22** |
+| **parallel_scrape_flow** — Prefect flow: PI+Toctoc concurrent via ThreadPoolExecutor(max_workers=2), DI sequential, normalize+score post-processing | **Completado 2026-04-22** |
+| **scripts/run_parallel_scrape.py** — one-command CLI: PI+Toctoc+DI+normalize+score (--skip-di, --batch-size, --dry-run flags) | **Completado 2026-04-22** |
+| **scripts/validate_parallel_scrape.py** — validation: total count, sources, post-processing check, JSON report | **Completado 2026-04-22** |
+| **RM_COMMUNES fix** — 40 únicas (removió Bustos, añadió Buin+Melipilla), sin duplicados | **Completado 2026-04-22** |
+| **DB pool_size=10** — _build_scraper_engine() helper, max_overflow=5, pool_pre_ping=True | **Completado 2026-04-22** |
 | Yapo: requiere proxy o sesión manual (bloqueado por reCAPTCHA v3 en headless) | Pendiente |
 | ML: requiere OAuth2 token (API bloqueada 403 PolicyAgent sin credenciales) | Pendiente |
-| Data Inmobiliaria scraper — construir scraper para CBR 2019-2026 | Pendiente |
+| Data Inmobiliaria: quota diaria por IP (~15k/día guest), cookies guardadas, --next-commune para scraping progresivo de 40 comunas RM | En progreso (1 comuna/día) |
 
 ## Migration sequence
 

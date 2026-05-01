@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE_CL — Reporte de Oportunidades 2026-04-20</title>
+    <style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ── Layout ── */
+.page-wrapper { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+
+/* ── Header ── */
+header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 32px;
+    background: #16213e;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid #0f3460;
+}
+.logo { font-size: 42px; font-weight: 900; letter-spacing: -2px; }
+.logo-re { color: #e2e8f0; }
+.logo-cl { color: #3b82f6; }
+.header-meta h1 { font-size: 20px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
+.header-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill {
+    background: #0f3460;
+    color: #93c5fd;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ── Sections ── */
+.section {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    border: 1px solid #1e3a5f;
+}
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #93c5fd;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #1e3a5f;
+}
+.sub-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin: 20px 0 12px;
+}
+.meta-text { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+.empty-msg { color: #64748b; font-style: italic; }
+.empty-msg code {
+    background: #0f172a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #93c5fd;
+    font-style: normal;
+}
+
+/* ── KPI Grid ── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+.kpi-card {
+    background: #0f172a;
+    border-radius: 10px;
+    padding: 20px 16px;
+    border: 1px solid #1e3a5f;
+    text-align: center;
+}
+.kpi-card.kpi-highlight { border-color: #3b82f6; }
+.kpi-value { font-size: 26px; font-weight: 800; color: #f1f5f9; line-height: 1.1; }
+.kpi-label { font-size: 11px; color: #64748b; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Tables ── */
+.table-wrapper { overflow-x: auto; }
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.data-table thead tr { background: #0f172a; }
+.data-table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #1e3a5f;
+    white-space: nowrap;
+}
+.data-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #1a2744;
+    vertical-align: middle;
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: #1e3a5f22; }
+.data-table td.rank { color: #64748b; font-size: 12px; font-weight: 600; }
+.data-table td.num { text-align: right; font-family: 'SF Mono', 'Fira Code', monospace; color: #cbd5e1; }
+.data-table td.gap { color: #f97316; }
+.data-table td.conf { color: #94a3b8; }
+.data-table td.commune-name { font-weight: 600; color: #f1f5f9; }
+
+/* ── Score Badges ── */
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: monospace;
+    white-space: nowrap;
+}
+.badge-red    { background: #450a0a; color: #fca5a5; border: 1px solid #ef4444; }
+.badge-orange { background: #431407; color: #fdba74; border: 1px solid #f97316; }
+.badge-yellow { background: #422006; color: #fde047; border: 1px solid #eab308; }
+.badge-blue   { background: #172554; color: #93c5fd; border: 1px solid #3b82f6; }
+
+/* ── Bar chart (commune ranking) ── */
+.bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 160px;
+}
+.bar {
+    height: 12px;
+    border-radius: 3px;
+    min-width: 2px;
+    flex-shrink: 0;
+}
+.bar-label {
+    font-family: monospace;
+    font-size: 12px;
+    color: #cbd5e1;
+    white-space: nowrap;
+}
+
+/* ── Model Validation ── */
+.validation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.validation-card {
+    background: #0f172a;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #1e3a5f;
+}
+.card-title { font-size: 14px; font-weight: 700; color: #93c5fd; margin-bottom: 14px; }
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #1a2744;
+}
+.metric-row:last-child { border-bottom: none; }
+.metric-name { color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.metric-val { font-family: monospace; font-weight: 700; color: #f1f5f9; font-size: 15px; }
+
+/* ── Map ── */
+.map-container { text-align: center; }
+.map-caption { color: #64748b; font-size: 12px; margin-top: 12px; }
+
+/* ── Footer ── */
+footer {
+    text-align: center;
+    color: #334155;
+    font-size: 11px;
+    padding: 20px;
+    margin-top: 8px;
+}
+
+/* ── Print ── */
+@media print {
+    body { background: #fff; color: #111; }
+    header, .section, .kpi-card, .validation-card {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        break-inside: avoid;
+    }
+    .section-title, .kpi-value, .card-title { color: #0f172a; }
+    .kpi-label, .meta-text, .metric-name { color: #475569; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .logo-cl { color: #2563eb; }
+    .pill { background: #e2e8f0; color: #334155; }
+}
+
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    
+    <header>
+        <div class="logo">
+            <span class="logo-re">RE</span><span class="logo-cl">_CL</span>
+        </div>
+        <div class="header-meta">
+            <h1>Reporte de Oportunidades Inmobiliarias</h1>
+            <div class="header-pills">
+                <span class="pill">Fecha: 2026-04-20</span>
+                <span class="pill">Modelo: v1.0</span>
+                <span class="pill">Perfil: default</span>
+                <span class="pill">Región: RM Santiago</span>
+            </div>
+        </div>
+    </header>
+    
+    
+    <section class="section">
+        <h2 class="section-title">Resumen Ejecutivo</h2>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">455,945</div>
+                <div class="kpi-label">Propiedades Evaluadas</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">0.6302</div>
+                <div class="kpi-label">Score Medio Oportunidad</div>
+            </div>
+            <div class="kpi-card kpi-highlight">
+                <div class="kpi-value">182,055</div>
+                <div class="kpi-label">Oportunidades Alta (score &gt; 0.7) · 39.9%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">San RamÃ³n</div>
+                <div class="kpi-label">Comuna Top</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">—</div>
+                <div class="kpi-label">R² Modelo XGBoost</div>
+            </div>
+        </div>
+    </section>
+    
+    
+    <section class="section">
+        <h2 class="section-title">Top 20 Oportunidades</h2>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Score</th>
+                        <th>Comuna</th>
+                        <th>Tipo</th>
+                        <th>UF/m²</th>
+                        <th>Gap%</th>
+                        <th>Zona</th>
+                        <th>Dist. Metro (km)</th>
+                        <th>Confianza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td class="rank">#1</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>apartments</td>
+            <td class="num">5.5</td>
+            <td class="num gap">-92.8%</td>
+            <td>este</td>
+            <td class="num">3.00</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#2</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>residential</td>
+            <td class="num">3.5</td>
+            <td class="num gap">-95.2%</td>
+            <td>este</td>
+            <td class="num">5.86</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#3</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>apartments</td>
+            <td class="num">5.1</td>
+            <td class="num gap">-92.6%</td>
+            <td>este</td>
+            <td class="num">1.92</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#4</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>residential</td>
+            <td class="num">3.0</td>
+            <td class="num gap">-95.0%</td>
+            <td>este</td>
+            <td class="num">3.08</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#5</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Lo Barnechea</td>
+            <td>apartments</td>
+            <td class="num">6.0</td>
+            <td class="num gap">-91.3%</td>
+            <td>este</td>
+            <td class="num">6.12</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#6</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>La Reina</td>
+            <td>residential</td>
+            <td class="num">3.0</td>
+            <td class="num gap">-94.3%</td>
+            <td>este</td>
+            <td class="num">0.18</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#7</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Vitacura</td>
+            <td>residential</td>
+            <td class="num">3.6</td>
+            <td class="num gap">-93.3%</td>
+            <td>este</td>
+            <td class="num">0.26</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#8</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Vitacura</td>
+            <td>residential</td>
+            <td class="num">5.0</td>
+            <td class="num gap">-91.9%</td>
+            <td>este</td>
+            <td class="num">2.97</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#9</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Colina</td>
+            <td>residential</td>
+            <td class="num">3.1</td>
+            <td class="num gap">-92.1%</td>
+            <td>sur</td>
+            <td class="num">19.29</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#10</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>unknown</td>
+            <td class="num">1.1</td>
+            <td class="num gap">-97.9%</td>
+            <td>este</td>
+            <td class="num">0.50</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#11</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Colina</td>
+            <td>residential</td>
+            <td class="num">4.0</td>
+            <td class="num gap">-91.2%</td>
+            <td>sur</td>
+            <td class="num">11.84</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#12</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Vitacura</td>
+            <td>apartments</td>
+            <td class="num">5.7</td>
+            <td class="num gap">-91.8%</td>
+            <td>este</td>
+            <td class="num">0.79</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#13</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Vitacura</td>
+            <td>apartments</td>
+            <td class="num">6.1</td>
+            <td class="num gap">-89.3%</td>
+            <td>este</td>
+            <td class="num">0.48</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#14</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>residential</td>
+            <td class="num">3.8</td>
+            <td class="num gap">-92.2%</td>
+            <td>este</td>
+            <td class="num">0.58</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#15</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Lo Barnechea</td>
+            <td>apartments</td>
+            <td class="num">6.1</td>
+            <td class="num gap">-91.2%</td>
+            <td>este</td>
+            <td class="num">3.80</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#16</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Lo Barnechea</td>
+            <td>apartments</td>
+            <td class="num">7.5</td>
+            <td class="num gap">-88.7%</td>
+            <td>este</td>
+            <td class="num">5.35</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#17</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>residential</td>
+            <td class="num">3.9</td>
+            <td class="num gap">-94.1%</td>
+            <td>este</td>
+            <td class="num">2.33</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#18</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>apartments</td>
+            <td class="num">5.9</td>
+            <td class="num gap">-91.2%</td>
+            <td>este</td>
+            <td class="num">6.15</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#19</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Lo Barnechea</td>
+            <td>residential</td>
+            <td class="num">3.3</td>
+            <td class="num gap">-93.2%</td>
+            <td>este</td>
+            <td class="num">4.63</td>
+            <td class="num conf">1.00</td>
+        </tr>
+        <tr>
+            <td class="rank">#20</td>
+            <td><span class="badge badge-red">1.000 ALTA</span></td>
+            <td>Las Condes</td>
+            <td>apartments</td>
+            <td class="num">5.0</td>
+            <td class="num gap">-90.2%</td>
+            <td>este</td>
+            <td class="num">2.55</td>
+            <td class="num conf">1.00</td>
+        </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+    
+    <section class="section">
+        <h2 class="section-title">Ranking de Comunas (Top 10)</h2>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Comuna</th>
+                        <th>Score Mediano</th>
+                        <th>N° Transacciones</th>
+                        <th>% Subvaloradas</th>
+                        <th>UF/m² Mediano</th>
+                        <th>Gap% Mediano</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td class="rank">#1</td>
+            <td class="commune-name">San RamÃ³n</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:100.0%;background:#f97316"></div>
+                    <span class="bar-label">0.7600</span>
+                </div>
+            </td>
+            <td class="num">1,978</td>
+            <td class="num">67.6%</td>
+            <td class="num">12.6</td>
+            <td class="num gap">-15.1%</td>
+        </tr>
+        <tr>
+            <td class="rank">#2</td>
+            <td class="commune-name">Lo Prado</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:94.6%;background:#f97316"></div>
+                    <span class="bar-label">0.7187</span>
+                </div>
+            </td>
+            <td class="num">3,082</td>
+            <td class="num">60.0%</td>
+            <td class="num">13.4</td>
+            <td class="num gap">-7.8%</td>
+        </tr>
+        <tr>
+            <td class="rank">#3</td>
+            <td class="commune-name">Quinta Normal</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:94.5%;background:#f97316"></div>
+                    <span class="bar-label">0.7180</span>
+                </div>
+            </td>
+            <td class="num">8,774</td>
+            <td class="num">65.5%</td>
+            <td class="num">20.4</td>
+            <td class="num gap">-7.5%</td>
+        </tr>
+        <tr>
+            <td class="rank">#4</td>
+            <td class="commune-name">Pedro Aguirre Cerda</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:94.3%;background:#f97316"></div>
+                    <span class="bar-label">0.7164</span>
+                </div>
+            </td>
+            <td class="num">2,797</td>
+            <td class="num">60.3%</td>
+            <td class="num">12.9</td>
+            <td class="num gap">-10.5%</td>
+        </tr>
+        <tr>
+            <td class="rank">#5</td>
+            <td class="commune-name">San Jose de Maipo</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:93.7%;background:#f97316"></div>
+                    <span class="bar-label">0.7119</span>
+                </div>
+            </td>
+            <td class="num">157</td>
+            <td class="num">59.9%</td>
+            <td class="num">14.7</td>
+            <td class="num gap">-17.1%</td>
+        </tr>
+        <tr>
+            <td class="rank">#6</td>
+            <td class="commune-name">Calera de Tango</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:93.4%;background:#f97316"></div>
+                    <span class="bar-label">0.7099</span>
+                </div>
+            </td>
+            <td class="num">78</td>
+            <td class="num">61.5%</td>
+            <td class="num">20.4</td>
+            <td class="num gap">-17.0%</td>
+        </tr>
+        <tr>
+            <td class="rank">#7</td>
+            <td class="commune-name">Lo Espejo</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:90.8%;background:#f97316"></div>
+                    <span class="bar-label">0.6898</span>
+                </div>
+            </td>
+            <td class="num">2,334</td>
+            <td class="num">58.1%</td>
+            <td class="num">10.7</td>
+            <td class="num gap">-7.3%</td>
+        </tr>
+        <tr>
+            <td class="rank">#8</td>
+            <td class="commune-name">El Bosque</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:90.8%;background:#f97316"></div>
+                    <span class="bar-label">0.6898</span>
+                </div>
+            </td>
+            <td class="num">5,668</td>
+            <td class="num">59.1%</td>
+            <td class="num">14.7</td>
+            <td class="num gap">-6.8%</td>
+        </tr>
+        <tr>
+            <td class="rank">#9</td>
+            <td class="commune-name">Renca</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:90.3%;background:#f97316"></div>
+                    <span class="bar-label">0.6861</span>
+                </div>
+            </td>
+            <td class="num">6,590</td>
+            <td class="num">60.6%</td>
+            <td class="num">16.1</td>
+            <td class="num gap">-5.3%</td>
+        </tr>
+        <tr>
+            <td class="rank">#10</td>
+            <td class="commune-name">La Granja</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar" style="width:90.2%;background:#f97316"></div>
+                    <span class="bar-label">0.6853</span>
+                </div>
+            </td>
+            <td class="num">3,613</td>
+            <td class="num">58.6%</td>
+            <td class="num">13.8</td>
+            <td class="num gap">-6.5%</td>
+        </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+    
+    <section class="section">
+        <h2 class="section-title">Validación del Modelo</h2>
+        <p class="empty-msg">
+            Reporte de backtesting no disponible.<br>
+            Ejecutar: <code>python src/backtesting/walk_forward.py</code>
+        </p>
+    </section>
+    
+    
+    <section class="section">
+        <h2 class="section-title">Distribución Geográfica (RM Santiago)</h2>
+        <div class="map-container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" style="background:#111827;border-radius:8px;display:block;margin:0 auto"><line x1="200" y1="0" x2="200" y2="400" stroke="#374151" stroke-width="0.5"/><line x1="0" y1="100" x2="800" y2="100" stroke="#374151" stroke-width="0.5"/><line x1="400" y1="0" x2="400" y2="400" stroke="#374151" stroke-width="0.5"/><line x1="0" y1="200" x2="800" y2="200" stroke="#374151" stroke-width="0.5"/><line x1="600" y1="0" x2="600" y2="400" stroke="#374151" stroke-width="0.5"/><line x1="0" y1="300" x2="800" y2="300" stroke="#374151" stroke-width="0.5"/><text x="780" y="20" fill="#6b7280" font-size="12" font-family="monospace" text-anchor="middle">N↑</text><circle cx="670" cy="36" r="5" fill="#ef4444" opacity="0.8"/><text x="682" y="40" fill="#9ca3af" font-size="10" font-family="sans-serif">≥ 0.8 Alta</text><circle cx="670" cy="56" r="5" fill="#f97316" opacity="0.8"/><text x="682" y="60" fill="#9ca3af" font-size="10" font-family="sans-serif">≥ 0.6 Media-Alta</text><circle cx="670" cy="76" r="5" fill="#eab308" opacity="0.8"/><text x="682" y="80" fill="#9ca3af" font-size="10" font-family="sans-serif">≥ 0.4 Media</text><circle cx="670" cy="96" r="5" fill="#3b82f6" opacity="0.8"/><text x="682" y="100" fill="#9ca3af" font-size="10" font-family="sans-serif">< 0.4 Baja</text><text x="4" y="396" fill="#6b7280" font-size="9" font-family="monospace">W -70.85</text><text x="796" y="396" fill="#6b7280" font-size="9" font-family="monospace" text-anchor="end">E -70.45</text><text x="4" y="12" fill="#6b7280" font-size="9" font-family="monospace">N -33.3</text><text x="4" y="386" fill="#6b7280" font-size="9" font-family="monospace">S -33.65</text><circle cx="621.3" cy="117.7" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 5.5</title></circle><circle cx="688.6" cy="116.2" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 3.5</title></circle><circle cx="587.8" cy="119.5" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 5.1</title></circle><circle cx="632.2" cy="104.3" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 3.0</title></circle><circle cx="611.0" cy="42.6" r="8.0" fill="#ef4444" opacity="0.7"><title>Lo Barnechea | Score: 1.00 | UF/m²: 6.0</title></circle><circle cx="563.8" cy="180.1" r="8.0" fill="#ef4444" opacity="0.7"><title>La Reina | Score: 1.00 | UF/m²: 3.0</title></circle><circle cx="559.9" cy="108.8" r="8.0" fill="#ef4444" opacity="0.7"><title>Vitacura | Score: 1.00 | UF/m²: 3.6</title></circle><circle cx="548.9" cy="72.3" r="8.0" fill="#ef4444" opacity="0.7"><title>Vitacura | Score: 1.00 | UF/m²: 5.0</title></circle><circle cx="497.1" cy="131.4" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 1.1</title></circle><circle cx="500.5" cy="110.5" r="8.0" fill="#ef4444" opacity="0.7"><title>Vitacura | Score: 1.00 | UF/m²: 5.7</title></circle><circle cx="554.5" cy="102.0" r="8.0" fill="#ef4444" opacity="0.7"><title>Vitacura | Score: 1.00 | UF/m²: 6.1</title></circle><circle cx="530.6" cy="148.0" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 3.8</title></circle><circle cx="607.1" cy="67.9" r="8.0" fill="#ef4444" opacity="0.7"><title>Lo Barnechea | Score: 1.00 | UF/m²: 6.1</title></circle><circle cx="575.0" cy="46.9" r="8.0" fill="#ef4444" opacity="0.7"><title>Lo Barnechea | Score: 1.00 | UF/m²: 7.5</title></circle><circle cx="604.0" cy="117.4" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 3.9</title></circle><circle cx="688.1" cy="126.2" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 5.9</title></circle><circle cx="640.3" cy="69.9" r="8.0" fill="#ef4444" opacity="0.7"><title>Lo Barnechea | Score: 1.00 | UF/m²: 3.3</title></circle><circle cx="596.9" cy="144.6" r="8.0" fill="#ef4444" opacity="0.7"><title>Las Condes | Score: 1.00 | UF/m²: 5.0</title></circle><text x="400" y="396" fill="#6b7280" font-size="10" font-family="sans-serif" text-anchor="middle">18 propiedades graficadas</text></svg>
+            <p class="map-caption">
+                Puntos coloreados por score de oportunidad.
+                Rojo = Alta (&ge;0.8) · Naranja = Media-Alta (&ge;0.6) · Amarillo = Media (&ge;0.4) · Azul = Baja
+            </p>
+        </div>
+    </section>
+    
+    <footer>
+        RE_CL Platform · Modelo v1.0 · Perfil: default · Generado: 2026-04-20 22:21 UTC<br>
+        Región Metropolitana de Santiago — Datos CBR 2013-2014 · Uso interno
+    </footer>
+</div>
+</body>
+</html>
