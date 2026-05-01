@@ -1,18 +1,25 @@
 /**
- * OpportunityPanel.tsx — UX Phase 3
+ * OpportunityPanel.tsx — UX Phase 4 (Simplificación Radical)
  *
- * Map-first interface with NLP search, dual mode (investor/operator),
- * narrative property cards, and progressive disclosure.
+ * Layout estilo Idealista:
+ *   - Filter bar prominente arriba (chips dropdown explícitos)
+ *   - Mapa fullscreen al centro
+ *   - Lista lateral derecha con cards
+ *   - Click en pin → preview tooltip → ficha 1 pantalla
  *
- * Test 60s goal: user finds "casa Maipú score alto" in <60 seconds without instructions.
+ * Test 3s: usuario sabe qué ve y dónde clicar
+ * Test 30s: filtra y abre detalle
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import DeckGL from '@deck.gl/react'
 import { ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import { Map as MapLibre } from 'react-map-gl/maplibre'
-import { Search, AlertTriangle, X, Download, MapPin, TrendingUp, Briefcase, Home } from 'lucide-react'
+import {
+  AlertTriangle, X, Download, MapPin, Briefcase, Home, ChevronDown,
+  Building2, Trees, Store, Factory, Filter, Save, FileText
+} from 'lucide-react'
 import { clsx } from 'clsx'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
@@ -30,7 +37,6 @@ const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.j
 
 interface Candidate {
   id: number
-  address: string
   county_name: string
   latitude: number
   longitude: number
@@ -39,7 +45,6 @@ interface Candidate {
   surface_building_m2: number
   is_eriazo: boolean
   opportunity_score: number
-  undervaluation_score: number
   use_specific_score: number
   max_payable_uf: number
   estimated_uf: number
@@ -55,73 +60,28 @@ const COMMUNES = [
   'Vitacura', 'San Bernardo', 'Puente Alto', 'Quilicura', 'Peñalolén',
   'La Pintana', 'El Bosque', 'Recoleta', 'Conchalí', 'Lo Barnechea',
   'Pudahuel', 'Macul', 'Cerro Navia', 'Renca', 'Estación Central',
-  'Quinta Normal', 'San Miguel', 'La Cisterna', 'Huechuraba',
+  'Quinta Normal', 'San Miguel', 'La Cisterna', 'Huechuraba', 'San Joaquín',
+  'Lo Espejo', 'Pedro Aguirre Cerda', 'Lo Prado', 'San Ramón', 'La Granja',
+  'Independencia', 'Cerrillos', 'Lampa', 'Colina', 'Buin', 'Melipilla',
+  'Pirque', 'Talagante', 'Calera de Tango',
 ]
 
-const PROPERTY_LABELS: Record<string, string> = {
-  apartment:   'departamento',
-  house:       'casa',
-  land:        'terreno',
-  retail:      'local',
-  office:      'oficina',
-  warehouse:   'bodega',
-  industrial:  'industrial',
-}
+const PROPERTY_TYPES = [
+  { code: 'house',      label: 'Casas',      icon: Home },
+  { code: 'apartment',  label: 'Deptos',     icon: Building2 },
+  { code: 'land',       label: 'Terrenos',   icon: Trees },
+  { code: 'retail',     label: 'Locales',    icon: Store },
+  { code: 'warehouse',  label: 'Bodegas',    icon: Factory },
+]
 
-interface ParsedQuery {
-  property_type?: string
-  commune?: string
-  max_price?: number
-  min_score?: number
-  search_text: string
-}
-
-function parseNLPQuery(input: string): ParsedQuery {
-  const lower = input.toLowerCase().trim()
-  const result: ParsedQuery = { search_text: input }
-
-  // Property type
-  if (/depart|apto|depto/.test(lower)) result.property_type = 'apartment'
-  else if (/casa\b/.test(lower)) result.property_type = 'house'
-  else if (/terren/.test(lower)) result.property_type = 'land'
-  else if (/local|comerc/.test(lower)) result.property_type = 'retail'
-  else if (/oficin/.test(lower)) result.property_type = 'office'
-  else if (/bodeg/.test(lower)) result.property_type = 'warehouse'
-
-  // Commune (fuzzy)
-  for (const c of COMMUNES) {
-    const cl = c.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    const lowerNorm = lower.normalize('NFD').replace(/[̀-ͯ]/g, '')
-    if (lowerNorm.includes(cl)) { result.commune = c; break }
-  }
-
-  // Max price
-  const priceMatch = lower.match(/menos de (\d+)\s*(k|mil)?/i)
-  if (priceMatch) {
-    let v = parseInt(priceMatch[1], 10)
-    if (priceMatch[2]) v *= 1000
-    result.max_price = v
-  }
-
-  // Score
-  if (/score alto|alta oportunidad|top|excelente/.test(lower)) result.min_score = 0.75
-  else if (/score medio|buena oportunidad/.test(lower)) result.min_score = 0.6
-  else if (/score|oportunidad/.test(lower)) result.min_score = 0.5
-
-  return result
-}
-
-function scoreColor(score: number): [number, number, number, number] {
-  if (score >= 0.75) return [34, 197, 94, 220]   // green
-  if (score >= 0.60) return [234, 179, 8, 220]   // yellow
-  return [239, 68, 68, 200]                       // red
-}
-
-function scoreColorHex(score: number): string {
-  if (score >= 0.75) return '#22c55e'
-  if (score >= 0.60) return '#eab308'
-  return '#ef4444'
-}
+const COMMERCIAL_USES = [
+  { value: 'gas_station',  label: '⛽ Estación servicio' },
+  { value: 'pharmacy',     label: '💊 Farmacia' },
+  { value: 'supermarket',  label: '🛒 Supermercado' },
+  { value: 'bank_branch',  label: '🏦 Banco' },
+  { value: 'clinic',       label: '🏥 Clínica' },
+  { value: 'restaurant',   label: '🍽 Restaurante' },
+]
 
 function fmtUF(v: number | null | undefined): string {
   if (v === null || v === undefined || isNaN(Number(v))) return '—'
@@ -135,405 +95,686 @@ function fmtUFFull(v: number | null | undefined): string {
   return `${Math.round(Number(v)).toLocaleString('es-CL')} UF`
 }
 
-function NarrativeCard({ candidate, mode, onClose }: { candidate: Candidate; mode: 'investor' | 'operator'; onClose: () => void }) {
-  const drivers = (candidate.drivers ?? {}) as Record<string, unknown>
-  const gapPct = drivers.gap_pct as number | null
-  const nCompetitors = drivers.n_competitors_2km as number | undefined ?? drivers[`n_competitors_${candidate.property_type_code}`]
-  const isEriazo = candidate.is_eriazo
+function scoreColor(score: number): [number, number, number, number] {
+  if (score >= 0.75) return [34, 197, 94, 220]
+  if (score >= 0.60) return [234, 179, 8, 220]
+  return [239, 68, 68, 200]
+}
+function scoreColorHex(score: number): string {
+  if (score >= 0.75) return '#22c55e'
+  if (score >= 0.60) return '#eab308'
+  return '#ef4444'
+}
+function scoreLabel(score: number): string {
+  if (score >= 0.75) return 'Alta oportunidad'
+  if (score >= 0.60) return 'Buena oportunidad'
+  return 'Baja oportunidad'
+}
 
-  // Build narrative
-  const parts: string[] = []
-  if (gapPct && Number(gapPct) < 0) {
-    parts.push(`**${Math.abs(Number(gapPct)).toFixed(0)}% bajo el valor de mercado**`)
-  }
-  if (candidate.estimated_uf) {
-    parts.push(`Comparables similares en la zona se venden entre **${fmtUFFull(candidate.p25_uf)} y ${fmtUFFull(candidate.p75_uf)}**`)
-  }
-  if (isEriazo) parts.push('Sitio subutilizado — alto potencial de redesarrollo')
-  if (typeof nCompetitors === 'number' && mode === 'operator') {
-    parts.push(`${nCompetitors} competidores en radio 2km`)
-  }
+function gapText(drivers: Record<string, unknown> | undefined): { text: string; color: string } {
+  const gap = drivers?.gap_pct as number | null | undefined
+  if (gap === null || gap === undefined) return { text: '—', color: '#666' }
+  const g = Number(gap)
+  if (g < 0) return { text: `${Math.abs(g).toFixed(0)}% bajo valor`, color: '#22c55e' }
+  if (g > 0) return { text: `${g.toFixed(0)}% sobre valor`, color: '#ef4444' }
+  return { text: 'En valor de mercado', color: '#888' }
+}
 
-  const propTypeES = PROPERTY_LABELS[candidate.property_type_code] || candidate.property_type_code
-  const surfaceM2 = candidate.surface_building_m2 || candidate.surface_land_m2
+// ── Filter components ──────────────────────────────────────────────────
 
-  const ddItems = mode === 'operator' ? [
-    'Verificar uso permitido en plan regulador comunal (DOM)',
-    'Solicitar certificado de informaciones previas',
-    'Revisar zonificación y restricciones',
-    'Cotizar tasación independiente (Tinsa / GPS Property)',
-    'Confirmar cap rate con corredor comercial local',
-  ] : [
-    'Solicitar certificado de hipotecas y gravámenes (CBR)',
-    'Verificar estado de dominio y deudas tributarias (SII)',
-    'Tasación independiente',
-    'Inspección física de la propiedad',
-  ]
+interface FilterDropdownProps {
+  label: string
+  icon?: React.ReactNode
+  isOpen: boolean
+  onToggle: () => void
+  children: React.ReactNode
+  active?: boolean
+  badge?: string
+}
+function FilterDropdown({ label, icon, isOpen, onToggle, children, active, badge }: FilterDropdownProps) {
+  return (
+    <div className="relative">
+      <button
+        onClick={onToggle}
+        className={clsx(
+          'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all',
+          active
+            ? 'bg-blue-600 text-white border-blue-500'
+            : 'bg-gray-900 text-gray-300 border-gray-700 hover:border-gray-500 hover:text-white'
+        )}
+      >
+        {icon}
+        <span>{label}</span>
+        {badge && <span className="text-xs opacity-80">· {badge}</span>}
+        <ChevronDown size={14} className={clsx('transition-transform', isOpen && 'rotate-180')} />
+      </button>
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={onToggle} />
+          <div className="absolute top-full mt-2 left-0 z-40 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl min-w-[280px] p-4">
+            {children}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
 
-  const gmaps = `https://maps.google.com/?q=${candidate.latitude},${candidate.longitude}`
+// ── Property card (sidebar list) ────────────────────────────────────────
+
+function PropertyCard({ candidate, onClick, isHovered }: { candidate: Candidate; onClick: () => void; isHovered?: boolean }) {
+  const gap = gapText(candidate.drivers)
+  const propType = PROPERTY_TYPES.find(p => p.code === candidate.property_type_code)
+  const Icon = propType?.icon ?? Home
 
   return (
-    <div className="absolute right-0 top-0 bottom-0 w-96 bg-gray-950 border-l border-gray-800 overflow-y-auto z-20 flex flex-col">
-      {/* Header */}
-      <div className="flex items-start justify-between p-4 border-b border-gray-800">
-        <div className="flex-1 min-w-0">
-          <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">{propTypeES}</div>
-          <h3 className="text-white text-base font-semibold truncate">{candidate.county_name}</h3>
-          <div className="text-xs text-gray-500 mt-1">{Math.round(surfaceM2 || 0).toLocaleString('es-CL')} m²</div>
-        </div>
-        <button onClick={onClose} className="text-gray-500 hover:text-white p-1">
-          <X size={16} />
+    <button
+      onClick={onClick}
+      className={clsx(
+        'w-full text-left p-3 border-b border-gray-800 hover:bg-gray-800 transition-colors block',
+        isHovered && 'bg-gray-800 border-l-2 border-l-blue-500'
+      )}
+    >
+      <div className="flex items-baseline justify-between mb-1">
+        <span className="text-white text-sm font-semibold truncate">{candidate.county_name}</span>
+        <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: scoreColorHex(candidate.opportunity_score) + '33', color: scoreColorHex(candidate.opportunity_score) }}>
+          {Math.round(candidate.opportunity_score * 100)}
+        </span>
+      </div>
+      <div className="text-xl font-bold text-white mb-1">{fmtUFFull(candidate.estimated_uf)}</div>
+      <div className="flex items-center gap-3 text-xs">
+        <span style={{ color: gap.color }}>{gap.text}</span>
+        <span className="text-gray-500 flex items-center gap-1">
+          <Icon size={11} />
+          {Math.round(candidate.surface_land_m2 || 0).toLocaleString('es-CL')} m²
+        </span>
+        {candidate.is_eriazo && <span className="text-amber-400 text-[10px]">SUBUTILIZADO</span>}
+      </div>
+    </button>
+  )
+}
+
+// ── Detail page (1 viewport, no scroll) ─────────────────────────────────
+
+function DetailPage({ candidate, mode, onClose }: { candidate: Candidate; mode: 'investor' | 'operator'; onClose: () => void }) {
+  const propType = PROPERTY_TYPES.find(p => p.code === candidate.property_type_code)
+  const propLabel = propType?.label?.replace(/s$/, '') ?? candidate.property_type_code
+  const gap = gapText(candidate.drivers)
+  const drivers = candidate.drivers ?? {}
+  const nCompetitors = (drivers.n_competitors_2km as number | undefined) ??
+                       (drivers[`n_competitors_${candidate.property_type_code}`] as number | undefined)
+
+  return (
+    <div className="absolute inset-0 z-50 bg-gray-950 flex flex-col">
+      <div className="flex items-center justify-between p-4 border-b border-gray-800">
+        <button onClick={onClose} className="text-gray-400 hover:text-white text-sm flex items-center gap-2">
+          ← Volver al mapa
         </button>
+        <div className="text-xs text-gray-600">data v3.2 · model v1.0</div>
       </div>
 
-      {/* Score badge */}
-      <div className="p-4 border-b border-gray-800">
-        <div className="flex items-baseline gap-3">
-          <div className="text-4xl font-bold" style={{ color: scoreColorHex(candidate.opportunity_score) }}>
-            {Math.round(candidate.opportunity_score * 100)}
-          </div>
-          <div>
-            <div className="text-xs text-gray-400">de oportunidad</div>
-            <div className="text-xs font-medium" style={{ color: scoreColorHex(candidate.opportunity_score) }}>
-              {candidate.opportunity_score >= 0.75 ? 'Alta' : candidate.opportunity_score >= 0.60 ? 'Media' : 'Baja'}
+      <div className="flex-1 overflow-hidden p-8">
+        <div className="max-w-6xl mx-auto h-full flex flex-col">
+          <div className="flex items-baseline justify-between mb-6">
+            <div>
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">{propLabel}</div>
+              <h1 className="text-3xl font-bold text-white">{candidate.county_name}</h1>
+            </div>
+            <div className="text-right">
+              <div className="text-5xl font-bold" style={{ color: scoreColorHex(candidate.opportunity_score) }}>
+                {Math.round(candidate.opportunity_score * 100)}
+              </div>
+              <div className="text-xs" style={{ color: scoreColorHex(candidate.opportunity_score) }}>
+                {scoreLabel(candidate.opportunity_score)}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Risks first */}
-      <div className="p-4 border-b border-gray-800">
-        <div className="text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1.5">
-          <AlertTriangle size={12} className="text-yellow-500" />
-          Antes de comprar, verifica
-        </div>
-        <ul className="space-y-1.5 text-xs text-gray-400">
-          {(candidate.valuation_confidence ?? 0) < 0.5 && (
-            <li className="flex gap-2"><span className="text-yellow-500">•</span> Confianza valoración baja — pocos comparables en zona</li>
-          )}
-          {!candidate.estimated_uf && (
-            <li className="flex gap-2"><span className="text-yellow-500">•</span> Sin valoración triangulada — datos parciales</li>
-          )}
-          <li className="flex gap-2"><span className="text-gray-600">•</span> Plan regulador no integrado al modelo aún</li>
-          {mode === 'operator' && (
-            <li className="flex gap-2"><span className="text-yellow-500">•</span> Cap rate referencial — validar con tasador</li>
-          )}
-        </ul>
-      </div>
+          <div className="grid grid-cols-2 gap-8 flex-1 min-h-0">
+            {/* Left: mini map */}
+            <div className="bg-gray-900 rounded-2xl overflow-hidden relative">
+              <DeckGL
+                initialViewState={{ longitude: candidate.longitude, latitude: candidate.latitude, zoom: 14, pitch: 0, bearing: 0 }}
+                controller={true}
+                layers={[
+                  new ScatterplotLayer({
+                    id: 'detail-pin',
+                    data: [candidate],
+                    getPosition: (d: Candidate) => [d.longitude, d.latitude],
+                    getRadius: 60,
+                    getFillColor: (d: Candidate) => scoreColor(d.opportunity_score),
+                    radiusUnits: 'meters',
+                    radiusMinPixels: 12,
+                  }),
+                ]}
+              >
+                <MapLibre mapStyle={MAP_STYLE} />
+              </DeckGL>
+            </div>
 
-      {/* Price band */}
-      {candidate.estimated_uf && (
-        <div className="p-4 border-b border-gray-800">
-          <div className="text-xs font-semibold text-gray-300 mb-2">Precio justo según comparables</div>
-          <div className="text-2xl font-bold text-white mb-1">{fmtUFFull(candidate.estimated_uf)}</div>
-          <div className="text-xs text-gray-500 mb-3">central · banda p25-p75</div>
+            {/* Right: data */}
+            <div className="flex flex-col gap-4 overflow-y-auto pr-2">
+              {/* Precio justo */}
+              <div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Precio justo según comparables</div>
+                <div className="text-3xl font-bold text-white mb-1">{fmtUFFull(candidate.estimated_uf)}</div>
+                <div className="text-xs text-gray-500 mb-3">Rango {fmtUF(candidate.p25_uf)} – {fmtUF(candidate.p75_uf)}</div>
+                <div className="relative h-2 bg-gray-800 rounded-full mb-1">
+                  <div className="absolute h-full bg-blue-600 rounded-full" style={{ left: '25%', width: '50%' }} />
+                  <div className="absolute w-3 h-3 bg-white rounded-full -top-0.5 border-2 border-blue-400" style={{ left: 'calc(50% - 6px)' }} />
+                </div>
+              </div>
 
-          {/* Visual band */}
-          <div className="relative h-2 bg-gray-800 rounded-full mb-1">
-            <div
-              className="absolute h-full bg-blue-600 rounded-full"
-              style={{ left: '25%', width: '50%' }}
-            />
-            <div
-              className="absolute w-3 h-3 bg-white rounded-full -top-0.5 border-2 border-blue-400"
-              style={{ left: 'calc(50% - 6px)' }}
-            />
+              {/* Descuento */}
+              <div className="bg-gray-900 rounded-xl p-4">
+                <div className="text-xs text-gray-500 mb-1">Diferencia con valor de mercado</div>
+                <div className="text-2xl font-bold" style={{ color: gap.color }}>{gap.text}</div>
+              </div>
+
+              {/* Datos */}
+              <div className="bg-gray-900 rounded-xl p-4 grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-xs text-gray-500">Tipo</div>
+                  <div className="text-white text-sm font-medium">{propLabel}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500">Terreno</div>
+                  <div className="text-white text-sm font-medium">{Math.round(candidate.surface_land_m2 || 0).toLocaleString('es-CL')} m²</div>
+                </div>
+                {candidate.surface_building_m2 ? (
+                  <div>
+                    <div className="text-xs text-gray-500">Construcción</div>
+                    <div className="text-white text-sm font-medium">{Math.round(candidate.surface_building_m2).toLocaleString('es-CL')} m²</div>
+                  </div>
+                ) : null}
+                {candidate.is_eriazo && (
+                  <div>
+                    <div className="text-xs text-gray-500">Estado</div>
+                    <div className="text-amber-400 text-sm font-medium">Subutilizado</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Operador only */}
+              {mode === 'operator' && candidate.max_payable_uf && (
+                <div className="bg-amber-950/30 border border-amber-900/50 rounded-xl p-4">
+                  <div className="text-xs text-amber-400 mb-1 flex items-center gap-1.5">
+                    <Briefcase size={11} /> Como operador comercial
+                  </div>
+                  <div className="text-2xl font-bold text-amber-400 mb-1">{fmtUFFull(candidate.max_payable_uf)}</div>
+                  <div className="text-xs text-gray-500">Máximo pagable. Cap rate referencial — validar.</div>
+                  {typeof nCompetitors === 'number' && (
+                    <div className="text-xs text-gray-400 mt-2">{nCompetitors} competidores en radio 2 km</div>
+                  )}
+                </div>
+              )}
+
+              {/* Riesgos */}
+              <div className="bg-yellow-950/20 border border-yellow-900/40 rounded-xl p-4">
+                <div className="text-xs font-semibold text-yellow-500 mb-2 flex items-center gap-1.5">
+                  <AlertTriangle size={11} /> Antes de comprar, verifica
+                </div>
+                <ul className="space-y-1 text-xs text-gray-300">
+                  <li>☐ Certificado de hipotecas y gravámenes (CBR)</li>
+                  <li>☐ Verificar uso permitido en plan regulador</li>
+                  <li>☐ Tasación independiente</li>
+                  <li>☐ Inspección física de la propiedad</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>{fmtUF(candidate.p25_uf)}</span>
-            <span>{fmtUF(candidate.p75_uf)}</span>
+
+          {/* Actions */}
+          <div className="flex gap-3 mt-6">
+            <a
+              href={`https://maps.google.com/?q=${candidate.latitude},${candidate.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-full flex items-center gap-2"
+            >
+              <MapPin size={14} /> Ver en Google Maps
+            </a>
+            <button className="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium rounded-full flex items-center gap-2">
+              <Save size={14} /> Guardar
+            </button>
+            <button className="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium rounded-full flex items-center gap-2">
+              <FileText size={14} /> Descargar PDF
+            </button>
           </div>
         </div>
-      )}
-
-      {/* Operator-only: Max payable */}
-      {mode === 'operator' && candidate.max_payable_uf && (
-        <div className="p-4 border-b border-gray-800 bg-amber-950/20">
-          <div className="text-xs font-semibold text-amber-500 mb-1 flex items-center gap-1">
-            <Briefcase size={12} /> Máximo pagable como operador
-          </div>
-          <div className="text-xl font-bold text-amber-400 mb-1">{fmtUFFull(candidate.max_payable_uf)}</div>
-          <div className="text-xs text-gray-500">
-            Estimación cap inverso. Cap rate referencial — INFO_NO_FIDEDIGNA, validar con asesor.
-          </div>
-        </div>
-      )}
-
-      {/* Tesis */}
-      <div className="p-4 border-b border-gray-800">
-        <div className="text-xs font-semibold text-gray-300 mb-2 flex items-center gap-1.5">
-          <TrendingUp size={12} className="text-green-500" />
-          Por qué es oportunidad
-        </div>
-        <div className="space-y-2 text-xs text-gray-300 leading-relaxed">
-          {parts.length === 0 ? (
-            <p className="text-gray-500">Score basado en valoración hedónica + comparables zonales.</p>
-          ) : (
-            parts.map((p, i) => (
-              <p key={i} dangerouslySetInnerHTML={{ __html: p.replace(/\*\*(.+?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* Due diligence */}
-      <div className="p-4 border-b border-gray-800">
-        <div className="text-xs font-semibold text-gray-300 mb-2">Próximos pasos</div>
-        <ul className="space-y-1.5">
-          {ddItems.map((item, i) => (
-            <li key={i} className="text-xs text-gray-400 flex items-start gap-2">
-              <span className="mt-0.5 w-3 h-3 rounded border border-gray-700 flex-shrink-0" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Actions */}
-      <div className="p-4 mt-auto flex gap-2 flex-wrap">
-        <a
-          href={gmaps}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded font-medium"
-        >
-          Ver en mapa
-        </a>
-        <button className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded">
-          Guardar
-        </button>
-        <button className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded">
-          PDF
-        </button>
       </div>
     </div>
   )
 }
 
+// ── Main panel ──────────────────────────────────────────────────────────
+
 export function OpportunityPanel() {
-  const [searchInput, setSearchInput] = useState('')
   const [mode, setMode]               = useState<'investor' | 'operator'>('investor')
   const [useCase, setUseCase]         = useState('as_is')
-  const [scoreFilter, setScoreFilter] = useState<'all' | 'top' | 'high'>('all')
   const [selected, setSelected]       = useState<Candidate | null>(null)
+  const [hoveredId, setHoveredId]     = useState<number | null>(null)
   const [viewState, setViewState]     = useState(INITIAL_VIEW)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
-  const parsed = useMemo(() => parseNLPQuery(searchInput), [searchInput])
+  // Filter state
+  const [communes, setCommunes]   = useState<string[]>([])
+  const [types, setTypes]         = useState<string[]>([])
+  const [priceMax, setPriceMax]   = useState<number>(50000)
+  const [surfaceMin, setSurfaceMin] = useState<number>(0)
+  const [surfaceMax, setSurfaceMax] = useState<number>(10000)
+  const [scoreFilter, setScoreFilter] = useState<'all' | 'good' | 'top'>('all')
+  const [eriazo, setEriazo]       = useState(false)
+  const [communeSearch, setCommuneSearch] = useState('')
 
-  const scoreMin = scoreFilter === 'top' ? 0.75 : scoreFilter === 'high' ? 0.6 : 0.5
-  const profile  = mode === 'operator' ? 'operator' : 'value'
+  const scoreMin = scoreFilter === 'top' ? 0.75 : scoreFilter === 'good' ? 0.6 : 0.5
+  const profile = mode === 'operator' ? 'operator' : 'value'
+  const activeUseCase = mode === 'operator' ? useCase : 'as_is'
 
+  // Server-side filters: use first commune (multi-commune handled client-side)
   const queryParams = new URLSearchParams({
-    use_case: useCase,
+    use_case: activeUseCase,
     profile,
-    score_min: (parsed.min_score ?? scoreMin).toString(),
-    limit: '300',
-    ...(parsed.commune && { commune: parsed.commune }),
-    ...(parsed.property_type && { property_type: parsed.property_type }),
+    score_min: scoreMin.toString(),
+    limit: '500',
+    ...(communes.length === 1 ? { commune: communes[0] } : {}),
   })
 
   const { data, isLoading } = useQuery({
-    queryKey: ['opp-v3', useCase, profile, parsed.commune, parsed.property_type, parsed.min_score ?? scoreMin],
+    queryKey: ['opp-v4', activeUseCase, profile, communes[0], scoreMin],
     queryFn: async () => {
       const r = await fetch(`${API}/opportunity/candidates?${queryParams}`)
       return r.json()
     },
   })
 
-  const items: Candidate[] = (data?.items ?? []).filter((c: Candidate) =>
-    c.latitude && c.longitude && (!parsed.max_price || (c.estimated_uf ?? 0) <= parsed.max_price)
-  )
+  // Client-side filters
+  const items: Candidate[] = useMemo(() => {
+    return (data?.items ?? []).filter((c: Candidate) => {
+      if (!c.latitude || !c.longitude) return false
+      if (communes.length > 1 && !communes.includes(c.county_name)) return false
+      if (types.length > 0 && !types.includes(c.property_type_code)) return false
+      if ((c.estimated_uf ?? 0) > priceMax) return false
+      const m2 = c.surface_land_m2 ?? 0
+      if (m2 < surfaceMin || m2 > surfaceMax) return false
+      if (eriazo && !c.is_eriazo) return false
+      return true
+    })
+  }, [data, communes, types, priceMax, surfaceMin, surfaceMax, eriazo])
+
+  // Auto-fit when commune changes
+  useEffect(() => {
+    if (communes.length === 1 && items.length > 0) {
+      const lats = items.map(c => c.latitude).filter(Boolean)
+      const lons = items.map(c => c.longitude).filter(Boolean)
+      if (lats.length > 0) {
+        const cLat = (Math.min(...lats) + Math.max(...lats)) / 2
+        const cLon = (Math.min(...lons) + Math.max(...lons)) / 2
+        setViewState({ longitude: cLon, latitude: cLat, zoom: 13, pitch: 0, bearing: 0 })
+      }
+    }
+  }, [communes, items.length])
 
   const layers = [
     new ScatterplotLayer({
-      id: 'opp-pins',
+      id: 'pins',
       data: items,
       getPosition: (d: Candidate) => [d.longitude, d.latitude],
       getRadius: (d: Candidate) => Math.max(60, Math.min(200, Math.sqrt((d.surface_land_m2 ?? 100)) * 4)),
       getFillColor: (d: Candidate) => scoreColor(d.opportunity_score),
-      getLineColor: [255, 255, 255, 255],
+      getLineColor: (d: Candidate) => (d.id === hoveredId ? [255, 255, 255, 255] : [0, 0, 0, 100]),
       lineWidthMinPixels: 1,
       stroked: true,
       pickable: true,
       onClick: ({ object }: { object: Candidate }) => setSelected(object),
+      onHover: ({ object }: { object: Candidate | null }) => setHoveredId(object?.id ?? null),
       radiusUnits: 'meters',
-      radiusMinPixels: 4,
-      radiusMaxPixels: 16,
+      radiusMinPixels: 5,
+      radiusMaxPixels: 18,
+      updateTriggers: {
+        getLineColor: [hoveredId],
+      },
     }),
     new TextLayer({
-      id: 'opp-prices',
-      data: items.filter((_, i) => i < 50),
+      id: 'prices',
+      data: items.slice(0, 30),
       getPosition: (d: Candidate) => [d.longitude, d.latitude],
       getText: (d: Candidate) => fmtUF(d.estimated_uf),
-      getColor: [255, 255, 255, 220],
+      getColor: [255, 255, 255, 230],
       getSize: 11,
       sizeUnits: 'pixels',
-      getPixelOffset: [0, -16],
+      getPixelOffset: [0, -18],
       background: true,
-      backgroundPadding: [3, 1],
-      getBackgroundColor: [10, 10, 30, 180],
+      backgroundPadding: [4, 2],
+      getBackgroundColor: [10, 10, 30, 200],
       fontFamily: 'system-ui',
       fontWeight: 600,
     }),
   ]
 
-  return (
-    <div className="relative h-full w-full bg-gray-950">
-      {/* Map */}
-      <DeckGL
-        initialViewState={viewState}
-        controller={true}
-        layers={layers}
-        onViewStateChange={({ viewState: v }) => setViewState(v as typeof INITIAL_VIEW)}
-        getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
-      >
-        <MapLibre mapStyle={MAP_STYLE} reuseMaps />
-      </DeckGL>
+  const filteredCommunes = COMMUNES.filter(c => c.toLowerCase().includes(communeSearch.toLowerCase()))
+  const hasFilters = communes.length > 0 || types.length > 0 || priceMax < 50000 || surfaceMin > 0 || surfaceMax < 10000 || scoreFilter !== 'all' || eriazo
 
-      {/* Search bar — top center */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 w-full max-w-2xl px-4">
-        <div className="relative">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+  const clearFilters = () => {
+    setCommunes([])
+    setTypes([])
+    setPriceMax(50000)
+    setSurfaceMin(0)
+    setSurfaceMax(10000)
+    setScoreFilter('all')
+    setEriazo(false)
+  }
+
+  return (
+    <div className="relative h-full w-full bg-gray-950 flex flex-col overflow-hidden">
+      {/* Header — mode toggle */}
+      <div className="flex items-center justify-between px-6 py-3 border-b border-gray-800 bg-gray-950 z-10">
+        <div className="text-white font-semibold">Oportunidades</div>
+        <div className="flex bg-gray-900 rounded-full p-1 border border-gray-800">
+          <button
+            onClick={() => { setMode('investor'); setUseCase('as_is') }}
+            className={clsx('px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5',
+              mode === 'investor' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white')}
+          >
+            <Home size={12} /> Inversión
+          </button>
+          <button
+            onClick={() => { setMode('operator'); setUseCase('gas_station') }}
+            className={clsx('px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5',
+              mode === 'operator' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:text-white')}
+          >
+            <Briefcase size={12} /> Operador
+          </button>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div className="flex items-center gap-2 px-6 py-3 border-b border-gray-800 bg-gray-950 z-10 overflow-x-auto">
+        {/* Comuna */}
+        <FilterDropdown
+          label="Comuna"
+          icon={<MapPin size={14} />}
+          isOpen={openDropdown === 'comuna'}
+          onToggle={() => setOpenDropdown(openDropdown === 'comuna' ? null : 'comuna')}
+          active={communes.length > 0}
+          badge={communes.length > 0 ? `${communes.length}` : undefined}
+        >
           <input
             type="text"
-            placeholder='Busca: "casa Maipú score alto" o "terreno menos de 5000 UF"'
-            value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
-            className="w-full bg-gray-900/95 backdrop-blur text-white text-sm pl-11 pr-10 py-3 rounded-full border border-gray-700 focus:border-blue-500 focus:outline-none shadow-lg"
+            placeholder="Buscar comuna..."
+            value={communeSearch}
+            onChange={e => setCommuneSearch(e.target.value)}
+            className="w-full bg-gray-800 text-white text-sm px-3 py-2 rounded-lg border border-gray-700 mb-3"
           />
-          {searchInput && (
-            <button
-              onClick={() => setSearchInput('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
-            >
-              <X size={14} />
+          <div className="max-h-64 overflow-y-auto space-y-1">
+            {filteredCommunes.map(c => (
+              <label key={c} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-800 rounded cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={communes.includes(c)}
+                  onChange={() => setCommunes(p => p.includes(c) ? p.filter(x => x !== c) : [...p, c])}
+                  className="accent-blue-500"
+                />
+                <span className="text-sm text-gray-300">{c}</span>
+              </label>
+            ))}
+          </div>
+          {communes.length > 0 && (
+            <button onClick={() => setCommunes([])} className="text-xs text-gray-500 hover:text-white mt-2">
+              Limpiar selección
             </button>
           )}
+        </FilterDropdown>
+
+        {/* Tipo */}
+        <FilterDropdown
+          label="Tipo"
+          icon={<Home size={14} />}
+          isOpen={openDropdown === 'tipo'}
+          onToggle={() => setOpenDropdown(openDropdown === 'tipo' ? null : 'tipo')}
+          active={types.length > 0}
+          badge={types.length > 0 ? `${types.length}` : undefined}
+        >
+          <div className="grid grid-cols-2 gap-2">
+            {PROPERTY_TYPES.map(({ code, label, icon: Icon }) => (
+              <button
+                key={code}
+                onClick={() => setTypes(p => p.includes(code) ? p.filter(x => x !== code) : [...p, code])}
+                className={clsx(
+                  'flex items-center gap-2 px-3 py-2 rounded-lg text-sm border',
+                  types.includes(code)
+                    ? 'bg-blue-600 text-white border-blue-500'
+                    : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-gray-500'
+                )}
+              >
+                <Icon size={14} /> {label}
+              </button>
+            ))}
+          </div>
+        </FilterDropdown>
+
+        {/* Precio máximo */}
+        <FilterDropdown
+          label="Precio"
+          isOpen={openDropdown === 'precio'}
+          onToggle={() => setOpenDropdown(openDropdown === 'precio' ? null : 'precio')}
+          active={priceMax < 50000}
+          badge={priceMax < 50000 ? `≤ ${(priceMax / 1000).toFixed(0)}k UF` : undefined}
+        >
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-400">Máximo</span>
+                <span className="text-white font-semibold">{(priceMax / 1000).toFixed(0)}k UF</span>
+              </div>
+              <input
+                type="range" min={1000} max={50000} step={500}
+                value={priceMax}
+                onChange={e => setPriceMax(Number(e.target.value))}
+                className="w-full accent-blue-500"
+              />
+              <div className="flex justify-between text-xs text-gray-600 mt-1">
+                <span>1k</span><span>10k</span><span>25k</span><span>50k+</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {[5000, 10000, 20000, 50000].map(p => (
+                <button
+                  key={p}
+                  onClick={() => setPriceMax(p)}
+                  className={clsx(
+                    'flex-1 py-1 rounded text-xs',
+                    priceMax === p ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
+                  )}
+                >
+                  ≤{(p / 1000).toFixed(0)}k
+                </button>
+              ))}
+            </div>
+          </div>
+        </FilterDropdown>
+
+        {/* Tamaño */}
+        <FilterDropdown
+          label="Tamaño"
+          isOpen={openDropdown === 'tamano'}
+          onToggle={() => setOpenDropdown(openDropdown === 'tamano' ? null : 'tamano')}
+          active={surfaceMin > 0 || surfaceMax < 10000}
+          badge={(surfaceMin > 0 || surfaceMax < 10000) ? `${surfaceMin}–${surfaceMax}m²` : undefined}
+        >
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm text-gray-400">Mínimo</span>
+                <span className="text-white font-semibold">{surfaceMin.toLocaleString('es-CL')} m²</span>
+              </div>
+              <input
+                type="range" min={0} max={5000} step={50}
+                value={surfaceMin}
+                onChange={e => setSurfaceMin(Number(e.target.value))}
+                className="w-full accent-blue-500"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm text-gray-400">Máximo</span>
+                <span className="text-white font-semibold">{surfaceMax.toLocaleString('es-CL')} m²</span>
+              </div>
+              <input
+                type="range" min={100} max={10000} step={100}
+                value={surfaceMax}
+                onChange={e => setSurfaceMax(Number(e.target.value))}
+                className="w-full accent-blue-500"
+              />
+            </div>
+          </div>
+        </FilterDropdown>
+
+        {/* Score */}
+        <div className="bg-gray-900 rounded-full p-1 border border-gray-700 flex gap-1">
+          {([
+            { v: 'all',  label: 'Cualquiera' },
+            { v: 'good', label: '⭐ Buena' },
+            { v: 'top',  label: '🔥 Top' },
+          ] as const).map(({ v, label }) => (
+            <button
+              key={v}
+              onClick={() => setScoreFilter(v)}
+              className={clsx(
+                'px-3 py-1.5 rounded-full text-xs font-medium',
+                scoreFilter === v ? 'bg-white text-black' : 'text-gray-400 hover:text-white'
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        {/* Active filter chips */}
-        {(parsed.commune || parsed.property_type || parsed.max_price || parsed.min_score) && (
-          <div className="flex gap-2 mt-2 flex-wrap">
-            {parsed.commune && <Chip label={`📍 ${parsed.commune}`} />}
-            {parsed.property_type && <Chip label={`🏠 ${PROPERTY_LABELS[parsed.property_type]}`} />}
-            {parsed.max_price && <Chip label={`< ${parsed.max_price.toLocaleString('es-CL')} UF`} />}
-            {parsed.min_score && <Chip label={`★ ${Math.round(parsed.min_score * 100)}+`} />}
-          </div>
-        )}
-      </div>
-
-      {/* Mode toggle — top left */}
-      <div className="absolute top-4 left-4 z-10 bg-gray-900/95 backdrop-blur rounded-full p-1 border border-gray-800 flex gap-1 shadow-lg">
+        {/* Eriazo */}
         <button
-          onClick={() => { setMode('investor'); setUseCase('as_is') }}
+          onClick={() => setEriazo(!eriazo)}
           className={clsx(
-            'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors',
-            mode === 'investor' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+            'px-3 py-2 rounded-full text-xs font-medium border',
+            eriazo
+              ? 'bg-amber-600 text-white border-amber-500'
+              : 'bg-gray-900 text-gray-400 border-gray-700 hover:text-white'
           )}
         >
-          <Home size={12} /> Inversión
+          {eriazo ? '✓ ' : ''}Solo subutilizados
         </button>
-        <button
-          onClick={() => { setMode('operator'); setUseCase('gas_station') }}
-          className={clsx(
-            'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors',
-            mode === 'operator' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:text-white'
-          )}
-        >
-          <Briefcase size={12} /> Operador
-        </button>
-      </div>
 
-      {/* Quick filters — bottom center */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        {/* Use case (operador only) */}
         {mode === 'operator' && (
           <select
             value={useCase}
             onChange={e => setUseCase(e.target.value)}
-            className="bg-gray-900/95 backdrop-blur text-white text-xs px-3 py-2 rounded-full border border-gray-800 shadow-lg"
+            className="bg-amber-950 text-amber-300 text-sm px-3 py-2 rounded-full border border-amber-700"
           >
-            <option value="gas_station">⛽ Estación servicio</option>
-            <option value="pharmacy">💊 Farmacia</option>
-            <option value="supermarket">🛒 Supermercado</option>
-            <option value="bank_branch">🏦 Banco</option>
-            <option value="clinic">🏥 Clínica</option>
-            <option value="restaurant">🍽 Restaurante</option>
+            {COMMERCIAL_USES.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
           </select>
         )}
 
-        <div className="bg-gray-900/95 backdrop-blur rounded-full p-1 border border-gray-800 flex gap-1 shadow-lg">
-          {(['all', 'high', 'top'] as const).map(f => (
+        {/* Clear */}
+        {hasFilters && (
+          <button
+            onClick={clearFilters}
+            className="px-3 py-2 rounded-full text-xs text-red-400 hover:bg-red-950/30 flex items-center gap-1 ml-auto"
+          >
+            <X size={12} /> Limpiar
+          </button>
+        )}
+      </div>
+
+      {/* Main: map + sidebar */}
+      <div className="flex-1 flex relative min-h-0">
+        {/* Map */}
+        <div className="flex-1 relative">
+          <DeckGL
+            initialViewState={INITIAL_VIEW}
+            viewState={viewState}
+            controller={true}
+            layers={layers}
+            onViewStateChange={({ viewState: v }) => setViewState(v as typeof INITIAL_VIEW)}
+            getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
+          >
+            <MapLibre mapStyle={MAP_STYLE} reuseMaps />
+          </DeckGL>
+
+          {/* Legend */}
+          <div className="absolute bottom-4 left-4 z-10 bg-gray-900/95 backdrop-blur rounded-xl p-3 border border-gray-800 text-xs space-y-1 shadow-lg">
+            <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-green-500" /> Alta oportunidad</div>
+            <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-yellow-500" /> Buena</div>
+            <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Baja</div>
+          </div>
+
+          {/* Footer info */}
+          <div className="absolute top-4 right-4 z-10 bg-gray-900/95 backdrop-blur rounded-full px-4 py-2 border border-gray-800 shadow-lg text-xs text-gray-300">
+            {isLoading ? 'Buscando...' : `${items.length.toLocaleString('es-CL')} oportunidades`}
+          </div>
+        </div>
+
+        {/* Sidebar list */}
+        <div className="w-80 border-l border-gray-800 bg-gray-950 flex flex-col">
+          <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
+            <span className="text-sm font-semibold text-white">Top oportunidades</span>
             <button
-              key={f}
-              onClick={() => setScoreFilter(f)}
-              className={clsx(
-                'px-3 py-1.5 rounded-full text-xs font-medium',
-                scoreFilter === f ? 'bg-white text-black' : 'text-gray-400 hover:text-white'
-              )}
+              onClick={() => {
+                if (!items.length) return
+                const headers = ['comuna','tipo','score','estimado_uf','m2','lat','lon']
+                const rows = items.map(c => [
+                  c.county_name, c.property_type_code, c.opportunity_score?.toFixed(3),
+                  c.estimated_uf ? Math.round(c.estimated_uf) : '',
+                  c.surface_land_m2 ? Math.round(c.surface_land_m2) : '', c.latitude, c.longitude,
+                ])
+                const csv = [headers, ...rows].map(r => r.join(',')).join('\n')
+                const blob = new Blob([csv], { type: 'text/csv' })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement('a'); a.href = url
+                a.download = `oportunidades_${new Date().toISOString().slice(0,10)}.csv`
+                a.click(); URL.revokeObjectURL(url)
+              }}
+              className="text-gray-500 hover:text-green-400" title="Exportar CSV"
             >
-              {f === 'all' ? 'Cualquiera' : f === 'high' ? '⭐ Buena' : '🔥 Top'}
+              <Download size={14} />
             </button>
-          ))}
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {isLoading ? (
+              <div className="p-4 space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-3 bg-gray-800 rounded w-1/2 mb-2" />
+                    <div className="h-5 bg-gray-800 rounded w-3/4 mb-1" />
+                    <div className="h-3 bg-gray-800 rounded w-2/3" />
+                  </div>
+                ))}
+              </div>
+            ) : items.length === 0 ? (
+              <div className="p-8 text-center text-gray-500 text-sm">
+                <Filter size={32} className="mx-auto mb-3 opacity-30" />
+                <div>No hay oportunidades con estos filtros.</div>
+                <button onClick={clearFilters} className="text-blue-400 hover:underline text-xs mt-2">
+                  Limpiar filtros
+                </button>
+              </div>
+            ) : (
+              items.slice(0, 50).map(c => (
+                <PropertyCard
+                  key={c.id}
+                  candidate={c}
+                  onClick={() => setSelected(c)}
+                  isHovered={hoveredId === c.id}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Results count + CSV — bottom left */}
-      <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-gray-900/95 backdrop-blur rounded-full px-4 py-2 border border-gray-800 shadow-lg">
-        <span className="text-xs text-gray-400">
-          {isLoading ? 'Cargando...' : `${items.length.toLocaleString('es-CL')} oportunidades`}
-        </span>
-        <button
-          onClick={() => {
-            if (!items.length) return
-            const headers = ['comuna','tipo','score','estimado_uf','max_pagable_uf','m2','lat','lon']
-            const rows = items.map(c => [
-              c.county_name, c.property_type_code,
-              c.opportunity_score?.toFixed(3),
-              c.estimated_uf ? Math.round(c.estimated_uf) : '',
-              c.max_payable_uf ? Math.round(c.max_payable_uf) : '',
-              c.surface_land_m2 ? Math.round(c.surface_land_m2) : '',
-              c.latitude, c.longitude,
-            ])
-            const csv = [headers, ...rows].map(r => r.join(',')).join('\n')
-            const blob = new Blob([csv], { type: 'text/csv' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `oportunidades_${new Date().toISOString().slice(0,10)}.csv`
-            a.click()
-            URL.revokeObjectURL(url)
-          }}
-          className="text-gray-500 hover:text-green-400 transition-colors"
-          title="Exportar CSV"
-        >
-          <Download size={12} />
-        </button>
-      </div>
-
-      {/* Legend — bottom right */}
-      <div className="absolute bottom-4 right-4 z-10 bg-gray-900/95 backdrop-blur rounded-lg p-3 border border-gray-800 text-xs space-y-1 shadow-lg">
-        <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-green-500" /> Alta oportunidad</div>
-        <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-yellow-500" /> Media</div>
-        <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Baja</div>
-      </div>
-
-      {/* Footer — versioning */}
-      <div className="absolute bottom-1 right-1 text-[10px] text-gray-700 z-10">
-        data v3.2 · model v1.0
-      </div>
-
-      {/* Detail panel */}
+      {/* Detail page overlay */}
       {selected && (
-        <NarrativeCard candidate={selected} mode={mode} onClose={() => setSelected(null)} />
+        <DetailPage candidate={selected} mode={mode} onClose={() => setSelected(null)} />
       )}
     </div>
-  )
-}
-
-function Chip({ label }: { label: string }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-gray-800/95 text-gray-300 border border-gray-700">
-      {label}
-    </span>
   )
 }
