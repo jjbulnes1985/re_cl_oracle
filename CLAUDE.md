@@ -239,6 +239,10 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **Opportunity Engine v2 — Hedonic XGBoost valuations** — 774,602 predicciones XGBoost + 779,208 trianguladas (comparables + hedonic avg) | **Completado 2026-04-30** |
 | **Opportunity Engine v2 — Executive summary report** — `executive_summary_2026-04-30.html` con top 5 por cada uno de los 5 use cases principales | **Completado 2026-04-30** |
 | **UX Phase 3 — map-first interface** — Deck.gl ScatterplotLayer + TextLayer con precios visibles, NLP search ("casa Maipú score alto"), modo dual Inversionista/Operador, ficha narrativa (oraciones, no datasheet), filtros como floating chips, riesgos antes del upside | **Completado 2026-04-30** |
+| **UX Phase 4 — Idealista-style** — Filter bar prominente con dropdowns explícitos (Comuna multi-select, Tipo chips, Precio slider con presets, Tamaño slider, Score 3-toggle, Eriazo toggle), mapa fullscreen + sidebar lista, ficha de detalle 1 pantalla con riesgos primero | **Completado 2026-05-01** |
+| **DI nightly automático funcionando** — 4 comunas adicionales (Vitacura, Pirque, Talagante, Buin partial, Melipilla) = 12,891 rows. Total: 10/40 comunas | **Completado 2026-05-01** |
+| **Reentrenamiento modelo con DI 2019-2026** — n_train: 443k → 520k, R²: 0.6787 → 0.6712 (slight drop esperado por mayor varianza post-pandemia), 820k hedonic predictions actualizadas | **Completado 2026-05-01** |
+| **IP rotation support** — proxy/VPN URL per account vía `DI_PROXY_1/2/3` env vars, test_proxy.py script de validación, PROXY_SETUP.md con 3 estrategias (VPN free, residential proxy USD 35-140, VMs cloud USD 15/mes) | **Completado 2026-05-01** |
 | Retrain modelo con datos DI 2019-2026 (esperar R² > 0.70) | Pendiente (cuando DI tenga suficientes comunas) |
 | Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
 | MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |

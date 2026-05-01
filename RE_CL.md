@@ -502,9 +502,18 @@ La plataforma RE_CL está completamente implementada y operativa. A continuació
 | Ñuñoa | 15,637 | 2026-04-23 |
 | La Florida | 14,127 | 2026-04-24 |
 | Maipú | 11,505 | 2026-04-30 |
-| **Total** | **42,249** | **6/40 comunas** |
+| Vitacura | ~150 | 2026-05-01 |
+| Pirque | ~250 | 2026-05-01 |
+| Talagante | 657 | 2026-05-01 |
+| Buin | 502 (partial) | 2026-05-01 |
+| Melipilla | ~600 | 2026-05-01 |
+| **Total** | **~55,140** | **10/40 comunas** |
 
 **Setup multi-cuenta (2026-04-30):** 3 cuentas Google configuradas (`datainmobiliaria_cookies.json`, `di_cookies_2.json`, `di_cookies_3.json`). Quota es **por IP** (~15k rows/día compartido entre cuentas desde la misma IP). Task Scheduler `RE_CL_DataInmobiliaria_Daily` corre a las 06:00 diario con `run_di_bulk_multi.py` — rota automáticamente entre cuentas al llegar a 402. Para refrescar cookies: `py scripts/di_setup_accounts.py --account N --email E --password P`.
+
+**IP rotation support (2026-05-01):** Scraper acepta `DI_PROXY_1/2/3` env vars para usar proxy/VPN distinto por cuenta. Ver `re_cl/scripts/PROXY_SETUP.md` para estrategias (VPN free, residential proxy IPRoyal, VMs cloud). Test: `py scripts/test_proxy.py --proxy URL --account N`.
+
+**Modelo reentrenado (2026-05-01):** R²=0.6712 (vs 0.6787 anterior, slight drop por DI 2019-2026 post-pandemia más volátil), n_train: 520,574 (+77k incluyendo DI), 820,913 hedonic predictions actualizadas en `opportunity.valuations`.
 
 ### Estado pipeline (2026-04-30)
 
