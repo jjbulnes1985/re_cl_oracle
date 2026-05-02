@@ -126,38 +126,67 @@ async def quick_quota_check(cookie_file: Path) -> dict:
             await browser.close()
 
 
+def _warp_cli_path() -> str:
+    """Find warp-cli executable. On Windows, WARP installs to Program Files."""
+    candidates = [
+        "warp-cli",  # PATH lookup
+        r"C:\Program Files\Cloudflare\Cloudflare WARP\warp-cli.exe",
+        r"C:\Program Files (x86)\Cloudflare\Cloudflare WARP\warp-cli.exe",
+        "/usr/local/bin/warp-cli",  # Linux/Mac
+    ]
+    for c in candidates:
+        try:
+            r = subprocess.run([c, "--version"], capture_output=True, timeout=3)
+            if r.returncode == 0:
+                return c
+        except (FileNotFoundError, OSError, subprocess.TimeoutExpired):
+            continue
+    return ""
+
+
 def cloudflare_warp_status() -> str:
-    """Detecta si Cloudflare WARP está instalado/activo en Windows."""
+    """Detecta si Cloudflare WARP está instalado/activo."""
+    cli = _warp_cli_path()
+    if not cli:
+        return "not_installed"
     try:
-        result = subprocess.run(
-            ["warp-cli", "status"],
-            capture_output=True, text=True, timeout=5
-        )
+        result = subprocess.run([cli, "status"], capture_output=True, text=True, timeout=10)
         out = (result.stdout or "") + (result.stderr or "")
         if "Connected" in out:
             return "connected"
         if "Disconnected" in out:
             return "installed_disconnected"
         return "unknown"
-    except FileNotFoundError:
-        return "not_installed"
     except Exception:
         return "error"
 
 
 def cloudflare_warp_connect() -> bool:
-    """Intenta conectar Cloudflare WARP automáticamente."""
+    """Alias to smart connect (uses path detection)."""
+    return cloudflare_warp_connect_smart()
+
+
+def cloudflare_warp_connect_smart() -> bool:
+    """Conecta WARP usando el path detectado automáticamente."""
+    cli = _warp_cli_path()
+    if not cli:
+        return False
     try:
-        subprocess.run(["warp-cli", "connect"], timeout=15, capture_output=True)
-        time.sleep(3)
+        # Register first if not registered
+        subprocess.run([cli, "register"], capture_output=True, timeout=15)
+        subprocess.run([cli, "connect"], capture_output=True, timeout=15)
+        time.sleep(4)
         return cloudflare_warp_status() == "connected"
     except Exception:
         return False
 
 
 def cloudflare_warp_disconnect():
+    cli = _warp_cli_path()
+    if not cli:
+        return
     try:
-        subprocess.run(["warp-cli", "disconnect"], timeout=10, capture_output=True)
+        subprocess.run([cli, "disconnect"], timeout=10, capture_output=True)
     except Exception:
         pass
 
@@ -175,10 +204,10 @@ def _build_db_url() -> str:
     )
 
 
-async def scrape_with_account(cookie_file: Path, max_comunas: int | None) -> int:
-    """Lanza el scraper bulk con una cuenta específica."""
-    from src.scraping.datainmobiliaria import scrape_all, RM_COMMUNE_POLYGONS
-    from scripts.run_di_bulk_multi import _load_checkpoint, _pending_communes_sorted
+async def scrape_with_all_accounts(accounts: list[Path], max_comunas: int | None) -> int:
+    """Lanza el scraper bulk usando TODAS las cuentas en rotación 402-trigger."""
+    from src.scraping.datainmobiliaria import scrape_all
+    from scripts.run_di_bulk_multi import _pending_communes_sorted
 
     pending = _pending_communes_sorted()
     if max_comunas:
@@ -188,7 +217,9 @@ async def scrape_with_account(cookie_file: Path, max_comunas: int | None) -> int
         logger.info("All communes already scraped per checkpoint")
         return 0
 
-    logger.info(f"  Scraping {len(pending)} pending comunas with cookie {cookie_file.name}")
+    primary = accounts[0]
+    extras  = accounts[1:] if len(accounts) > 1 else []
+    logger.info(f"  Scraping {len(pending)} pending comunas with {len(accounts)} accounts (primary + {len(extras)} extras for rotation)")
 
     engine = create_engine(_build_db_url(), pool_pre_ping=True)
 
@@ -201,7 +232,8 @@ async def scrape_with_account(cookie_file: Path, max_comunas: int | None) -> int
         min_year=2019,
         headless=True,
         use_checkpoint=True,
-        cookie_file=cookie_file,
+        cookie_file=primary,
+        extra_cookie_files=extras,
     )
 
     return total
@@ -251,12 +283,14 @@ async def main():
         logger.info(f"Available accounts: {len(available)}/{len(accounts)}")
         return
 
-    # Step 4: si hay quota, scrapear
+    # Step 4: si hay quota, scrapear con TODAS las cuentas en rotación
     if available:
         logger.info("")
-        logger.info(f"Step 4: scraping with {len(available)} available account(s)...")
-        cookie_file, _ = available[0]
-        total = await scrape_with_account(cookie_file, args.max_comunas)
+        logger.info(f"Step 4: scraping with {len(available)} available account(s) in rotation...")
+        # Order: available accounts first (fresh quota), then exhausted (will skip on 402)
+        ordered = [f for f, s in quota_status if s.get("status") == "ok"]
+        ordered += [f for f, s in quota_status if s.get("status") != "ok"]
+        total = await scrape_with_all_accounts(ordered, args.max_comunas)
         logger.info(f"Scraped {total:,} rows total.")
         return
 
@@ -273,17 +307,24 @@ async def main():
                 new_ip = get_public_ip()
                 logger.info(f"WARP connected. New IP: {new_ip}")
 
-                # Re-test quota
-                cookie_file = accounts[0]
-                result = await quick_quota_check(cookie_file)
-                if result.get("status") == "ok":
-                    logger.info("WARP IP has fresh quota. Scraping...")
-                    total = await scrape_with_account(cookie_file, args.max_comunas)
+                # Re-test quota with the WARP IP for ALL accounts
+                logger.info("Re-checking quota with WARP IP for all 3 accounts...")
+                warp_quota = []
+                for cookie_file in accounts:
+                    result = await quick_quota_check(cookie_file)
+                    logger.info(f"  {cookie_file.name}: {result['status']} (HTTP {result.get('http_code')})")
+                    warp_quota.append((cookie_file, result))
+
+                warp_available = [f for f, s in warp_quota if s.get("status") == "ok"]
+                if warp_available:
+                    logger.info(f"WARP IP gives fresh quota on {len(warp_available)} accounts. Scraping with rotation...")
+                    ordered = warp_available + [f for f, s in warp_quota if s.get("status") != "ok"]
+                    total = await scrape_with_all_accounts(ordered, args.max_comunas)
                     logger.info(f"Scraped {total:,} rows via WARP.")
                     cloudflare_warp_disconnect()
                     return
                 else:
-                    logger.warning(f"WARP IP also exhausted ({result.get('http_code')}). Disconnecting.")
+                    logger.warning("WARP IP also exhausted on all accounts. Disconnecting.")
                     cloudflare_warp_disconnect()
             else:
                 logger.warning("WARP connect failed.")
