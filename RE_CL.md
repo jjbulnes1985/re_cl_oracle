@@ -502,12 +502,16 @@ La plataforma RE_CL está completamente implementada y operativa. A continuació
 | Ñuñoa | 15,637 | 2026-04-23 |
 | La Florida | 14,127 | 2026-04-24 |
 | Maipú | 11,505 | 2026-04-30 |
-| Vitacura | ~150 | 2026-05-01 |
-| Pirque | ~250 | 2026-05-01 |
+| Vitacura | 11,578 | 2026-05-01 (sesión 2) |
+| Pirque | 154 | 2026-05-01 (sesión 2) |
 | Talagante | 657 | 2026-05-01 |
-| Buin | 502 (partial) | 2026-05-01 |
-| Melipilla | ~600 | 2026-05-01 |
-| **Total** | **~55,140** | **10/40 comunas** |
+| Buin | 1,835 | 2026-05-01 (sesión 2 — antes 502 partial) |
+| Melipilla | 1,899 | 2026-05-01 (sesión 2) |
+| Independencia | 4,101 | 2026-05-01 (sesión 2 — IP nueva) |
+| Cerrillos | 1,648 (partial) | 2026-05-01 (sesión 2) |
+| **Total** | **~64,623** | **12/40 comunas (+1 partial)** |
+
+**Hito 2026-05-01 sesión 2:** El usuario cambió a otra red (IP fresca), los 3 cookies tenían quota → 6 comunas completas + 1 partial en una sola sesión = ~22k rows nuevos. Confirma que el cuello de botella es exclusivamente la IP, no las cuentas.
 
 **Setup multi-cuenta (2026-04-30):** 3 cuentas Google configuradas (`datainmobiliaria_cookies.json`, `di_cookies_2.json`, `di_cookies_3.json`). Quota es **por IP** (~15k rows/día compartido entre cuentas desde la misma IP). Task Scheduler `RE_CL_DataInmobiliaria_Daily` corre a las 06:00 diario con `run_di_bulk_multi.py` — rota automáticamente entre cuentas al llegar a 402. Para refrescar cookies: `py scripts/di_setup_accounts.py --account N --email E --password P`.
 
