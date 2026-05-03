@@ -27,6 +27,7 @@ from src.api.routes.auth import router as auth_router
 from src.api.routes.opportunity import router as opportunity_router
 from src.api.routes.predict import router as predict_router
 from src.api.routes.saved_searches import router as searches_router
+from src.api.routes.subclass import router as subclass_router
 from src.api.middleware.stale_data import stale_data_middleware
 
 MODEL_VERSION = os.getenv("MODEL_VERSION", "v1.0")
@@ -144,6 +145,7 @@ app.include_router(auth_router)
 app.include_router(searches_router)
 app.include_router(predict_router)
 app.include_router(opportunity_router, prefix="/opportunity", tags=["opportunity"])
+app.include_router(subclass_router, prefix="/subclasses", tags=["subclasses"])
 
 
 @app.get("/health", tags=["meta"])

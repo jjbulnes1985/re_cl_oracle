@@ -28,6 +28,10 @@ interface AppState {
   activeTab: 'map' | 'ranking' | 'communes' | 'detail' | 'compare' | 'watchlist' | 'trends' | 'finance'
   mapLayers: MapLayers
 
+  // Asset subclass heatmap
+  activeSubclass: string | null  // null = use opportunity_score, otherwise use subclass_scores[name]
+  subclassHeatmapEnabled: boolean
+
   // Comparator state
   compareA: Property | null
   compareB: Property | null
@@ -68,6 +72,10 @@ interface AppState {
 
   // Map layer toggles
   setMapLayer: (layer: keyof MapLayers, value: boolean) => void
+
+  // Asset subclass actions
+  setActiveSubclass: (s: string | null) => void
+  setSubclassHeatmapEnabled: (e: boolean) => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -114,6 +122,9 @@ export const useAppStore = create<AppState>()(
         showBusStops: false,
       },
 
+      activeSubclass: null,
+      subclassHeatmapEnabled: false,
+
       setFilters:          (partial) => set((s) => ({ filters: { ...s.filters, ...partial } })),
       setSelectedProperty: (p)       => set({ selectedProperty: p, activeTab: p ? 'detail' : 'map' }),
       setSidebarOpen:      (open)    => set({ sidebarOpen: open }),
@@ -131,6 +142,9 @@ export const useAppStore = create<AppState>()(
       setSavedSearches:   (searches)    => set({ savedSearches: searches }),
       setAuthModalOpen:   (open)        => set({ authModalOpen: open }),
       setMapLayer:        (layer, value) => set((s) => ({ mapLayers: { ...s.mapLayers, [layer]: value } })),
+
+      setActiveSubclass:          (sc) => set({ activeSubclass: sc }),
+      setSubclassHeatmapEnabled:  (e)  => set({ subclassHeatmapEnabled: e }),
 
       addToWatchlist: (p) => set((s) => ({
         watchlist: s.watchlist.some((w) => w.score_id === p.score_id)

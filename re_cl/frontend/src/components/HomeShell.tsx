@@ -25,6 +25,7 @@ import { WatchlistDrawer } from './WatchlistDrawer'
 import { EmptyStateCoach } from './EmptyStateCoach'
 import { ComparatorOverlay } from './ComparatorOverlay'
 import { HeatmapToggle } from './HeatmapToggle'
+import { SubclassSelector } from './SubclassSelector'
 import { SettingsDrawer } from './SettingsDrawer'
 import { fmtUF } from '../lib/format'
 
@@ -397,6 +398,11 @@ export function HomeShell() {
 
       {/* Settings drawer */}
       {settingsOpen && <SettingsDrawer onClose={() => setSettingsOpen(false)} />}
+
+      {/* Asset Subclass Selector floating panel */}
+      <div className="absolute top-20 right-4 z-30">
+        <SubclassSelector />
+      </div>
 
       {/* Heatmap overlay */}
       {heatmapOpen && (
