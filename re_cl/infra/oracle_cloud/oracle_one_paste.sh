@@ -90,10 +90,12 @@ for i in "${!REGIONS[@]}"; do
         --sort-by "TIMECREATED" --sort-order "DESC" \
         --query "data[0].id" --raw-output)
 
-    AD=$(oci iam availability-domain list \
+    # Get all ADs in the region (us-ashburn-1 has 3: AD-1, AD-2, AD-3)
+    ADS=($(oci iam availability-domain list \
         --region "$REGION" \
         --compartment-id "$COMPARTMENT_ID" \
-        --query "data[0].name" --raw-output)
+        --query "data[*].name" --raw-output | tr -d '[]",' | tr '\n' ' '))
+    echo "  Available ADs: ${ADS[*]}"
 
     # Use default VCN/subnet if exists, else create
     SUBNET_ID=$(oci network subnet list \
@@ -125,19 +127,38 @@ for i in "${!REGIONS[@]}"; do
             --query "data.id" --raw-output)
     fi
 
-    # Launch instance
-    INSTANCE_ID=$(oci compute instance launch \
-        --availability-domain "$AD" \
-        --compartment-id "$COMPARTMENT_ID" \
-        --region "$REGION" \
-        --shape "VM.Standard.A1.Flex" \
-        --shape-config '{"ocpus": 1, "memoryInGBs": 6}' \
-        --image-id "$IMAGE_ID" \
-        --subnet-id "$SUBNET_ID" \
-        --display-name "$NAME" \
-        --metadata "{\"ssh_authorized_keys\": \"$SSH_PUB\", \"user_data\": \"$CLOUD_INIT_B64\"}" \
-        --assign-public-ip true \
-        --query "data.id" --raw-output)
+    # Launch instance — retry across ADs and on Out-of-capacity errors
+    INSTANCE_ID=""
+    MAX_ROUNDS=10
+    for round in $(seq 1 $MAX_ROUNDS); do
+        for AD in "${ADS[@]}"; do
+            echo "  Attempt $round, AD=$AD..."
+            INSTANCE_ID=$(oci compute instance launch \
+                --availability-domain "$AD" \
+                --compartment-id "$COMPARTMENT_ID" \
+                --region "$REGION" \
+                --shape "VM.Standard.A1.Flex" \
+                --shape-config '{"ocpus": 1, "memoryInGBs": 6}' \
+                --image-id "$IMAGE_ID" \
+                --subnet-id "$SUBNET_ID" \
+                --display-name "$NAME" \
+                --metadata "{\"ssh_authorized_keys\": \"$SSH_PUB\", \"user_data\": \"$CLOUD_INIT_B64\"}" \
+                --assign-public-ip true \
+                --query "data.id" --raw-output 2>/dev/null) && [ -n "$INSTANCE_ID" ] && [ "$INSTANCE_ID" != "null" ] && break
+            INSTANCE_ID=""
+        done
+        if [ -n "$INSTANCE_ID" ]; then break; fi
+        echo "  All ADs out of capacity. Sleeping 60s before retry round $((round+1))..."
+        sleep 60
+    done
+
+    if [ -z "$INSTANCE_ID" ]; then
+        echo "  ERROR: Could not launch $NAME after $MAX_ROUNDS rounds across ${#ADS[@]} ADs."
+        echo "  Capacity is currently exhausted in $REGION. Try again in 30-60 minutes."
+        echo "  Or run this loop manually:"
+        echo "    while ! oci compute instance launch --availability-domain '<AD>' ...; do sleep 60; done"
+        continue
+    fi
 
     echo "  Created: $INSTANCE_ID"
 done
