@@ -9,7 +9,7 @@
 
 set -e
 
-REPO_URL="https://github.com/USER/REPO.git"  # ← reemplazar con tu fork público
+REPO_URL="https://github.com/jjbulnes1985/re_cl_oracle.git"
 VM_NAMES=("re_cl_di_account1_phx" "re_cl_di_account2_iad" "re_cl_di_account3_fra")
 REGIONS=("us-phoenix-1" "us-ashburn-1" "eu-frankfurt-1")
 
