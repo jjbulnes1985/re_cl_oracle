@@ -127,12 +127,13 @@ for i in "${!REGIONS[@]}"; do
             --query "data.id" --raw-output)
     fi
 
-    # Launch instance — retry across ADs and on Out-of-capacity errors
+    # Launch instance — retry FOREVER until capacity opens (or user Ctrl+C)
+    # Cycles through all ADs, sleeps 30s between rounds, prints progress every 5min
     INSTANCE_ID=""
-    MAX_ROUNDS=10
-    for round in $(seq 1 $MAX_ROUNDS); do
+    round=0
+    while [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" = "null" ]; do
+        round=$((round+1))
         for AD in "${ADS[@]}"; do
-            echo "  Attempt $round, AD=$AD..."
             INSTANCE_ID=$(oci compute instance launch \
                 --availability-domain "$AD" \
                 --compartment-id "$COMPARTMENT_ID" \
@@ -148,17 +149,15 @@ for i in "${!REGIONS[@]}"; do
             INSTANCE_ID=""
         done
         if [ -n "$INSTANCE_ID" ]; then break; fi
-        echo "  All ADs out of capacity. Sleeping 60s before retry round $((round+1))..."
-        sleep 60
+
+        # Print progress every 10 rounds (~5min) to keep Cloud Shell alive
+        if [ $((round % 10)) -eq 0 ]; then
+            echo "  [$(date +%H:%M:%S)] Round $round — capacity still exhausted. Continuing to retry..."
+        fi
+        sleep 30
     done
 
-    if [ -z "$INSTANCE_ID" ]; then
-        echo "  ERROR: Could not launch $NAME after $MAX_ROUNDS rounds across ${#ADS[@]} ADs."
-        echo "  Capacity is currently exhausted in $REGION. Try again in 30-60 minutes."
-        echo "  Or run this loop manually:"
-        echo "    while ! oci compute instance launch --availability-domain '<AD>' ...; do sleep 60; done"
-        continue
-    fi
+    echo "  Created on round $round: $INSTANCE_ID"
 
     echo "  Created: $INSTANCE_ID"
 done
