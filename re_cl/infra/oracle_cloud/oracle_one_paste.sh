@@ -17,9 +17,19 @@ echo "============================================================"
 echo "RE_CL — Oracle Cloud one-paste setup"
 echo "============================================================"
 
-# Get tenancy + compartment
-TENANCY=$(oci iam compartment list --query "data[?name=='tenancy'].id" --raw-output 2>/dev/null || \
-          oci iam compartment list --query "data[0].\"compartment-id\"" --raw-output)
+# Get tenancy + compartment (Cloud Shell sets OCI_TENANCY; fall back to config file)
+TENANCY="${OCI_TENANCY:-}"
+if [ -z "$TENANCY" ]; then
+    TENANCY=$(awk -F'=' '/^tenancy/{gsub(/ /,"",$2); print $2; exit}' ~/.oci/config 2>/dev/null)
+fi
+if [ -z "$TENANCY" ]; then
+    TENANCY=$(oci iam compartment list --include-root --query "data[?\"compartment-id\" == null].id | [0]" --raw-output 2>/dev/null)
+fi
+if [ -z "$TENANCY" ] || [ "$TENANCY" = "null" ]; then
+    echo "ERROR: Could not determine tenancy OCID."
+    echo "Try running: oci iam compartment list --include-root --query 'data[?\"compartment-id\" == null].id | [0]' --raw-output"
+    exit 1
+fi
 COMPARTMENT_ID="$TENANCY"
 echo "Tenancy/Compartment: $COMPARTMENT_ID"
 
