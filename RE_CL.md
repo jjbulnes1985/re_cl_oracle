@@ -1373,4 +1373,72 @@ py src/reports/generate_report.py
 | V7.3 | PI scraper --by-commune (40 comunas × 4 tipos, bypasa login gate MeLi) | ✓ Completado 2026-04-21 |
 | V7.4 | Dashboard tab Terrenos + calibrated columns en Streamlit | ✓ Completado 2026-04-21 |
 | V7.5 | React calibrated_gap_pct en RankingPanel + DetailPanel | ✓ Completado 2026-04-21 |
+| V7.6 | Data Inmobiliaria CBR 2019-2026 — 27/40 comunas RM scrapeadas (134,811 rows en transactions_raw) | ✓ Completado 2026-05-02 |
+| V7.7 | WARP loop scraping autónomo + Cloudflare WARP IP rotation | ✓ Completado 2026-05-02 |
+| V7.8 | Modelo retrain con DI 2019-2026 — R²=0.6694, n_train=598,561 | ✓ Completado 2026-05-02 |
+| V7.9 | **Asset Subclass Engine** — 14 subclases × 12 dim × 503k candidatos = 7M scores en JSONB | ✓ Completado 2026-05-02 |
+| V7.10 | Frontend SubclassSelector + Deck.gl SubclassHeatmapLayer hook | ✓ Completado 2026-05-02 |
+| V7.11 | FastAPI 4 endpoints /subclasses + DB trigger sum=1.0 | ✓ Completado 2026-05-02 |
+| V7.12 | Multi-agente Opus-design + Sonnet-execute (prompts/asset_subclass_weights_engine.md) | ✓ Completado 2026-05-02 |
+| V7.13 | Oracle Cloud Always Free verificado (us-ashburn-1, A1.Flex eligible) | ✓ Verificado 2026-05-02 |
+| V7.14 | Completar 13 comunas DI restantes vía Oracle Cloud (3 VMs paralelas) | ⏳ Pendiente paste oracle_one_paste.sh |
+| V8.1 | A3 Risk Agent (PRC scraping + flags ambientales) | Futura |
+| V8.2 | Auto-tuning subclass weights (scipy optimizer + admin Streamlit) | Futura |
+| V8.3 | Validar cap rates con tasador externo (Tinsa / GPS Property) | Futura |
+| V8.4 | Extender al país (Chile completo, 16 regiones) | Futura |
 | V6.7 | Deploy en VPS/cloud (Railway, Render, o VPS propio) | Futura |
+
+## V7.9 — Asset Subclass Engine (resumen)
+
+**Origen:** Usuario solicitó (2026-05-02) un sistema de mapas de calor por **subclase de activo** con pesos específicos por cada una, aplicando metodología Geltner + multi-agente (Opus diseña, Sonnet ejecuta) + virtudes de tododeia.com (paralelismo, security margins, plan-mode).
+
+**Diferencia con scoring profiles existente:**
+- *Scoring profiles* (default/location/growth/safety) = pesos por **perfil de inversionista**.
+- *Asset subclass weights* = pesos por **tipo de activo** (apartment vs gas_station vs land).
+
+Un departamento para arriendo y una gasolinera tienen variables relevantes muy distintas:
+- `apartment_income`: cap_rate (30%) + transit (20%) + underval (20%) + school (10%) + …
+- `gas_station`: traffic (30%) + competitor_density (20%) + cap_rate (20%) + underval (10%) + …
+- `land_residential_dev`: underval (30%) + appreciation (20%) + regulatory_risk (15%) + transit/school (10%) + …
+
+**14 subclases activas:**
+
+| Parent class | Subclases |
+|--------------|-----------|
+| residential | apartment_income, apartment_flip, house_income, house_flip |
+| land | land_residential_dev, land_commercial_dev |
+| commercial | gas_station, pharmacy, supermarket, bank_branch, clinic, restaurant, office_class_a, warehouse |
+
+**12 dimensiones por subclase** (sum=1.0 validado por DB trigger):
+
+```
+underval | cap_rate | appreciation | transit | school | traffic
+competitor_density | demographic_match | liquidity | regulatory_risk
+environmental_risk | data_confidence
+```
+
+**Implementación stack completo:**
+
+| Capa | Archivo | Líneas |
+|------|---------|--------|
+| Plan maestro | `prompts/asset_subclass_weights_engine.md` | ~400 |
+| DB | `db/migrations/015_asset_subclass_weights.sql` (tabla + 14 seed + trigger sum=1.0) | ~120 |
+| DB | `db/migrations/016_subclass_scores_jsonb.sql` (column + GIN index) | ~30 |
+| Scorer | `src/scoring/asset_subclass.py` | ~340 |
+| API | `src/api/routes/subclass.py` (4 endpoints) | ~250 |
+| Frontend | `frontend/src/components/SubclassSelector.tsx` | ~110 |
+| Frontend | `frontend/src/components/SubclassHeatmapLayer.tsx` (hook) | ~85 |
+| Frontend state | `frontend/src/store.ts` (`activeSubclass`, `subclassHeatmapEnabled`) | +6 |
+
+**Resultado verificado:**
+- 503,557 candidatos con `subclass_scores` JSONB persistidos
+- 7,049,798 individual scores (503k × 14)
+- API smoke test: `GET /subclasses/apartment_income/heatmap` retorna top 10 candidatos en Las Condes/Providencia/Ñuñoa con scores 0.80-0.81
+- Frontend integrado en HomeShell como floating panel (top-right, z-30)
+
+**Aplicación tododeia.com / multi-agente:**
+- Opus diseñó el plan completo en `prompts/asset_subclass_weights_engine.md`
+- Sonnet ejecutó las 8 atomic tasks en paralelo donde fue posible
+- Security margins: DB trigger valida sum=1.0, POST endpoint valida server-side, JWT admin role TODO
+- Plan-mode: dry-run con `--limit 5000` antes del bulk score 503k
+- Backwards compatible: aditivo, no rompe `opportunity_score` legacy

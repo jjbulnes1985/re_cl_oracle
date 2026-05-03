@@ -101,7 +101,8 @@ re_cl/
 ├── src/scoring/
 │   ├── undervaluation.py             # gap_pct → undervaluation_score (percentile rank)
 │   ├── opportunity_score.py          # Score compuesto + perfiles (default/location/growth/liquidity/custom/safety)
-│   ├── scoring_profile.py            # Definición y validación de perfiles de scoring
+│   ├── scoring_profile.py            # Definición y validación de perfiles de scoring (investor profiles)
+│   ├── asset_subclass.py             # **NUEVO** — Subclass-aware scorer (14 subclases × 12 dim) → JSONB (V7)
 │   ├── shap_explainer.py             # Top-3 SHAP features por propiedad
 │   └── scraped_to_scored.py          # Listings scrapeados → model_scores
 ├── src/maps/
@@ -124,7 +125,8 @@ re_cl/
 │       ├── scores.py                 # GET /scores/{id}, /top, /summary
 │       ├── profiles.py               # GET /profiles, POST /profiles/score
 │       ├── analytics.py              # GET /analytics/price-trend, /by-commune, /score-distribution (V5)
-│       └── alerts.py                 # GET /alerts/opportunities, /config, POST /test (V5)
+│       ├── alerts.py                 # GET /alerts/opportunities, /config, POST /test (V5)
+│       └── subclass.py               # **NUEVO** GET /subclasses, /{name}/weights, /{name}/heatmap, POST /{name}/weights (V7)
 ├── src/dashboard/
 │   ├── app.py                        # Streamlit: 7 tabs incl. Finanzas, Enriquecimiento
 │   ├── financial_panel.py            # DCF, cap rate, yield simulator (V5)
@@ -145,7 +147,9 @@ re_cl/
 │   │       ├── CommunesPanel.tsx     # Ranking comunas (crime_tier, educacion_score columns)
 │   │       ├── ComparatorPanel.tsx   # Side-by-side property comparator (V5.6)
 │   │       ├── WatchlistPanel.tsx    # Saved properties + CSV export (V5)
-│   │       └── TrendPanel.tsx        # Price trend SVG line chart (V5)
+│   │       ├── TrendPanel.tsx        # Price trend SVG line chart (V5)
+│   │       ├── SubclassSelector.tsx  # **NUEVO** UI floating panel: 14 subclases agrupadas por parent_class (V7)
+│   │       └── SubclassHeatmapLayer.tsx # **NUEVO** Hook useSubclassHeatmap → Deck.gl HeatmapLayer (V7)
 │   └── Dockerfile
 ├── data/
 │   ├── raw/                          # CSV fuente (no commitear)
@@ -163,35 +167,39 @@ re_cl/
 
 - `transactions_raw` — Datos crudos del CSV, sin transformar.
 - `transactions_clean` — Datos normalizados, deduplicados, con flags de calidad y `data_confidence`.
-- `model_scores` — Scores calculados por versión de modelo, con SHAP top features en JSONB.
+- `model_scores` — Scores calculados por versión de modelo, con SHAP top features en JSONB. **NUEVO** columna `subclass_scores` JSONB (14 subclases × 12 dim por candidato).
 - `v_opportunities` — Vista que une scores + datos limpios, filtrando outliers.
+- `asset_subclass_weights` — **NUEVO** (V7) Tabla con pesos por subclase de activo (14 rows seed: residential/commercial/land). DB trigger valida sum=1.0.
+- `v_subclass_weights_active` — **NUEVO** Vista filtrada por `active = TRUE`.
 
 ## Variables de entorno
 
 Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 `POSTGRES_PASSWORD`, `RAW_CSV_PATH`, `DATABASE_URL` (o las `POSTGRES_*` individuales).
 
-## Estado (actualizado: 2026-05-01)
+## Estado (actualizado: 2026-05-02)
 
 ### Snapshot ejecutivo
 
-- **842,227 candidatos** en `opportunity.candidates` (829k CBR + 12,891 DI nuevos + 5k scraped)
-- **2,509,377 valuaciones** (845k comparables + 821k hedonic_xgb + 843k triangulated)
-- **1,680,427 scores** (842k as_is + 6 use cases comerciales)
-- **21,026 oportunidades alta score (≥0.7)** — ranking institucional disponible
+- **916,895 candidatos limpios** en `transactions_clean` (1,521,598 raw — incluye 134,811 DI)
+- **865,583 features** en `transaction_features` (+131k vs anterior sesión)
+- **2,443,296 model_scores** (4 perfiles × 610,824 candidatos: default/location/growth/safety)
+- **7,049,798 subclass scores** (V7 — 503,557 candidatos × 14 subclases en JSONB)
+- **243,467 oportunidades alta score (>0.7)** en perfil default
 - **8,043 competidores OSM** en 6 categorías (gas/farma/super/banco/clínica/restaurant)
-- **Modelo XGBoost v1.0** R²=0.6712, n_train=520,574 (CBR 2008-2026)
-- **DI scraping** 10/40 comunas RM (~55,140 rows), nightly automático 06:00 con 3 cuentas
-- **Frontend UX Phase 5** — HomeShell único + 7 componentes nuevos + Geltner-grade simulator
-- **Multi-agente backend** — 6 de 7 agentes implementados (A3 Risk pendiente fase 2)
+- **Modelo XGBoost v1.0** R²=0.6694, n_train=598,561 (CBR 2008-2018 + DI 2019-2026)
+- **DI scraping** **27/40 comunas RM** (+1 partial Conchalí), 117,383 rows checkpoint
+- **Frontend UX Phase 5 + V7** — HomeShell único + SubclassSelector floating panel
+- **Multi-agente backend** — 6 de 7 agentes implementados + Asset Subclass Engine (Opus diseñó, Sonnet ejecutó)
 
 ### Próximos pasos prioritarios
 
-1. **VPN/proxy para 3x throughput DI** (`scripts/PROXY_SETUP.md` con 3 estrategias listas)
-2. **Completar 30 comunas DI restantes** (~10 días con VPN, ~25 sin)
-3. **A3 Risk Agent** (PRC scraping + flags ambientales)
-4. **Validar cap rates** con tasador externo (Tinsa / GPS Property)
-5. **Extender al país** (Chile completo) — fase 2
+1. **Oracle Cloud setup** (5 min usuario): URL repo público + paste oracle_one_paste.sh + SCP cookies → 3× throughput DI = 1-2 días para 13 comunas pendientes
+2. **Completar 13 comunas DI restantes** (Macul, Peñalolén, Pudahuel, San Miguel, El Bosque, La Granja, La Pintana, Quilicura, Conchalí, Renca, San Bernardo, Quinta Normal, Lo Prado, etc.)
+3. **A3 Risk Agent** (PRC scraping + flags ambientales) — peso ya reservado en weights JSONB
+4. **Auto-tuning subclass weights** (FASE 3 del prompt) — scipy optimizer + admin Streamlit
+5. **Validar cap rates** con tasador externo (Tinsa / GPS Property)
+6. **Extender al país** (Chile completo) — fase 2
 
 
 
@@ -274,6 +282,10 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 | **A5 Narrative Agent (backend)** — endpoint `/opportunity/candidates/{id}/narrative?profile=&hold_years=` genera frase humana institucional + estructurados (monthly_rent_uf, yield_pct, projected_value_uf, appreciation_pct, disclaimer) reemplazando lógica frontend | **Completado 2026-05-01** |
 | **A6 Monitoring Agent** — `src/opportunity/monitoring.py` recolecta métricas (score distribution, DI progress, valuation confidence, top comunas), guarda baseline + reportes timestamped en `data/monitoring/`, detecta drift score >5%, alertas severity high/medium/low | **Completado 2026-05-01** |
 | **Frontend completo wired** — ComparatorOverlay (modal A vs B con highlight ganador), HeatmapToggle (panel ranking comunas por métrica seleccionable), SettingsDrawer con ExpertModeToggle (revela SHAP/scores/profile) | **Completado 2026-05-01** |
+| **WARP loop scraping V7** — 16→27/40 comunas DI (+11 nuevas en sesión: Huechuraba, San Joaquín, La Cisterna, Colina, San Ramón, Lo Espejo, Pedro Aguirre Cerda, Lo Prado, Cerro Navia, Recoleta, Quinta Normal) + 1 partial Conchalí · 21k rows nuevos · 6 corridas WARP autónomas con cooldown adaptativo · Total 117,383 rows checkpoint | **Completado 2026-05-02** |
+| **Pipeline post-WARP V7** — clean (916k) + features (865k) + retrain XGBoost (R²=0.6694, n_train=598,561) + 4 perfiles × 610k = 2.4M model_scores | **Completado 2026-05-02** |
+| **Asset Subclass Engine V7** — `prompts/asset_subclass_weights_engine.md` (Opus diseñó) → migrations 015 (asset_subclass_weights, 14 subclases con DB trigger sum=1.0) + 016 (subclass_scores JSONB en model_scores) → `src/scoring/asset_subclass.py` (12 dim × 14 subclases × 503k candidatos = **7M scores**) → `src/api/routes/subclass.py` (4 endpoints) → frontend SubclassSelector + SubclassHeatmapLayer hook | **Completado 2026-05-02** |
+| **Oracle Cloud Always Free verificado** — Cuenta jjbulnes activa en us-ashburn-1, badge "Always Free-eligible" confirmado en VM.Standard.A1.Flex, 4 OCPU + 24GB ARM disponibles · `infra/oracle_cloud/GUIA_PASO_A_PASO.md` (8 pasos, 30 min) listo para ejecutar | **Verificado 2026-05-02 — pendiente paste de oracle_one_paste.sh** |
 | Yapo scraper — bloqueado por reCAPTCHA v3 (necesita proxy rotation o cookie manual) | Bloqueado |
 | MercadoLibre scraper — bloqueado por OAuth2/403 PolicyAgent | Bloqueado |
 
@@ -316,6 +328,30 @@ Copiar `.env.example` a `.env` en `re_cl/`. Variables requeridas:
 - Ley de rendimientos decrecientes: coeff superficie ≈ 0.928 — `log_surface`
 - Estacionalidad Q4: +1.2% — validado por backtesting
 - Segmentación territorial: 4 zonas (centro_norte, este, oeste, sur) — `city_zone`
+
+### Asset Subclass Engine V7 (NUEVO — 2026-05-02)
+
+**Concepto:** Distinto del scoring por *investor profile* (default/location/growth/safety), el engine de subclase aplica pesos específicos por **tipo de activo**. Cada candidato recibe **14 scores adicionales** (uno por subclase) en JSONB.
+
+**14 subclases activas** (tabla `asset_subclass_weights`):
+- Residencial: `apartment_income`, `apartment_flip`, `house_income`, `house_flip`
+- Land: `land_residential_dev`, `land_commercial_dev`
+- Comercial: `gas_station`, `pharmacy`, `supermarket`, `bank_branch`, `clinic`, `restaurant`, `office_class_a`, `warehouse`
+
+**12 dimensiones por subclase** (sum=1.0 validado por DB trigger):
+underval, cap_rate, appreciation, transit, school, traffic, competitor_density, demographic_match, liquidity, regulatory_risk, environmental_risk, data_confidence
+
+**Frontend:** `SubclassSelector` floating panel + `SubclassHeatmapLayer` Deck.gl hook. Toggle "Activado" → seleccionar subclase → heatmap re-renderiza dinámicamente sin nueva llamada API (datos ya cacheados en JSONB).
+
+**API:**
+```bash
+GET  /subclasses                          # 14 subclases agrupadas por parent_class
+GET  /subclasses/{name}/weights           # vector 12 dim
+GET  /subclasses/{name}/heatmap?score_min=&limit=&bbox=
+POST /subclasses/{name}/weights           # admin (TODO JWT role)
+```
+
+**Aditivo:** NO modifica `opportunity_score` legacy. Frontend antiguo sigue funcionando sin cambios.
 
 ### Scoring profiles
 - **default**: subvaloración 70% + confianza 30%
