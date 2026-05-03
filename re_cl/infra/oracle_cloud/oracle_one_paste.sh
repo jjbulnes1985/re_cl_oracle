@@ -10,8 +10,14 @@
 set -e
 
 REPO_URL="https://github.com/jjbulnes1985/re_cl_oracle.git"
-VM_NAMES=("re_cl_di_account1_phx" "re_cl_di_account2_iad" "re_cl_di_account3_fra")
-REGIONS=("us-phoenix-1" "us-ashburn-1" "eu-frankfurt-1")
+VM_NAMES=("re_cl_di_account1_iad" "re_cl_di_account2_iad" "re_cl_di_account3_iad")
+REGIONS=("us-ashburn-1" "us-ashburn-1" "us-ashburn-1")
+# NOTE: Free Trial accounts only have access to their home region (us-ashburn-1
+# in this setup). To use additional regions (Phoenix, Frankfurt, etc.) you must
+# manually subscribe via the dashboard:
+#   Profile (avatar) → Tenancy: jjbulnes → Regions → Subscribe
+# Then wait 24-48h for activation. Once subscribed, change the REGIONS array
+# back to use multiple regions for true geographic IP diversity.
 
 echo "============================================================"
 echo "RE_CL — Oracle Cloud one-paste setup"
